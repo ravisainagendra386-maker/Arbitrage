@@ -1,0 +1,88 @@
+{
+  "cookies": [
+    {
+      "name": "g_token",
+      "value": "s%3A9bfiLa7k4__scBEWA3ip5CRvAe5wJ2kk.C4lAEChy%2FTfoa0jlTliQZXVYfFrYrkrGZfYRvsaGukY",
+      "domain": "rebel777.co",
+      "path": "/",
+      "expires": 1775319097.827464,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_cfuvid",
+      "value": "fMONtqSoHmXpK9sit7IkCoER5fmnYafute1xGEENAB4-1775232689728-0.0.1.1-604800000",
+      "domain": ".rebel777.co",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "cf_clearance",
+      "value": "i1VjLF8DR353eRQQN8AqKIO2K_3Eb0.kAuOjygRQ7cY-1775232695-1.2.1.1-hH2O30_0SAWfpdqH4UVAfSNNfalGXySuWbMZEVbEhupFF1P9iov6TkIy6JPQYlORPqR7T2qVoQPp5.KDBo2afiaK6XYYIuoJNuzSO5y6h0FDzflwy92Vpxpk6cntSCcE5FDdR4NDDSPgE.umk017lVMV9w9wxfOUiR7l2pwZU.Qlft8MW7fPupV4.4QrntJ25wFyAcTzVFL11n4cnAKapkmvQTilqEbENOIBivEZBT0X.lzr6x5YhAtpmE.ZFkF.1b5Lb59Ktlc0hdGKCT6Jg3TUpz8EHsYV06J90qAMBAmkSsCudTHdU6SWqOtP6lYyL9JOY.FCbW686xHLMXpH4Q",
+      "domain": ".rebel777.co",
+      "path": "/",
+      "expires": 1806768693.746593,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://rebel777.co",
+      "_crHasCrossSiteAncestor": false
+    },
+    {
+      "name": "__cf_bm",
+      "value": "l89I266QMXMbQ1KvAjQDhgF2pQarPx_GALM.TOajvkQ-1775232696-1.0.1.1-gx5GUBqLIB008nrU5GB8QBQi9XtOoqnVZ7epygG3UbeSssbzDHZe_QAD6q99VZhoNdQ_rmIhsSgqham55uMRtOoFf6M0w2mdnFVAetuGH1Y",
+      "domain": ".rebel777.co",
+      "path": "/",
+      "expires": 1775234494.412193,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJEZW1vIiwic2Vzc2lvbklkIjoiZGVtb2lkYjgtYjk5YS00MTQ4LWJhZTUtZDg5OTM0ZGRhODQ4IiwiaWF0IjoxNzc1MjMyNjk5LCJleHAiOjE3NzUyMzQ3OTl9.KnYkOBkBWKIQOoJJiBD5C7eGebbvs8N76246nxPEMsI",
+      "domain": "rebel777.co",
+      "path": "/",
+      "expires": 1775234797.827231,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://rebel777.co",
+      "localStorage": [
+        {
+          "name": "__client_fingerprint__",
+          "value": "{\"fp\":\"8270a3d44dd06e5c34d30943db23aa60994f390976b5b20051a3bcbd9f35f28a\",\"ts\":1775232720246}"
+        },
+        {
+          "name": "token",
+          "value": "ebf6658d-8f9f-426e-a23e-d965c1621eae"
+        },
+        {
+          "name": "isLoggedin",
+          "value": "true"
+        },
+        {
+          "name": "userDetails",
+          "value": "{\"isDemoUser\":true,\"token\":\"ebf6658d-8f9f-426e-a23e-d965c1621eae\",\"uname\":\"Demo\",\"ptype\":1,\"login\":true,\"rdisplay\":true,\"ipop\":false,\"auth\":0,\"currency\":\"\",\"agmno\":\"\",\"agmno1\":\"\"}"
+        }
+      ]
+    },
+    {
+      "origin": "https://www.google.com",
+      "localStorage": [
+        {
+          "name": "rc::a",
+          "value": "MnB2eXEwd2FvdTRh"
+        }
+      ]
+    }
+  ]
+}

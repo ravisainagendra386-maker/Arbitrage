@@ -1,0 +1,2574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>IPL Arb v4</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --g: #00d47e;
+            --g2: #00ff99;
+            --r: #ff3a5e;
+            --y: #ffd44a;
+            --p: #9b95ff;
+            --o: #ff8a60;
+            --mum: #f5a623;
+            --kol: #9b59ff;
+            --bk: #6db3ff;
+            --lk: #ff7099;
+            --bg: #07090f;
+            --s1: #090e1c;
+            --s2: #0d1322;
+            --bd: #1a2540;
+            --bd2: #243050;
+            --txt: #b8cae8;
+            --txt2: #4a5a72;
+            --head: #e8f0ff
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--txt);
+            font-family: monospace;
+            font-size: 12px;
+            min-height: 100vh
+        }
+
+        /* ── HEADER ── */
+        .hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: #0a0f1e;
+            border-bottom: 1px solid var(--bd);
+            flex-wrap: wrap;
+            gap: 6px;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            backdrop-filter: blur(8px)
+        }
+
+        .logo {
+            font-family: sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 2px
+        }
+
+        .logo .lp {
+            color: var(--p)
+        }
+
+        .logo .lo {
+            color: var(--o)
+        }
+
+        .logo small {
+            display: block;
+            font-family: monospace;
+            font-size: 9px;
+            color: var(--txt2);
+            letter-spacing: 3px
+        }
+
+        .hr {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .live {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--g);
+            letter-spacing: 1px
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--g);
+            animation: blink 1.2s infinite
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: .15
+            }
+        }
+
+        .hbtn {
+            background: var(--s2);
+            border: 1px solid var(--bd2);
+            color: var(--txt2);
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            transition: .15s
+        }
+
+        .hbtn:hover {
+            border-color: var(--p);
+            color: var(--p)
+        }
+
+        #ncall {
+            color: var(--p)
+        }
+
+        /* ── SETTINGS ── */
+        .stw {
+            background: var(--s1);
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .sthd {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            cursor: pointer;
+            user-select: none
+        }
+
+        .sthl {
+            font-family: sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--head)
+        }
+
+        .stsub {
+            font-size: 10px;
+            color: var(--txt2);
+            margin-top: 1px
+        }
+
+        .stsub b {
+            color: var(--y);
+            font-weight: 400
+        }
+
+        .stbd {
+            display: none;
+            padding: 0 14px 14px;
+            border-top: 1px solid var(--bd)
+        }
+
+        .stbd.open {
+            display: block
+        }
+
+        .sg {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: flex-end;
+            margin-top: 10px
+        }
+
+        .f {
+            display: flex;
+            flex-direction: column;
+            gap: 2px
+        }
+
+        .f label {
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--txt2);
+            text-transform: uppercase
+        }
+
+        .f input,
+        .f select {
+            background: var(--s2);
+            border: 1px solid var(--bd);
+            color: var(--head);
+            padding: 5px 8px;
+            font-family: monospace;
+            font-size: 11px;
+            border-radius: 3px;
+            width: 130px;
+            transition: .15s
+        }
+
+        .f.w input {
+            width: 210px
+        }
+
+        .f input:focus,
+        .f select:focus {
+            outline: none;
+            border-color: var(--p)
+        }
+
+        .sdiv {
+            width: 100%;
+            height: 1px;
+            background: var(--bd);
+            margin: 5px 0
+        }
+
+        .slbl {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--txt2);
+            width: 100%
+        }
+
+        .abtn {
+            padding: 6px 14px;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px
+        }
+
+        .abp {
+            background: #6c63ff;
+            color: #fff
+        }
+
+        .abb {
+            background: #ff6030;
+            color: #fff
+        }
+
+        .abtn:hover {
+            opacity: .85
+        }
+
+        /* ── MATCH BAR ── */
+        .mbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 14px;
+            background: var(--s2);
+            border-bottom: 1px solid var(--bd);
+            flex-wrap: wrap;
+            gap: 6px
+        }
+
+        .mt {
+            font-family: sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--head);
+            letter-spacing: 1px
+        }
+
+        .pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .pill {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-family: sans-serif;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .pm {
+            background: rgba(245, 166, 35, .12);
+            color: var(--mum);
+            border: 1px solid rgba(245, 166, 35, .3)
+        }
+
+        .pk {
+            background: rgba(155, 89, 255, .12);
+            color: var(--kol);
+            border: 1px solid rgba(155, 89, 255, .3)
+        }
+
+        .mr {
+            font-size: 10px;
+            color: var(--txt2);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .mr span {
+            color: var(--y)
+        }
+
+        /* ── TABS ── */
+        .tabs {
+            display: flex;
+            background: var(--s1);
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .tab {
+            padding: 8px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--txt2);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: .15s
+        }
+
+        .tab.on {
+            color: var(--p);
+            border-bottom-color: #6c63ff
+        }
+
+        .tc {
+            display: none
+        }
+
+        .tc.on {
+            display: block
+        }
+
+        /* ── ORDER BOOKS ── */
+        .obg {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--bd)
+        }
+
+        @media(max-width:620px) {
+            .obg {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .obp {
+            border-right: 1px solid var(--bd)
+        }
+
+        .obp:last-child {
+            border-right: none
+        }
+
+        .obh {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 12px;
+            border-bottom: 1px solid var(--bd);
+            background: rgba(255, 255, 255, .01)
+        }
+
+        .obt {
+            font-family: sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px
+        }
+
+        .obt.p {
+            color: var(--p)
+        }
+
+        .obt.b {
+            color: var(--o)
+        }
+
+        .bdg {
+            font-size: 9px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            letter-spacing: 1px
+        }
+
+        .bdg-p {
+            background: rgba(108, 99, 255, .15);
+            color: var(--p);
+            border: 1px solid rgba(108, 99, 255, .25)
+        }
+
+        .bdg-b {
+            background: rgba(255, 96, 48, .15);
+            color: var(--o);
+            border: 1px solid rgba(255, 96, 48, .25)
+        }
+
+        .bdg-ok {
+            background: rgba(0, 212, 126, .12);
+            color: var(--g);
+            border: 1px solid rgba(0, 212, 126, .25)
+        }
+
+        .bdg-w {
+            background: rgba(255, 212, 74, .12);
+            color: var(--y);
+            border: 1px solid rgba(255, 212, 74, .25)
+        }
+
+        .pmeta {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 12px;
+            border-bottom: 1px solid var(--bd);
+            color: var(--txt2);
+            font-size: 10px;
+            flex-wrap: wrap;
+            gap: 4px
+        }
+
+        .pmeta span {
+            color: var(--head)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th {
+            padding: 4px 8px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--txt2);
+            text-align: right;
+            border-bottom: 1px solid var(--bd);
+            font-weight: 400
+        }
+
+        th:first-child {
+            text-align: left
+        }
+
+        td {
+            padding: 5px 8px;
+            text-align: right;
+            border-bottom: 1px solid rgba(26, 37, 64, .4);
+            font-size: 11px
+        }
+
+        td:first-child {
+            text-align: left
+        }
+
+        tr.ask td {
+            color: var(--lk)
+        }
+
+        tr.bid td {
+            color: var(--g)
+        }
+
+        tr.ask td.pr {
+            color: var(--r);
+            font-weight: 700
+        }
+
+        tr.bid td.pr {
+            color: var(--g2);
+            font-weight: 700
+        }
+
+        tr.spr td {
+            text-align: center !important;
+            color: var(--y);
+            font-size: 9px;
+            background: rgba(255, 212, 74, .03);
+            padding: 3px;
+            border-bottom: 1px solid var(--bd) !important
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, .015)
+        }
+
+        /* BHAV */
+        .bhdr {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .bh {
+            text-align: center;
+            font-size: 8px;
+            padding: 3px 0;
+            letter-spacing: 1px
+        }
+
+        .bh.bk {
+            color: var(--bk);
+            background: rgba(46, 143, 255, .05)
+        }
+
+        .bh.lk {
+            color: var(--r);
+            background: rgba(255, 58, 110, .05)
+        }
+
+        .brow {
+            border-bottom: 1px solid var(--bd)
+        }
+
+        .brh {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, .01)
+        }
+
+        .btn {
+            font-family: sans-serif;
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .btn.m {
+            color: var(--mum)
+        }
+
+        .btn.k {
+            color: var(--kol)
+        }
+
+        .bcells {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr)
+        }
+
+        .bc {
+            padding: 6px 3px;
+            text-align: center;
+            border-right: 1px solid var(--bd)
+        }
+
+        .bc:last-child {
+            border-right: none
+        }
+
+        .bc.bk {
+            background: rgba(46, 143, 255, .05)
+        }
+
+        .bc.lk {
+            background: rgba(255, 58, 110, .05)
+        }
+
+        .bc.bbk {
+            background: rgba(46, 143, 255, .22) !important
+        }
+
+        .bc.blk {
+            background: rgba(255, 58, 110, .24) !important
+        }
+
+        .bo {
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .bc.bk .bo {
+            color: var(--bk)
+        }
+
+        .bc.lk .bo {
+            color: var(--lk)
+        }
+
+        .bc.bbk .bo,
+        .bc.blk .bo {
+            color: #fff
+        }
+
+        .bl {
+            font-size: 9px;
+            color: var(--txt2);
+            margin-top: 1px
+        }
+
+        /* ── CALCULATOR ── */
+        .cw {
+            padding: 12px 14px
+        }
+
+        .ctit {
+            font-family: sans-serif;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--head);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .ctit::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--bd)
+        }
+
+        .ci {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: flex-end
+        }
+
+        /* DIRECTION SELECTOR */
+        .dir-wrap {
+            margin-bottom: 10px
+        }
+
+        .dir-lbl {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--txt2);
+            margin-bottom: 5px
+        }
+
+        .dir-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap
+        }
+
+        .dir-btn {
+            padding: 5px 14px;
+            border-radius: 4px;
+            border: 1px solid var(--bd);
+            background: var(--s2);
+            color: var(--txt2);
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: .15s
+        }
+
+        .dir-btn:hover {
+            border-color: var(--head);
+            color: var(--head)
+        }
+
+        .dir-btn.on.both {
+            border-color: var(--g);
+            color: var(--g);
+            background: rgba(0, 212, 126, .08)
+        }
+
+        .dir-btn.on.mum {
+            border-color: var(--mum);
+            color: var(--mum);
+            background: rgba(245, 166, 35, .08)
+        }
+
+        .dir-btn.on.kol {
+            border-color: var(--kol);
+            color: var(--kol);
+            background: rgba(155, 89, 255, .08)
+        }
+
+        /* SLIPPAGE */
+        .slrow {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 10px
+        }
+
+        .sllbl {
+            font-size: 10px;
+            color: var(--txt2);
+            white-space: nowrap
+        }
+
+        .slbtn {
+            padding: 3px 8px;
+            border-radius: 3px;
+            border: 1px solid var(--bd);
+            background: var(--s2);
+            color: var(--txt2);
+            font-family: monospace;
+            font-size: 10px;
+            cursor: pointer;
+            transition: .15s
+        }
+
+        .slbtn:hover,
+        .slbtn.on {
+            border-color: var(--y);
+            color: var(--y);
+            background: rgba(255, 212, 74, .07)
+        }
+
+        /* DEPLOY BAR */
+        .dbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px
+        }
+
+        .dbg {
+            flex: 1;
+            height: 4px;
+            background: var(--bd);
+            border-radius: 2px;
+            overflow: hidden
+        }
+
+        .dbf {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--p), var(--o));
+            transition: .4s
+        }
+
+        /* RESULTS */
+        .rt {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px
+        }
+
+        .rt th {
+            padding: 5px 8px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--txt2);
+            text-align: right;
+            border-bottom: 1px solid var(--bd);
+            font-weight: 400;
+            background: var(--s2);
+            white-space: nowrap
+        }
+
+        .rt th:first-child {
+            text-align: left
+        }
+
+        .rt td {
+            padding: 6px 8px;
+            text-align: right;
+            border-bottom: 1px solid rgba(26, 37, 64, .4);
+            white-space: nowrap
+        }
+
+        .rt td:first-child {
+            text-align: left;
+            color: var(--txt2);
+            font-size: 10px
+        }
+
+        .rt tr.mx {
+            background: rgba(0, 212, 126, .06);
+            border-left: 2px solid var(--g)
+        }
+
+        .rt tr.mx td:first-child {
+            color: var(--g);
+            font-weight: 700
+        }
+
+        .rt tr:hover td {
+            background: rgba(255, 255, 255, .015)
+        }
+
+        .pos {
+            color: var(--g2) !important;
+            font-weight: 700
+        }
+
+        .neg {
+            color: var(--r) !important;
+            font-weight: 700
+        }
+
+        .hl {
+            color: var(--head);
+            font-weight: 700
+        }
+
+        .ow {
+            overflow-x: auto
+        }
+
+        /* SUMMARY CARDS */
+        .smg {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 6px;
+            margin-top: 12px
+        }
+
+        .smc {
+            background: var(--s2);
+            border-radius: 4px;
+            padding: 8px 10px;
+            border: 1px solid var(--bd)
+        }
+
+        .sml {
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--txt2);
+            margin-bottom: 3px
+        }
+
+        .smv {
+            font-family: sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--head);
+            line-height: 1
+        }
+
+        .sms {
+            font-size: 9px;
+            color: var(--txt2);
+            margin-top: 2px
+        }
+
+        /* ── CHART ── */
+        .chwrap {
+            padding: 12px 14px
+        }
+
+        .ch-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 6px
+        }
+
+        .ch-leg {
+            display: flex;
+            gap: 12px
+        }
+
+        .ch-li {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px
+        }
+
+        .ch-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%
+        }
+
+        canvas {
+            max-height: 220px
+        }
+
+        /* ── SCREEN FLASH ── */
+        .flash-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 212, 126, .08);
+            z-index: 400;
+            pointer-events: none;
+            animation: flashFade .8s ease-out forwards
+        }
+
+        @keyframes flashFade {
+            0% {
+                opacity: 1
+            }
+
+            100% {
+                opacity: 0
+            }
+        }
+
+        /* ── MISC ── */
+        .nodata {
+            padding: 20px;
+            text-align: center;
+            color: var(--txt2)
+        }
+
+        footer {
+            padding: 8px 14px;
+            background: var(--s1);
+            border-top: 1px solid var(--bd);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 4px;
+            font-size: 9px;
+            color: var(--txt2);
+            letter-spacing: 1px
+        }
+
+        @media(max-width:500px) {
+
+            .rt th,
+            .rt td {
+                padding: 4px 5px;
+                font-size: 10px
+            }
+
+            .f input,
+            .f select {
+                width: 110px
+            }
+
+            .ci .f input {
+                width: 110px
+            }
+        }
+
+        .calc-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media(max-width: 600px) {
+            .calc-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calc-panel {
+            background: #0f121b;
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: 12px 16px;
+        }
+
+        .cp-tit {
+            font-family: monospace;
+            font-size: 10px;
+            color: #7b859a;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cp-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .cp-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cp-lbl {
+            font-size: 9px;
+            color: #5d6b82;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .cp-input {
+            background: #090b10;
+            border: 1px solid var(--bd);
+            color: var(--head);
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 10px;
+            border-radius: 4px;
+            outline: none;
+            transition: 0.15s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .cp-input:focus {
+            border-color: var(--p);
+        }
+
+        .cp-sub {
+            margin-top: 6px;
+            font-size: 9px;
+            font-weight: 700;
+            min-height: 12px;
+        }
+
+        .cp-up {
+            color: var(--g);
+        }
+
+        .cp-dn {
+            color: var(--r);
+        }
+
+        .arb-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .arb-toggle-lbl {
+            font-size: 10px;
+            color: #7b859a;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .arb-btn {
+            background: var(--bg);
+            border: 1px solid var(--bd);
+            color: var(--txt2);
+            padding: 5px 12px;
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: 0.15s;
+        }
+
+        .arb-btn.on.m {
+            border-color: var(--mum);
+            color: var(--mum);
+            background: rgba(245, 166, 35, 0.08);
+        }
+
+        .arb-btn.on.k {
+            border-color: var(--kol);
+            color: var(--kol);
+            background: rgba(155, 89, 255, 0.08);
+        }
+
+        .w-alloc {
+            background: #0f121b;
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .wa-tit {
+            font-size: 10px;
+            color: #7b859a;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .wa-bar-wrap {
+            height: 10px;
+            background: var(--bg);
+            border-radius: 4px;
+            display: flex;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .wa-bhav {
+            background: #ff8a60;
+            transition: 0.4s;
+        }
+
+        .wa-poly {
+            background: #6c63ff;
+            transition: 0.4s;
+        }
+
+        .wa-free {
+            background: #243050;
+            transition: 0.4s;
+        }
+
+        .wa-leg {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--txt2);
+        }
+
+        .wa-leg-left {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .wa-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .wa-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        .wa-item.b .wa-dot {
+            background: #ff8a60;
+        }
+
+        .wa-item.p .wa-dot {
+            background: #6c63ff;
+        }
+
+        .wa-item.f .wa-dot {
+            background: #243050;
+        }
+
+        .wa-item span {
+            font-weight: 700;
+        }
+
+        .wa-item.b span {
+            color: #ff8a60;
+        }
+
+        .wa-item.p span {
+            color: #9b95ff;
+        }
+
+        .wa-roi {
+            color: var(--y);
+            font-weight: 700;
+            font-size: 10px;
+        }
+
+        .rth {
+            background: #0f121b !important;
+        }
+
+        .rth-g {
+            font-size: 9px;
+            text-align: center !important;
+            padding: 6px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+            letter-spacing: 1px;
+            color: #7b859a;
+        }
+
+        .rth-gw {
+            background: #0f121b;
+            color: var(--g) !important;
+        }
+
+        /* ── ARB LIVE BOX ── */
+        .arb-box {
+            display: flex;
+            align-items: stretch;
+            background: var(--s1);
+            border: 1px solid var(--bd);
+            border-radius: 6px;
+            margin: 8px 14px;
+            overflow: hidden;
+            min-height: 80px;
+        }
+
+        .arb-box-left {
+            flex: 1;
+            padding: 10px 14px;
+            border-right: 1px solid var(--bd);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .arb-box-mid {
+            width: 110px;
+            min-width: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 6px;
+            background: var(--s2);
+            overflow: hidden;
+        }
+
+        .arb-box-right {
+            flex: 1;
+            padding: 10px 14px;
+            border-left: 1px solid var(--bd);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .arb-box-label {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--txt2);
+            text-transform: uppercase;
+        }
+
+        .arb-box-team {
+            font-size: 11px;
+            color: var(--head);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .arb-box-big {
+            font-size: 28px;
+            font-weight: 900;
+            font-family: sans-serif;
+            line-height: 1;
+            color: var(--head);
+        }
+
+        .arb-box-sub {
+            font-size: 11px;
+            color: var(--txt2);
+            margin-top: 2px;
+        }
+
+        .arb-pct {
+            font-size: 24px;
+            font-weight: 900;
+            font-family: sans-serif;
+            line-height: 1;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .arb-pct.arb-yes {
+            color: var(--g);
+        }
+
+        .arb-pct.arb-no {
+            color: var(--r);
+        }
+
+        .arb-pct-lbl {
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-top: 4px;
+            color: var(--txt2);
+        }
+
+        .arb-pct-lbl.arb-yes {
+            color: var(--g);
+        }
+
+        .arb-pct-lbl.arb-no {
+            color: var(--r);
+        }
+
+        .arb-box-cents {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--p);
+            font-family: sans-serif;
+        }
+
+        /* ── POLY TEAM TABS ── */
+        .poly-tab {
+            flex: 1;
+            padding: 4px 8px;
+            border-radius: 3px;
+            border: 1px solid var(--bd);
+            background: var(--s2);
+            color: var(--txt2);
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: .15s;
+            text-transform: uppercase;
+        }
+
+        .poly-tab:hover {
+            border-color: var(--p);
+            color: var(--p);
+        }
+
+        .poly-tab.on {
+            border-color: var(--p);
+            color: var(--p);
+            background: rgba(108, 99, 255, .12);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLASH OVERLAY -->
+    <div class="flash-overlay" id="flashOv"></div>
+
+    <!-- HEADER -->
+    <div class="hdr">
+        <div class="logo"><span class="lp">POLY</span>×<span class="lo">BHAV</span><small>IPL ARB v4</small></div>
+        <div class="hr">
+            <span class="live"><span class="dot"></span>LIVE</span>
+            <span style="font-size:10px;color:var(--txt2)">CALLS:<span id="ncall">0</span></span>
+            <button class="hbtn" onclick="toggleStg()">⚙ SETTINGS</button>
+            <button class="hbtn" onclick="refreshAll()">⟳ REFRESH</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="stw">
+        <div class="sthd" onclick="toggleStg()">
+            <div>
+                <div class="sthl">⚙ SETTINGS</div>
+                <div class="stsub">Match:<b id="sbm">MI vs KKR</b> · Capital:<b id="sbc">₹1,00,000</b> · INR:<b
+                        id="sbi">₹84</b> · Refresh:<b id="sbr">5s</b> · MinGap:<b id="sbg">2.0%</b></div>
+            </div>
+            <span id="sarr" style="font-size:10px;color:var(--txt2)">▲</span>
+        </div>
+        <div class="stbd open" id="stbd">
+            <div class="sg">
+                <div class="slbl">MATCH</div>
+                <div class="f"><label>Match Name</label><input id="sMatch" value="MI vs KKR" oninput="onMN()" /></div>
+                <div class="f"><label>Team 1 (MUM side)</label><input id="sT1" value="Mumbai Indians" oninput="onT()" />
+                </div>
+                <div class="f"><label>Team 2 (KOL side)</label><input id="sT2" value="Kolkata Knight Riders"
+                        oninput="onT()" /></div>
+                <div class="sdiv"></div>
+                <div class="slbl">DATA SOURCES</div>
+                <div class="f w"><label>Polymarket URL / Condition ID</label><input id="sPolyUrl"
+                        placeholder="https://polymarket.com/event/... or token ID" /></div>
+                <div class="f w"><label>Rebel777 Match URL <span style="color:var(--g);font-size:9px">●
+                            LIVE</span></label><input id="sRebel777Url" placeholder="https://rebel777.co/sport/game/..."
+                        oninput="onRebel777UrlChange()" /></div>
+                <div class="f"><label>Auto-Refresh</label>
+                    <select id="sRef" onchange="onRC()">
+                        <option value="2">2s</option>
+                        <option value="3">3s</option>
+                        <option value="5" selected>5s</option>
+                        <option value="10">10s</option>
+                        <option value="15">15s</option>
+                        <option value="0">Off</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="abtn abp" onclick="fetchPoly()" style="margin-right:6px">⬡ LOAD POLY</button>
+                    <button class="abtn" onclick="fetchRebel777()"
+                        style="background:#1a7a4a;color:#fff;margin-right:6px">⚡ START REBEL777</button>
+                    <button class="abtn" onclick="stopRebel777()"
+                        style="background:#3a1a1a;color:#ff6060;border:1px solid #5a2a2a;margin-right:6px">■
+                        STOP</button>
+                    <div style="font-size:9px;color:var(--txt2);margin-top:4px">Session calls: <span id="ncall2"
+                            style="color:var(--p)">0</span></div>
+                </div>
+                <div class="sdiv"></div>
+                <div class="slbl">CAPITAL & RATES</div>
+                <div class="f"><label>Capital (₹)</label><input type="number" id="sCap" value="100000" step="5000"
+                        oninput="onCap()" /></div>
+                <div class="f"><label>Fixed Rebel Stake (₹)</label><input type="number" id="sRebelStake" value="20000"
+                        step="1000" oninput="onRebelStake()" /></div>
+                <div class="f"><label>Bhav Win Step (₹)</label><input type="number" id="sStep" value="5000" step="1000"
+                        oninput="onStep()" /></div>
+                <div class="f"><label>USD → INR (₹)</label><input type="number" id="sInr" value="84" step="0.5"
+                        oninput="onInr()" /></div>
+                <div class="sdiv"></div>
+                <div class="slbl">ARB ALERTS</div>
+                <div class="f"><label>Min Gap Threshold</label><input type="number" id="sMinGap" value="2.0" step="0.5"
+                        oninput="onMG()" /></div>
+                <div class="f w"><label>Telegram Bot Token</label><input id="sTgToken"
+                        placeholder="123456:ABC-DEF..." /></div>
+                <div class="f"><label>Telegram Chat ID</label><input id="sTgChat" placeholder="-1001234567890" /></div>
+                <div class="f"><label>Sound Alert</label>
+                    <select id="sSnd">
+                        <option value="1">On</option>
+                        <option value="0">Off</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATCH BAR -->
+    <div class="mbar">
+        <div class="pills">
+            <div class="mt" id="mTitle">MI vs KKR</div>
+            <div class="pill pm">MUM <span id="mumO">—</span></div>
+            <div class="pill pk">KOL <span id="kolO">—</span></div>
+        </div>
+        <div class="mr">1 USD=<span id="inrD">₹84</span> · Updated:<span id="tsD">—</span></div>
+    </div>
+
+    <!-- LIVE ARB BOX -->
+    <div class="arb-box" id="arbBox">
+        <div class="arb-box-left">
+            <div class="arb-box-label">POLYMARKET</div>
+            <div class="arb-box-team" id="abPolyTeam">—</div>
+            <div class="arb-box-big" id="abPolyShares">—</div>
+            <div class="arb-box-sub">shares needed</div>
+            <div class="arb-box-cents" id="abPolyCents">—</div>
+            <div class="arb-box-sub">best odds (¢)</div>
+        </div>
+        <div class="arb-box-mid">
+            <div class="arb-pct arb-no" id="abPct">—</div>
+            <div class="arb-pct-lbl arb-no" id="abPctLbl">NO ARB</div>
+        </div>
+        <div class="arb-box-right">
+            <div class="arb-box-label">REBEL777 LAY</div>
+            <div class="arb-box-team" id="abRebelTeam">—</div>
+            <div class="arb-box-big" id="abRebelOdds">—</div>
+            <div class="arb-box-sub">best lay odds</div>
+            <div style="font-size:11px;color:var(--txt2);margin-top:4px">Stake: <span
+                    style="color:var(--y);font-size:13px;font-weight:700" id="abRebelStake">₹20,000</span></div>
+        </div>
+    </div>
+
+
+    <!-- TABS -->
+    <div class="tabs">
+        <div class="tab on" onclick="swTab(this,'ob')">ORDER BOOKS</div>
+        <div class="tab" onclick="swTab(this,'calc')">ARB CALCULATOR</div>
+        <div class="tab" onclick="swTab(this,'chart')">ODDS CHART</div>
+    </div>
+
+    <!-- ORDER BOOKS TAB -->
+    <div class="tc on" id="tc-ob">
+        <div class="obg">
+            <div class="obp">
+                <div class="obh" style="flex-direction:column;align-items:stretch;gap:6px;padding-bottom:8px">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                        <span class="obt p">POLYMARKET</span>
+                        <span class="bdg bdg-p" id="pSt">NOT LOADED</span>
+                    </div>
+                    <div style="display:flex;gap:6px" id="polyTeamTabs">
+                        <button class="poly-tab on" id="polyTab0" onclick="switchPolyTab(0)">—</button>
+                        <button class="poly-tab" id="polyTab1" onclick="switchPolyTab(1)">—</button>
+                    </div>
+                </div>
+                <div class="pmeta">LAST:<span id="pLast">—</span> SPREAD:<span id="pSprd">—</span> VOL:<span
+                        id="pVol">—</span></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SIDE</th>
+                            <th>ODDS (¢)</th>
+                            <th>SHARES</th>
+                            <th>$ TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pBook">
+                        <tr>
+                            <td colspan="4">
+                                <div class="nodata">Load Polymarket URL</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="obp">
+                <div class="obh"><span class="obt b">REBEL777 RATES</span><span class="bdg bdg-b" id="bSt">NOT
+                        LOADED</span>
+                </div>
+                <div class="bhdr">
+                    <div class="bh bk">BACK</div>
+                    <div class="bh bk">BACK</div>
+                    <div class="bh bk">BACK★</div>
+                    <div class="bh lk">LAY★</div>
+                    <div class="bh lk">LAY</div>
+                    <div class="bh lk">LAY</div>
+                </div>
+                <div id="bBook">
+                    <div class="nodata">Paste Rebel777 match URL → START</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALCULATOR TAB -->
+    <div class="tc" id="tc-calc">
+        <div class="cw">
+            <div class="ctit">ARB CALCULATOR</div>
+
+            <!-- RATE INPUTS -->
+            <!-- RATE INPUTS -->
+            <div class="calc-panels">
+                <div class="calc-panel">
+                    <div class="cp-tit">POLYMARKET ASK <span
+                            style="text-transform:none;opacity:0.6;font-weight:400">(cheapest to buy)</span></div>
+                    <div class="cp-cols">
+                        <div class="cp-col">
+                            <label class="cp-lbl"><span id="cpL1">MUM</span> YES ASK</label>
+                            <input type="number" id="cP1" class="cp-input" value="2.18" step="0.01"
+                                oninput="recalc()" />
+                            <div class="cp-sub" id="cpS1"></div>
+                        </div>
+                        <div class="cp-col">
+                            <label class="cp-lbl"><span id="cpL2">KOL</span> YES ASK</label>
+                            <input type="number" id="cP2" class="cp-input" value="1.82" step="0.01"
+                                oninput="recalc()" />
+                            <div class="cp-sub" id="cpS2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="calc-panel">
+                    <div class="cp-tit">BHAV / BETFAIR LAY odds</div>
+                    <div class="cp-cols">
+                        <div class="cp-col">
+                            <label class="cp-lbl"><span id="cbL1">MUM</span> LAY</label>
+                            <input type="number" id="cB1" class="cp-input" value="2.00" step="0.01"
+                                oninput="recalc()" />
+                            <div class="cp-sub" id="cbS1"></div>
+                        </div>
+                        <div class="cp-col">
+                            <label class="cp-lbl"><span id="cbL2">KOL</span> LAY</label>
+                            <input type="number" id="cB2" class="cp-input" value="2.00" step="0.01"
+                                oninput="recalc()" />
+                            <div class="cp-sub" id="cbS2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- WALLET ALLOCATION -->
+            <div class="w-alloc">
+                <div class="wa-tit" style="display:flex;justify-content:space-between">
+                    <span>WALLET ALLOCATION <span style="text-transform:none;opacity:0.6">(best row ⭐)</span></span>
+                    <span class="wa-roi" id="waRoi">Guaranteed ROI: +0.00%</span>
+                </div>
+                <div class="wa-bar-wrap">
+                    <div class="wa-bhav" id="waBhav" style="width:0%"></div>
+                    <div class="wa-poly" id="waPoly" style="width:0%"></div>
+                    <div class="wa-free" id="waFree" style="width:100%"></div>
+                </div>
+                <div class="wa-leg">
+                    <div class="wa-leg-left">
+                        <div class="wa-item b">
+                            <div class="wa-dot"></div><span id="waBhavT">Bhav: ₹0 (0.0%)</span>
+                        </div>
+                        <div class="wa-item p">
+                            <div class="wa-dot"></div><span id="waPolyT">Poly: ₹0 = $0 (0.0%)</span>
+                        </div>
+                        <div class="wa-item f">
+                            <div class="wa-dot"></div><span id="waFreeT">Free: ₹100,000 (100.0%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTS TABLE -->
+            <div class="ow">
+                <table class="rt">
+                    <thead>
+                        <tr>
+                            <th colspan="6" class="rth-g rth-gw" id="btnBoth" onclick="setMode('both')"
+                                style="cursor:pointer; transition:0.2s; user-select:none">BOTH OUTCOMES</th>
+                            <th colspan="1" class="rth-g" id="btnM1" onclick="setMode('m1')"
+                                style="cursor:pointer; border-left:1px solid #1a2540; transition:0.2s; user-select:none">
+                                MUM WINS
+                            </th>
+                            <th colspan="3" class="rth-g" id="btnM2" onclick="setMode('m2')"
+                                style="cursor:pointer; border-left:1px solid #1a2540; transition:0.2s; user-select:none">
+                                KOL WINS
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="rth">BHAV WIN (₹)</th>
+                            <th class="rth">BHAV STAKE (₹)</th>
+                            <th class="rth">POLY STAKE ($)</th>
+                            <th class="rth">POLY SHARES</th>
+                            <th class="rth">DEPLOYED (₹)</th>
+                            <th class="rth">LEFTOVER (₹)</th>
+                            <th class="rth" id="thWin">IF MUM WINS</th>
+                            <th class="rth" id="thLose">IF MUM LOSES</th>
+                            <th class="rth" id="thMinP">MIN PROFIT</th>
+                            <th class="rth">ROI %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calcTb">
+                        <tr>
+                            <td colspan="10">
+                                <div class="nodata">Loading calculator...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHART TAB -->
+    <div class="tc" id="tc-chart">
+        <div class="chwrap">
+            <div class="ch-hdr">
+                <div style="font-family:sans-serif;font-size:14px;font-weight:700;color:var(--head)">ODDS HISTORY —
+                    Since Page Load</div>
+                <div class="ch-leg">
+                    <div class="ch-li">
+                        <div class="ch-dot" style="background:var(--p)"></div><span style="color:var(--txt2)">Poly
+                            YES</span>
+                    </div>
+                    <div class="ch-li">
+                        <div class="ch-dot" style="background:var(--lk)"></div><span style="color:var(--txt2)">Bhav
+                            LAY</span>
+                    </div>
+                    <div class="ch-li">
+                        <div class="ch-dot" style="background:var(--g)"></div><span style="color:var(--txt2)">Gap
+                            %</span>
+                    </div>
+                </div>
+            </div>
+            <canvas id="oddsChart"></canvas>
+            <div style="margin-top:8px;font-size:10px;color:var(--txt2);text-align:center" id="chartInfo">No data yet —
+                load rates to start tracking</div>
+        </div>
+    </div>
+
+    <footer>
+        <span>POLY×BHAV ARB v4</span>
+        <span>⚠ OBSERVATION ONLY — NOT FINANCIAL ADVICE</span>
+        <span id="ts">—</span>
+    </footer>
+
+    <script>
+        // ── STATE ──
+        let sl = 0, ncalls = 0, dir = 'both', rtmr = null;
+        let polyPrice = 2.00, bhavLay = 1.82;
+        let _polyPrices = [null, null];  // decimal odds for [team1, team2] on Polymarket
+        let chartData = { labels: [], poly: [], bhav: [], gap: [] };
+        let myChart = null;
+        let lastGap = 0;
+        const $ = id => document.getElementById(id);
+        const fmt = n => Math.round(n).toLocaleString('en-IN');
+        const fu = n => parseFloat(n).toFixed(2);
+        const inrR = () => parseFloat($('sInr').value) || 84;
+        const minGap = () => parseFloat($('sMinGap').value) || 2.0;
+        const t1 = () => $('sT1').value || 'Mumbai Indians';
+        const t2 = () => $('sT2').value || 'Kolkata Knight Riders';
+        const t1s = () => t1().split(' ')[0].toUpperCase();
+        const t2s = () => t2().split(' ')[0].toUpperCase();
+
+        // ── CLOCK ──
+        setInterval(() => { const t = new Date().toLocaleTimeString('en-IN'); $('ts').textContent = t; $('tsD').textContent = t; }, 1000);
+
+        // ── SETTINGS TOGGLE ──
+        function toggleStg() {
+            const b = $('stbd'), open = b.classList.contains('open');
+            b.classList.toggle('open', !open);
+            $('sarr').textContent = open ? '▲' : '▼';
+        }
+
+        // ── SETTINGS HANDLERS ──
+        function onMN() { const v = $('sMatch').value; $('mTitle').textContent = v; $('sbm').textContent = v; }
+        let calcMode = 'both';
+        function setMode(m) {
+            calcMode = m;
+            $('btnBoth').className = 'rth-g' + (m === 'both' ? ' rth-gw' : '');
+            $('btnM1').className = 'rth-g' + (m === 'm1' ? ' rth-gw' : '');
+            $('btnM2').className = 'rth-g' + (m === 'm2' ? ' rth-gw' : '');
+            recalc();
+        }
+        function updateSubtexts() {
+            if (!$('cP1')) return;
+            const p1 = parseFloat($('cP1').value), b1 = parseFloat($('cB1').value);
+            const p2 = parseFloat($('cP2').value), b2 = parseFloat($('cB2').value);
+            const u = (cp, cb, p, b) => {
+                const g = p - b;
+                if (g > 0) {
+                    $(cp).innerHTML = `<span class="cp-up">▲ +${g.toFixed(3)} vs Bhav LAY</span>`;
+                    $(cb).innerHTML = `<span class="cp-up">LAY &lt; Poly ✓</span>`;
+                } else {
+                    $(cp).innerHTML = `<span class="cp-dn">▼ ${g.toFixed(3)}</span>`;
+                    $(cb).innerHTML = `<span class="cp-dn">LAY &gt; Poly ✗</span>`;
+                }
+            };
+            if (p1 && b1) u('cpS1', 'cbS1', p1, b1);
+            if (p2 && b2) u('cpS2', 'cbS2', p2, b2);
+        }
+        function onT() {
+            const mName = t1s(), kName = t2s();
+            if ($('cpL1')) {
+                $('cpL1').textContent = mName; $('cpL2').textContent = kName;
+                $('cbL1').textContent = mName; $('cbL2').textContent = kName;
+                $('btnM1').textContent = mName + ' WINS';
+                $('btnM2').textContent = kName + ' WINS';
+            }
+            recalc();
+        }
+        function onCap() { const v = $('sCap').value; $('sbc').textContent = '₹' + fmt(parseFloat(v)); recalc(); }
+        function onStep() { recalc(); }
+        function onInr() { const v = $('sInr').value; $('inrD').textContent = '₹' + v; $('sbi').textContent = '₹' + v; recalc(); }
+        function onMG() { $('sbg').textContent = $('sMinGap').value + '%'; recalc(); }
+        function onRebelStake() {
+            const v = parseFloat($('sRebelStake').value) || 20000;
+            if ($('abRebelStake')) $('abRebelStake').textContent = '₹' + v.toLocaleString('en-IN');
+            updateArbBox();
+        }
+
+        // ── LIVE ARB BOX ──
+        // Called whenever poly or rebel odds update
+        function updateArbBox() {
+            const rebelStake = parseFloat($('sRebelStake')?.value) || 20000;
+            const inr = inrR();
+            const b = bhavLay;  // rebel best lay (always team that gives best gap)
+
+            // Check both poly teams vs rebel lay — show whichever has best arb
+            let bestP = null, bestTeam = null, bestTabIdx = null;
+            _polyPrices.forEach((p, i) => {
+                if (!p || p <= 1) return;
+                const gap = ((p - b) / b) * 100;
+                if (bestP === null || gap > ((_polyPrices[bestTabIdx] - b) / b * 100)) {
+                    bestP = p; bestTabIdx = i;
+                }
+            });
+
+            // Fall back to active tab price if no stored prices yet
+            if (bestP === null) bestP = polyPrice;
+
+            const p = bestP;
+            const arbPct = (p > 1 && b > 1) ? ((p - b) / b) * 100 : null;
+
+            // Team name — from stored names or settings
+            const teamName = _polyTeamNames[bestTabIdx ?? _polyActiveTab] || (bestTabIdx === 0 ? t1s() : t2s());
+            const rebelTeam = window._rebelTeam1 || teamName;
+
+            // Shares needed
+            const poly_inr = rebelStake * b / p;
+            const poly_usd = poly_inr / inr;
+            const shares = Math.round(poly_usd * p);
+            const cents = Math.round((1 / p) * 100);
+
+            // Highlight tab if best arb is on inactive tab
+            if (bestTabIdx !== null && bestTabIdx !== _polyActiveTab) {
+                document.querySelectorAll('.poly-tab').forEach((t, i) => {
+                    t.style.borderColor = i === bestTabIdx ? 'var(--g)' : '';
+                    t.style.color = i === bestTabIdx ? 'var(--g)' : '';
+                });
+            } else {
+                document.querySelectorAll('.poly-tab').forEach(t => { t.style.borderColor = ''; t.style.color = ''; });
+            }
+
+            if ($('abPolyTeam')) $('abPolyTeam').textContent = teamName + ' YES';
+            if ($('abRebelTeam')) $('abRebelTeam').textContent = rebelTeam + ' LAY';
+            if ($('abPolyShares')) $('abPolyShares').textContent = (p > 1) ? shares.toLocaleString() : '—';
+            if ($('abPolyCents')) $('abPolyCents').textContent = (p > 1) ? cents + '¢' : '—';
+            if ($('abRebelOdds')) $('abRebelOdds').textContent = (b > 1) ? b.toFixed(2) : '—';
+            if ($('abRebelStake')) $('abRebelStake').textContent = '₹' + rebelStake.toLocaleString('en-IN');
+
+            const pctEl = $('abPct'), lblEl = $('abPctLbl');
+            if (pctEl && arbPct !== null) {
+                const isArb = arbPct > 0;
+                pctEl.textContent = (isArb ? '+' : '') + arbPct.toFixed(1) + '%';
+                pctEl.className = 'arb-pct ' + (isArb ? 'arb-yes' : 'arb-no');
+                lblEl.textContent = isArb ? 'ARB ✓' : 'NO ARB';
+                lblEl.className = 'arb-pct-lbl ' + (isArb ? 'arb-yes' : 'arb-no');
+            }
+        }
+        function onRC() { const v = $('sRef').value; $('sbr').textContent = v === '0' ? 'Off' : v + 's'; startAR(); }
+
+        // ── TABS ──
+        function swTab(el, n) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+            document.querySelectorAll('.tc').forEach(t => t.classList.remove('on'));
+            el.classList.add('on'); $('tc-' + n).classList.add('on');
+        }
+
+        // ── DIRECTION ──
+        function setDir(d, btn) {
+            dir = d;
+            document.querySelectorAll('.dir-btn').forEach(b => b.classList.remove('on'));
+            btn.classList.add('on');
+            recalc();
+        }
+
+        // ── SLIPPAGE ──
+        function setSl(v, btn) {
+            sl = v;
+            document.querySelectorAll('.slbtn').forEach(b => b.classList.remove('on'));
+            btn.classList.add('on');
+            recalc();
+        }
+
+        // ── ARB LOGIC + NOTIFICATIONS ──
+        function checkArb(p, b, actArb) {
+            if (!p || !b) return;
+            const gap = p - b;
+            const gapPct = b > 0 ? (gap / b) * 100 : 0;
+            const tgt = actArb === 1 ? t1s() : t2s();
+            if (gapPct >= minGap()) {
+                if (lastGap < minGap()) triggerAlerts(p, b, gapPct, tgt);
+            } else {
+
+            }
+            lastGap = gapPct;
+        }
+
+        function triggerAlerts(p, b, gapPct, tgt) {
+            if ($('sSnd').value === '1') playBeep();
+            triggerFlash();
+            sendTelegram(p, b, gapPct, tgt);
+        }
+
+        function playBeep() {
+            try {
+                const ac = new (window.AudioContext || window.webkitAudioContext)();
+                if (!ac) return;
+                const osc = ac.createOscillator(), gain = ac.createGain();
+                osc.connect(gain); gain.connect(ac.destination);
+                osc.frequency.value = 880; osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ac.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.6);
+                osc.start(ac.currentTime); osc.stop(ac.currentTime + 0.6);
+            } catch (e) { }
+        }
+
+        function triggerFlash() {
+            const f = $('flashOv');
+            f.style.display = 'block'; f.style.animation = 'none';
+            requestAnimationFrame(() => { f.style.animation = 'flashFade .8s ease-out forwards'; });
+            setTimeout(() => f.style.display = 'none', 900);
+        }
+
+        async function sendTelegram(p, b, gapPct, tgt) {
+            const token = $('sTgToken').value.trim(), chat = $('sTgChat').value.trim();
+            if (!token || !chat) return;
+            const cap = parseFloat($('sCap').value) || 100000;
+            const step = parseFloat($('sStep').value) || 5000;
+            const inr = inrR();
+            let best = null;
+            for (let w = step; w <= cap * 3; w += step) {
+                const poly_inr = (w * b) / p;
+                const bs = w * (b - 1);
+                if (bs + poly_inr > cap) break;
+                best = { w, ps: poly_inr, pu: poly_inr / inr, bs };
+            }
+            if (!best) return;
+            const shares = Math.round(best.pu / (1 / p)).toLocaleString();
+            const prof = Math.max(0, best.ps * (p - 1) - best.bs);
+            const msg = `⚡ IPL ARB ALERT\n\nMatch: ${$('sMatch').value}\nProfit: +${gapPct.toFixed(2)}%\n\n📊 POLYMARKET\nBUY ${tgt} YES @ ${p.toFixed(3)}\nStake: $${fu(best.pu)} (₹${fmt(best.ps)})\nShares: ${shares}\n\n📈 BHAV\nLAY ${tgt} @ ${b.toFixed(3)}\nStake: ₹${fmt(best.bs)}\n\n✅ EQUAL PROFIT: +₹${fmt(prof)}\n⚙️ Capital: ₹${fmt(cap)} | INR: ${inr}`;
+            try {
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chat, text: msg, parse_mode: 'HTML' })
+                });
+            } catch (e) { }
+        }
+
+        function recalc() {
+            updateSubtexts();
+            const p1 = parseFloat($('cP1').value || 0), b1 = parseFloat($('cB1').value || 0);
+            const p2 = parseFloat($('cP2').value || 0), b2 = parseFloat($('cB2').value || 0);
+            const cap = parseFloat($('sCap').value) || 100000;
+            const step = parseFloat($('sStep').value) || 5000;
+            const inr = inrR();
+
+            let currArb = 1, p = p1, b = b1;
+            if (p2 && b2 && p1 && b1) {
+                if ((p2 - b2) > (p1 - b1)) { currArb = 2; p = p2; b = b2; }
+            } else if (p2 && b2) { currArb = 2; p = p2; b = b2; }
+
+            const mName = t1s(), kName = t2s();
+            if (currArb === 1) {
+                $('thWin').textContent = `IF ${mName} WINS`;
+                $('thLose').textContent = `IF ${kName} WINS`;
+            } else {
+                $('thWin').textContent = `IF ${kName} WINS`;
+                $('thLose').textContent = `IF ${mName} WINS`;
+            }
+            if ($('thMinP')) $('thMinP').textContent = calcMode === 'both' ? 'MIN PROFIT' : 'TARGET PROFIT';
+
+            if (!p || !b || !cap || !step || p <= 1) { $('calcTb').innerHTML = '<tr><td colspan="10"><div class="nodata">Capital too low or invalid odds</div></td></tr>'; return; }
+
+            polyPrice = p; bhavLay = b;
+            checkArb(p, b, currArb);
+            updateChart(p, b);
+            updateArbBox();
+
+            const rows = [];
+            for (let w = step; w <= cap * 3; w += step) {
+                let poly_inr, bs, profW, profL;
+
+                let targetMax = 'both';
+                if (calcMode === 'm1') targetMax = (currArb === 1) ? 'W' : 'L';
+                if (calcMode === 'm2') targetMax = (currArb === 1) ? 'L' : 'W';
+
+                if (targetMax === 'W') {
+                    poly_inr = w;
+                    bs = w * (b - 1);
+                    profW = w * (p - 1) - bs;
+                    profL = 0;
+                } else if (targetMax === 'L') {
+                    poly_inr = w * (b - 1) / (p - 1);
+                    bs = w * (b - 1);
+                    profW = 0;
+                    profL = w - poly_inr;
+                } else {
+                    poly_inr = (w * b) / p;
+                    bs = w * (b - 1);
+                    profW = poly_inr * (p - 1) - bs;
+                    profL = w - poly_inr;
+                }
+
+                const poly_usd = poly_inr / inr;
+                const dep = bs + poly_inr;
+                if (dep > cap) break;
+                const left = cap - dep;
+                const minProf = Math.min(profW, profL);
+                const tgtProf = calcMode === 'both' ? minProf : Math.max(profW, profL);
+                const roi = dep > 0 ? (tgtProf / dep) * 100 : 0;
+                const shares = Math.round(poly_usd * p);
+
+                rows.push({ w, bs, pu: poly_usd, ps: poly_inr, dep, left, profW, profL, min: minProf, tgtProf, roi, sh: shares });
+            }
+
+            renderCalc(rows, p, b, cap, inr);
+        }
+
+        function renderCalc(rows, p, b, cap, inr) {
+            const tb = $('calcTb');
+            if (!rows.length) { tb.innerHTML = '<tr><td colspan="10"><div class="nodata">Capital too low or invalid rates</div></td></tr>'; return; }
+
+            const profRows = rows.filter(r => r.tgtProf > 0);
+            const mx = profRows.length ? profRows[profRows.length - 1] : rows[rows.length - 1];
+            const sorted = [mx, ...rows.filter(r => r !== mx).reverse()];
+
+            const pf = v => v > 0 ? `<span class="pos">+₹${fmt(v)}</span>` : v < 0 ? `<span class="neg">-₹${fmt(Math.abs(v))}</span>` : `<span style="color:var(--txt2)">₹0</span>`;
+            const pfR = v => v > 0 ? `<span class="pos">+${v.toFixed(2)}%</span>` : `<span class="neg">${v.toFixed(2)}%</span>`;
+
+            let h = '';
+            sorted.forEach(r => {
+                const isMx = r === mx;
+                h += `<tr${isMx ? ' class="mx"' : ''}>
+      <td>₹${fmt(r.w)}${isMx ? ' ⭐' : ''}</td>
+      <td class="hl">₹${fmt(r.bs)}</td>
+      <td class="hl">$${fu(r.pu)}</td>
+      <td style="color:var(--txt2)">${r.sh.toLocaleString()}</td>
+      <td>₹${fmt(r.dep)}</td>
+      <td style="color:var(--txt2)">₹${fmt(r.left)}</td>
+      <td>${pf(r.profW)}</td>
+      <td>${pf(r.profL)}</td>
+      <td>${pf(r.tgtProf)}</td>
+      <td>${pfR(r.roi)}</td>
+    </tr>`;
+            });
+            tb.innerHTML = h;
+
+            let pctBhav = (mx.bs / cap) * 100;
+            let pctPoly = (mx.ps / cap) * 100;
+            let pctFree = (mx.left / cap) * 100;
+            if (pctBhav < 0) pctBhav = 0; if (pctPoly < 0) pctPoly = 0; if (pctFree < 0) pctFree = 0;
+
+            if ($('waBhav')) {
+                $('waBhav').style.width = pctBhav + '%';
+                $('waPoly').style.width = pctPoly + '%';
+                $('waFree').style.width = pctFree + '%';
+                $('waBhavT').innerHTML = `Bhav: ₹${fmt(mx.bs)} (${pctBhav.toFixed(1)}%)`;
+                $('waPolyT').innerHTML = `Poly: ₹${fmt(mx.ps)} = $${fu(mx.pu)} (${pctPoly.toFixed(1)}%)`;
+                $('waFreeT').innerHTML = `Free: ₹${fmt(mx.left)} (${pctFree.toFixed(1)}%)`;
+                $('waRoi').innerHTML = mx.roi > 0 ? `Guaranteed ROI: +${mx.roi.toFixed(2)}%` : `Loss ROI: ${mx.roi.toFixed(2)}%`;
+                $('waRoi').style.color = mx.roi > 0 ? 'var(--y)' : 'var(--r)';
+            }
+        }
+
+        // ── CHART ──
+        function initChart() {
+            const ctx = $('oddsChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        { label: 'Poly YES', data: chartData.poly, borderColor: '#9b95ff', backgroundColor: 'rgba(155,149,255,.08)', tension: .3, pointRadius: 2, borderWidth: 2 },
+                        { label: 'Bhav LAY', data: chartData.bhav, borderColor: '#ff7099', backgroundColor: 'rgba(255,112,153,.08)', tension: .3, pointRadius: 2, borderWidth: 2 },
+                        { label: 'Gap %', data: chartData.gap, borderColor: '#00d47e', backgroundColor: 'rgba(0,212,126,.08)', tension: .3, pointRadius: 2, borderWidth: 2, yAxisID: 'y2' }
+                    ]
+                },
+                options: {
+                    responsive: true, animation: { duration: 300 },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#4a5a72', font: { size: 9 }, maxTicksLimit: 8 }, grid: { color: 'rgba(26,37,64,.5)' } },
+                        y: { ticks: { color: '#4a5a72', font: { size: 9 } }, grid: { color: 'rgba(26,37,64,.5)' }, title: { display: true, text: 'Odds', color: '#4a5a72', font: { size: 9 } } },
+                        y2: { position: 'right', ticks: { color: '#00d47e', font: { size: 9 } }, grid: { display: false }, title: { display: true, text: 'Gap %', color: '#00d47e', font: { size: 9 } } }
+                    }
+                }
+            });
+        }
+
+        function updateChart(p, b) {
+            const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const gapPct = b > 0 ? ((p - b) / b) * 100 : 0;
+            chartData.labels.push(now);
+            chartData.poly.push(parseFloat(p.toFixed(3)));
+            chartData.bhav.push(parseFloat(b.toFixed(3)));
+            chartData.gap.push(parseFloat(gapPct.toFixed(2)));
+            // Keep last 60 points
+            if (chartData.labels.length > 60) { chartData.labels.shift(); chartData.poly.shift(); chartData.bhav.shift(); chartData.gap.shift(); }
+            if (myChart) { myChart.update('none'); }
+            const pts = chartData.labels.length;
+            $('chartInfo').textContent = `${pts} data points · Poly range: ${Math.min(...chartData.poly).toFixed(3)}–${Math.max(...chartData.poly).toFixed(3)} · Bhav range: ${Math.min(...chartData.bhav).toFixed(3)}–${Math.max(...chartData.bhav).toFixed(3)}`;
+        }
+
+        // ── FETCH COUNTER ──
+        function incNC() { ncalls++; $('ncall').textContent = ncalls; $('ncall2').textContent = ncalls; }
+
+        // ── POLY TAB SWITCH ──
+        async function switchPolyTab(idx) {
+            _polyActiveTab = idx;
+            _polyTokenId = _polyTokenIds[idx];
+            _polyBook = { asks: {}, bids: {} };  // reset book on tab switch
+            _lastBestAskC = null;
+            _pBookRows = [];  // reset DOM diff cache so full rebuild happens cleanly
+            // Update tab UI
+            document.querySelectorAll('.poly-tab').forEach((t, i) => t.classList.toggle('on', i === idx));
+            if (!_polyTokenId) return;
+            // Fetch new orderbook
+            setSt('pSt', 'LOADING...', 'bdg-w');
+            // Close old WS
+            if (polyWs) { polyWs.close(); polyWs = null; }
+            try {
+                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
+                if (d.bids || d.asks) renderP(d);
+                // Reconnect WS for new token
+                polyWs = new WebSocket('wss://ws-subscriptions-clob.polymarket.com/ws/market');
+                polyWs.onopen = () => {
+                    polyWs.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: _polyTokenId }));
+                    setSt('pSt', 'LIVE ✓', 'bdg-ok');
+                };
+                polyWs.onmessage = (msg) => {
+                    try {
+                        const data = JSON.parse(msg.data);
+                        // WS sends partial updates — merge into full book
+                        if (data.asks) data.asks.forEach(a => {
+                            const p = parseFloat(a.price), sz = parseFloat(a.size);
+                            if (sz === 0) delete _polyBook.asks[p];
+                            else _polyBook.asks[p] = sz;
+                        });
+                        if (data.bids) data.bids.forEach(b => {
+                            const p = parseFloat(b.price), sz = parseFloat(b.size);
+                            if (sz === 0) delete _polyBook.bids[p];
+                            else _polyBook.bids[p] = sz;
+                        });
+                        if (data.asks || data.bids) {
+                            const merged = {
+                                asks: Object.entries(_polyBook.asks).map(([p, sz]) => ({ price: p, size: sz })),
+                                bids: Object.entries(_polyBook.bids).map(([p, sz]) => ({ price: p, size: sz })),
+                                last_trade_price: data.last_trade_price || data.last,
+                                volume: data.volume
+                            };
+                            renderP(merged);
+                        }
+                    } catch { }
+                };
+                polyWs.onerror = () => setSt('pSt', 'WS ERR', 'bdg-w');
+                polyWs.onclose = () => { setSt('pSt', 'DISCONNECTED', 'bdg-r'); };
+            } catch (e) { setSt('pSt', 'ERR', 'bdg-r'); }
+        }
+
+        // ── FETCH POLYMARKET ──
+        let polyWs = null;
+        let _wsHeartbeatTimer = null;
+        let _wsReconnectTimer = null;
+
+        function connectPolyWs() {
+            if (!_polyTokenId) return;
+            if (polyWs && polyWs.readyState < 2) { polyWs.close(); }
+            if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
+            if (_wsReconnectTimer) { clearTimeout(_wsReconnectTimer); _wsReconnectTimer = null; }
+
+            polyWs = new WebSocket('wss://ws-subscriptions-clob.polymarket.com/ws/market');
+
+            polyWs.onopen = () => {
+                polyWs.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: _polyTokenId }));
+                setSt('pSt', 'LIVE ✓', 'bdg-ok');
+                // Heartbeat every 10s — keeps connection alive, prevents timeout drops
+                _wsHeartbeatTimer = setInterval(() => {
+                    if (polyWs && polyWs.readyState === WebSocket.OPEN) {
+                        try { polyWs.send(JSON.stringify({ type: 'ping' })); } catch { }
+                    }
+                }, 10000);
+            };
+
+            polyWs.onmessage = (msg) => {
+                try {
+                    const data = JSON.parse(msg.data);
+                    if (data.type === 'pong' || data.type === 'ping') return; // ignore heartbeat
+                    // Merge partial updates into full book
+                    if (data.asks) data.asks.forEach(a => {
+                        const p = parseFloat(a.price), sz = parseFloat(a.size);
+                        if (sz === 0) delete _polyBook.asks[p]; else _polyBook.asks[p] = sz;
+                    });
+                    if (data.bids) data.bids.forEach(b => {
+                        const p = parseFloat(b.price), sz = parseFloat(b.size);
+                        if (sz === 0) delete _polyBook.bids[p]; else _polyBook.bids[p] = sz;
+                    });
+                    if (data.asks || data.bids) {
+                        renderP({
+                            asks: Object.entries(_polyBook.asks).map(([p, sz]) => ({ price: p, size: sz })),
+                            bids: Object.entries(_polyBook.bids).map(([p, sz]) => ({ price: p, size: sz })),
+                            last_trade_price: data.last_trade_price || data.last,
+                            volume: data.volume,
+                        });
+                    }
+                } catch { }
+            };
+
+            polyWs.onerror = () => setSt('pSt', 'WS ERR', 'bdg-w');
+
+            polyWs.onclose = () => {
+                if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
+                setSt('pSt', 'RECONNECTING...', 'bdg-w');
+                // Auto-reconnect after 2s — never fall back to HTTP poll (floods Worker)
+                _wsReconnectTimer = setTimeout(connectPolyWs, 2000);
+            };
+        }
+        let _polyTokenId = null;
+        let _polyBook = { asks: {}, bids: {} };  // keyed by cents price, merged incrementally
+        let _lastBestAskC = null;
+        let _polyTokenIds = [null, null];   // [team1, team2]
+        let _polyActiveTab = 0;             // 0 = team1, 1 = team2
+        let _polyTeamNames = ['—', '—'];
+
+        // Fetch via proxy.js /poly-fetch — uses headless Chrome TLS fingerprint, instant, no relay
+        async function polyFetch(targetUrl) {
+            const r = await fetch(`http://localhost:3000/poly-fetch?url=${encodeURIComponent(targetUrl)}`, { signal: AbortSignal.timeout(20000) });
+            if (!r.ok) throw new Error(`poly-fetch ${r.status}`);
+            return await r.json();
+        }
+
+        async function fetchPoly() {
+            let url = $('sPolyUrl').value.trim();
+            if (!url) { demoP(); return; }
+            setSt('pSt', 'LOADING...', 'bdg-w'); incNC();
+
+            const slug = url.includes('polymarket.com') ? url.split('/').filter(Boolean).pop().split('?')[0] : url.trim();
+
+            try {
+                // Step 1: Resolve slug → token ID
+                setSt('pSt', 'RESOLVING...', 'bdg-w');
+                const events = await polyFetch(`https://gamma-api.polymarket.com/events?slug=${slug}`);
+                if (!events || !events[0]) throw new Error('No event found for slug: ' + slug);
+
+                const ev = events[0];
+                const market = ev.markets[0];
+                const tokenIds = JSON.parse(market.clobTokenIds);
+                _polyTokenIds = [tokenIds[0], tokenIds[1] || tokenIds[0]];
+                _polyTokenId = _polyTokenIds[_polyActiveTab];
+
+                // Extract team names from market outcomes or use settings
+                try {
+                    const outcomes = JSON.parse(market.outcomes || '[]');
+                    _polyTeamNames = [outcomes[0] || t1s(), outcomes[1] || t2s()];
+                } catch { _polyTeamNames = [t1s(), t2s()]; }
+                // Update tab labels
+                if ($('polyTab0')) $('polyTab0').textContent = _polyTeamNames[0];
+                if ($('polyTab1')) $('polyTab1').textContent = _polyTeamNames[1];
+
+                // Step 2: Initial orderbook snapshot
+                _polyBook = { asks: {}, bids: {} };  // reset on fresh load
+                _lastBestAskC = null;
+                setSt('pSt', 'LOADING BOOK...', 'bdg-w');
+                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
+                if (d.bids || d.asks) renderP(d);
+
+                // Step 3: Close old WebSocket
+                if (polyWs) { polyWs.close(); polyWs = null; }
+
+                // Step 4: Live WebSocket with heartbeat + auto-reconnect
+                setSt('pSt', 'CONNECTING WS...', 'bdg-w');
+                connectPolyWs();
+
+            } catch (e) {
+                setSt('pSt', 'ERR', 'bdg-r');
+                $('pBook').innerHTML = `<tr><td colspan="4"><div class="nodata" style="color:var(--r)">
+                    ⚠️ ${e.message}<br>
+                    <span style="font-size:10px;color:var(--txt2)">slug: <b style="color:var(--y)">${slug}</b></span>
+                </div></td></tr>`;
+            }
+        }
+
+        async function polyPollLoop() {
+            // Single snapshot only — called once on WS drop, then WS reconnects
+            // Never loop — that floods the Cloudflare Worker
+            if (!_polyTokenId) return;
+            try {
+                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
+                if (d.bids || d.asks) { renderP(d); setSt('pSt', 'SNAPSHOT ✓', 'bdg-w'); }
+            } catch { }
+            // No setTimeout here — WS reconnect handles continuity
+        }
+
+        function demoP() {
+            renderP({
+                asks: [{ price: '2.00', size: '2643.99' }, { price: '1.92', size: '124.61' }, { price: '1.85', size: '200' }, { price: '1.79', size: '264' }],
+                bids: [{ price: '2.08', size: '904.49' }, { price: '2.13', size: '87' }, { price: '2.17', size: '10' }, { price: '2.22', size: '30' }],
+                last: '1.96', spread: '2¢', volume: '$208K'
+            });
+            setSt('pSt', 'DEMO', 'bdg-w'); $('cP1').value = '2.00'; recalc();
+        }
+
+        // ── POLYMARKET ORDERBOOK RENDERER (no-flicker DOM diff) ──
+        // Builds a row signature array, compares to existing DOM rows,
+        // only patches cells that actually changed — zero full redraws.
+        let _pBookRows = [];  // last rendered row signatures
+
+        function renderP(d) {
+            const rawAsks = (d.asks || []).map(a => ({ c: parseFloat(a.price), sz: parseFloat(a.size) }));
+            const rawBids = (d.bids || []).map(b => ({ c: parseFloat(b.price), sz: parseFloat(b.size) }));
+
+            const asks = [...rawAsks].sort((a, b) => a.c - b.c).slice(0, 5);
+            const bids = [...rawBids].sort((a, b) => b.c - a.c).slice(0, 5);
+            const toOdds = c => c > 0 ? 1 / c : 0;
+
+            const lastC = parseFloat(d.last_trade_price || d.last || 0);
+            const lastOdds = lastC > 0 ? toOdds(lastC).toFixed(2) : '—';
+            const lastCents = lastC > 0 ? Math.round(lastC * 100) + '¢' : '—';
+            const bestAskC = asks[0]?.c, bestBidC = bids[0]?.c;
+            const spread = bestAskC && bestBidC ? Math.round((bestAskC - bestBidC) * 100) + '¢' : '—';
+
+            // Build row descriptors: [type, odds, cents, shares, total]
+            const newRows = [];
+            [...asks].reverse().forEach(a => newRows.push({
+                type: 'ask', cls: 'ask',
+                col1: `<span style="color:var(--r);font-size:9px;background:rgba(255,58,94,.1);padding:1px 4px;border-radius:2px">ASK</span>`,
+                col2: `${toOdds(a.c).toFixed(2)} <span style="font-size:9px;color:var(--txt2)">(${Math.round(a.c * 100)}¢)</span>`,
+                col3: a.sz.toLocaleString() + ' sh',
+                col4: '$' + (a.c * a.sz).toFixed(0),
+                key: 'ask-' + Math.round(a.c * 100)
+            }));
+            newRows.push({
+                type: 'spr', cls: 'spr',
+                col1: `LAST: ${lastOdds} (${lastCents}) · SPREAD: ${spread} · VOL: ${d.volume || '—'}`,
+                key: 'spr'
+            });
+            bids.forEach(b => newRows.push({
+                type: 'bid', cls: 'bid',
+                col1: `<span style="color:var(--g);font-size:9px;background:rgba(0,212,126,.1);padding:1px 4px;border-radius:2px">BID</span>`,
+                col2: `${toOdds(b.c).toFixed(2)} <span style="font-size:9px;color:var(--txt2)">(${Math.round(b.c * 100)}¢)</span>`,
+                col3: b.sz.toLocaleString() + ' sh',
+                col4: '$' + (b.c * b.sz).toFixed(0),
+                key: 'bid-' + Math.round(b.c * 100)
+            }));
+
+            const tb = $('pBook');
+
+            // If row count or structure changed, full rebuild (only on book shape change)
+            const keysMatch = _pBookRows.length === newRows.length &&
+                _pBookRows.every((r, i) => r.key === newRows[i].key);
+
+            if (!keysMatch) {
+                // Full rebuild — rows added/removed/reordered
+                let h = '';
+                newRows.forEach(r => {
+                    if (r.type === 'spr') {
+                        h += `<tr class="spr"><td colspan="4">${r.col1}</td></tr>`;
+                    } else {
+                        h += `<tr class="${r.cls}"><td>${r.col1}</td><td class="pr">${r.col2}</td><td>${r.col3}</td><td>${r.col4}</td></tr>`;
+                    }
+                });
+                tb.innerHTML = h;
+            } else {
+                // Patch only changed cells — no DOM replacement = zero flicker
+                const rows = tb.querySelectorAll('tr');
+                newRows.forEach((r, i) => {
+                    const prev = _pBookRows[i];
+                    const tr = rows[i];
+                    if (!tr) return;
+                    if (r.type === 'spr') {
+                        if (r.col1 !== prev.col1) tr.cells[0].innerHTML = r.col1;
+                    } else {
+                        if (r.col2 !== prev.col2) tr.cells[1].innerHTML = r.col2;  // odds+cents
+                        if (r.col3 !== prev.col3) tr.cells[2].textContent = r.col3; // shares (text only)
+                        if (r.col4 !== prev.col4) tr.cells[3].textContent = r.col4; // total (text only)
+                    }
+                });
+            }
+            _pBookRows = newRows;
+
+            // Meta row — simple text, no flicker risk
+            $('pLast').textContent = lastOdds + ' (' + lastCents + ')';
+            $('pSprd').textContent = spread;
+            $('pVol').textContent = d.volume || '—';
+
+            // Only recalc if best ask moved ≥1¢
+            if (bestAskC) {
+                const bestOdds = toOdds(bestAskC);
+                $('mumO').textContent = bestOdds.toFixed(2);
+                // Store per-team price for cross-team arb detection
+                _polyPrices[_polyActiveTab] = bestOdds;
+                if (_lastBestAskC === null || Math.abs(bestAskC - _lastBestAskC) >= 0.01) {
+                    _lastBestAskC = bestAskC;
+                    $('cP1').value = bestOdds.toFixed(3);
+                    polyPrice = bestOdds;
+                    recalc(); updateArbBox();
+                }
+            }
+        }
+        function renderPM(m) {
+            const y = parseFloat(m.outcomePrices?.[1] || 0.5);
+            renderP({ asks: [{ price: (1 / y).toFixed(3), size: '1000' }], bids: [{ price: ((1 / y) + 0.05).toFixed(3), size: '800' }], last: (1 / y).toFixed(3), spread: '1¢', volume: m.volume ? `$${(m.volume / 1000).toFixed(0)}K` : '—' });
+        }
+
+        // ── REBEL777 WebSocket CLIENT ──
+        let rebelWs = null;
+        let rebelWsActive = false;
+
+        function onRebel777UrlChange() { } // placeholder
+
+        function fetchRebel777() {
+            const url = $('sRebel777Url').value.trim();
+            if (!url) { alert('Enter a rebel777 match URL first'); return; }
+
+            // Tell proxy to start scraping this URL
+            fetch(`http://localhost:3000/start-rebel777?url=${encodeURIComponent(url)}`)
+                .catch(() => {
+                    setSt('bSt', 'PROXY DOWN', 'bdg-r');
+                    $('bBook').innerHTML = `<div class="nodata" style="color:var(--r)">⚠️ proxy.js not running<br><span style="font-size:10px;color:var(--txt2)">Run: <b style="color:var(--y)">node proxy.js</b></span></div>`;
+                });
+
+            // Connect WebSocket if not already connected
+            if (rebelWs && rebelWs.readyState < 2) return; // already open/connecting
+            connectRebelWs();
+        }
+
+        function connectRebelWs() {
+            setSt('bSt', 'CONNECTING...', 'bdg-w');
+            try {
+                rebelWs = new WebSocket('ws://localhost:3000');
+            } catch (e) {
+                setSt('bSt', 'WS ERROR', 'bdg-r'); return;
+            }
+
+            rebelWs.onopen = () => {
+                rebelWsActive = true;
+                setSt('bSt', 'LOADING...', 'bdg-w');
+                $('bBook').innerHTML = `<div class="nodata" style="color:var(--y)">⏳ Opening rebel777 page (first load ~6s)...</div>`;
+                console.log('[WS] Connected to proxy');
+            };
+
+            rebelWs.onmessage = (e) => {
+                try {
+                    const msg = JSON.parse(e.data);
+                    if (msg.type === 'odds') {
+                        renderB(msg.data);
+                        setSt('bSt', 'REBEL LIVE ✓', 'bdg-ok');
+                        incNC();
+                    } else if (msg.type === 'status') {
+                        setSt('bSt', msg.state === 'ready' ? 'REBEL LIVE ✓' : 'LOADING...', msg.state === 'ready' ? 'bdg-ok' : 'bdg-w');
+                        if (msg.state === 'ready') $('bBook').innerHTML = `<div class="nodata" style="color:var(--g)">✓ Connected — waiting for first odds...</div>`;
+                    } else if (msg.type === 'error') {
+                        setSt('bSt', 'ERR', 'bdg-r');
+                        $('bBook').innerHTML = `<div class="nodata" style="color:var(--r)">⚠️ ${msg.msg}</div>`;
+                    }
+                    // ping = heartbeat, ignore
+                } catch (err) { }
+            };
+
+            rebelWs.onerror = () => { setSt('bSt', 'WS ERR', 'bdg-r'); rebelWsActive = false; };
+
+            rebelWs.onclose = () => {
+                rebelWsActive = false;
+                setSt('bSt', 'DISCONNECTED', 'bdg-w');
+                // Auto-reconnect after 3s if URL still set
+                if ($('sRebel777Url').value.trim()) {
+                    setTimeout(connectRebelWs, 3000);
+                }
+            };
+        }
+
+        function stopRebel777() {
+            fetch('http://localhost:3000/stop-rebel777').catch(() => { });
+            if (rebelWs) rebelWs.close();
+            setSt('bSt', 'STOPPED', 'bdg-w');
+        }
+
+        // ── FETCH BHAV ──
+        async function fetchBhav() {
+            const url = $('sBhavUrl').value.trim();
+            if (!url) { demoB(); return; }
+            setSt('bSt', 'LOADING...', 'bdg-w'); incNC();
+            // Route through local proxy to avoid CORS block
+            const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 10000);
+            try {
+                const r = await fetch(proxyUrl, { signal: controller.signal });
+                clearTimeout(timer);
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                const d = await r.json();
+                if (d.error) throw new Error(d.error);
+                renderB(d); setSt('bSt', 'LIVE ✓', 'bdg-ok');
+            } catch (e) {
+                clearTimeout(timer);
+                const isProxyDown = e.name === 'AbortError' ||
+                    (e instanceof TypeError && (
+                        e.message.toLowerCase().includes('failed to fetch') ||
+                        e.message.toLowerCase().includes('networkerror') ||
+                        e.message.toLowerCase().includes('load failed') ||
+                        e.message.toLowerCase().includes('connection refused')
+                    ));
+                setSt('bSt', isProxyDown ? 'PROXY DOWN' : 'ERR', 'bdg-r');
+                $('bBook').innerHTML = `<tr><td colspan="4" style="color:var(--r);padding:10px;text-align:center;font-size:11px">
+                    ⚠️ ${isProxyDown ? 'proxy.js not running — start it first' : e.message}<br>
+                    <span style="color:var(--txt2);font-size:10px">Run: <b style="color:var(--y)">node proxy.js</b> in the same folder, then refresh</span><br><br>
+                    <button onclick="demoB()" style="margin-top:6px;background:var(--s2);color:var(--txt2);border:1px solid var(--bd2);padding:4px 12px;border-radius:3px;cursor:pointer;font-family:monospace;font-size:10px">USE DEMO</button>
+                </td></tr>`;
+            }
+        }
+
+        function loadManualJson() {
+            try {
+                const raw = document.getElementById('manualJson')?.value.trim();
+                if (!raw) return;
+                const d = JSON.parse(raw);
+                renderB(d); setSt('bSt', 'MANUAL ✓', 'bdg-ok');
+            } catch (e) { alert('Invalid JSON: ' + e.message); }
+        }
+
+        function demoB() {
+            renderB({
+                runners: [
+                    { name: t1(), back: [{ odds: 2.16, size: 11394 }, { odds: 2.18, size: 17660 }, { odds: 2.20, size: 40718 }], lay: [{ odds: 2.24, size: 26933 }, { odds: 2.26, size: 16449 }, { odds: 2.28, size: 12005 }] },
+                    { name: t2(), back: [{ odds: 1.79, size: 15108 }, { odds: 1.80, size: 21108 }, { odds: 1.81, size: 32611 }], lay: [{ odds: 1.82, size: 26228 }, { odds: 1.83, size: 21732 }, { odds: 1.84, size: 21083 }] }
+                ]
+            });
+            setSt('bSt', 'DEMO', 'bdg-w'); $('cB1').value = '1.82'; recalc();
+        }
+
+        function renderB(d) {
+            // Support: { result: [...] } with mtype=MATCH_ODDS  ← your bhav API format
+            let runners = [];
+            if (d.result && Array.isArray(d.result)) {
+                const matchOdds = d.result.find(m => m.mtype === 'MATCH_ODDS' || m.name === 'Match Odds');
+                if (matchOdds && matchOdds.runners) runners = matchOdds.runners;
+            }
+            // Fallbacks for other formats
+            if (!runners.length) runners = d.runners || d.markets?.[0]?.runners || [];
+            if (!runners.length && d.team1) runners = [{ name: d.team1.name, back: d.team1.back, lay: d.team1.lay }, { name: d.team2.name, back: d.team2.back, lay: d.team2.lay }];
+            let h = '';
+            runners.forEach((runner, ri) => {
+                const isT1 = ri === 0, cls = isT1 ? 'm' : 'k';
+                const bk = (runner.back || runner.availableToBack || []).slice(0, 3);
+                const lk = (runner.lay || runner.availableToLay || []).slice(0, 3);
+                const bestLay = lk[0] ? parseFloat(lk[0].odds || lk[0].price) : null;
+                const bestBack = bk[0] ? parseFloat(bk[0].odds || bk[0].price) : null;
+                // Store per-runner best odds for arb selection
+                if (isT1) {
+                    if (bestBack) $('mumO').textContent = bestBack.toFixed(3);
+                    window._r0Lay = bestLay;
+                } else {
+                    window._r1Lay = bestLay;
+                }
+                let cells = '';
+                for (let i = 0; i < 3; i++) {
+                    const c = bk[i];
+                    cells += c ? `<div class="bc bk${i === 2 ? ' bbk' : ''}"><div class="bo">${parseFloat(c.odds || c.price).toFixed(2)}</div><div class="bl">${(parseInt(c.size) || 0) >= 50000 ? '50K+' : (parseInt(c.size) || 0).toLocaleString()}</div></div>` : `<div class="bc bk"><div class="bo" style="color:var(--bd)">—</div></div>`;
+                }
+                for (let i = 0; i < 3; i++) {
+                    const c = lk[i];
+                    cells += c ? `<div class="bc lk${i === 0 ? ' blk' : ''}"><div class="bo">${parseFloat(c.odds || c.price).toFixed(2)}</div><div class="bl">${(parseInt(c.size) || 0) >= 50000 ? '50K+' : (parseInt(c.size) || 0).toLocaleString()}</div></div>` : `<div class="bc lk"><div class="bo" style="color:var(--bd)">—</div></div>`;
+                }
+                h += `<div class="brow"><div class="brh"><span class="btn ${cls}">${runner.name}</span><span style="font-size:9px;color:var(--txt2)">LAY★: <span style="color:var(--lk)">${bestLay ? bestLay.toFixed(2) : '—'}</span></span></div><div class="bcells">${cells}</div></div>`;
+            });
+            $('bBook').innerHTML = h;
+            // Store team1 name for arb box
+            if (runners.length > 0) window._rebelTeam1 = runners[0].name.split(' ')[0].toUpperCase();
+
+            // Pick the runner whose lay gives the best arb gap vs polyPrice
+            // Lower lay odds = better lay for the layer
+            const lay0 = window._r0Lay, lay1 = window._r1Lay;
+            let bestLay = null, bestTeamName = null;
+            if (lay0 && lay1) {
+                const gap0 = polyPrice - lay0, gap1 = polyPrice - lay1;
+                if (gap0 >= gap1) { bestLay = lay0; bestTeamName = runners[0]?.name?.split(' ')[0]?.toUpperCase(); }
+                else { bestLay = lay1; bestTeamName = runners[1]?.name?.split(' ')[0]?.toUpperCase(); }
+            } else if (lay1) {
+                bestLay = lay1; bestTeamName = runners[1]?.name?.split(' ')[0]?.toUpperCase();
+            } else if (lay0) {
+                bestLay = lay0; bestTeamName = runners[0]?.name?.split(' ')[0]?.toUpperCase();
+            }
+            if (bestLay) {
+                bhavLay = bestLay;
+                $('kolO').textContent = bestLay.toFixed(3);
+                $('cB1').value = bestLay.toFixed(3);
+                if (bestTeamName) window._rebelTeam1 = bestTeamName;
+            }
+            recalc();
+            updateArbBox();
+        }
+
+        function setSt(id, t, c) { $(id).textContent = t; $(id).className = 'bdg ' + c; }
+
+        // ── AUTO REFRESH ──
+        function startAR() {
+            if (rtmr) clearInterval(rtmr);
+            const s = parseInt($('sRef').value);
+            if (!s) {
+                // Refresh turned off — tell proxy to use a sensible default
+                fetch('http://localhost:3000/set-interval?ms=4000').catch(() => { });
+                return;
+            }
+            const ms = s * 1000;
+            // Sync proxy poll rate with UI refresh setting
+            fetch('http://localhost:3000/set-interval?ms=' + ms).catch(() => { });
+            // Polymarket still needs its own UI-side timer (direct API call)
+            rtmr = setInterval(() => {
+                if ($('sPolyUrl').value.trim()) fetchPoly();
+                // rebel777 is handled entirely by proxy poll loop — no fetchRebel777() here
+            }, ms);
+        }
+
+        function refreshAll() {
+            if ($('sPolyUrl').value.trim()) fetchPoly(); else demoP();
+            if ($('sRebel777Url').value.trim()) fetchRebel777(); else demoB();
+        }
+
+        // ── INIT ──
+        window.onload = () => {
+            initChart();
+            onT(); // set initial team labels
+            recalc();
+            demoP();
+            demoB();
+            startAR();
+        };
+    </script>
+</body>
+
+</html>
