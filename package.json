@@ -1,4 +1,10 @@
 {
+  "name": "ipl-arb-proxy",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node proxy.js",
+    "postinstall": "npx playwright install chromium"
+  },
   "dependencies": {
     "playwright": "^1.59.0",
     "ws": "^8.20.0"
