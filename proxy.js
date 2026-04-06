@@ -17,9 +17,10 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = 3000;
-let SCRAPE_INTERVAL = 1000;
+let SCRAPE_INTERVAL = 500;
 const RENDER_WAIT_MS = 20000;
 const SESSION_FILE = path.join(__dirname, 'rebel777-session.json');
+const USER_DATA_DIR = path.join(__dirname, 'rebel777-profile');
 const LOGIN_ORIGIN = 'https://rebel777.co';
 
 // ─────────────────────────────────────────────────────────
@@ -36,8 +37,8 @@ catch { console.error('[FATAL] Run: npm install playwright && npx playwright ins
 // ─────────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────────
-let browser = null;   // headless scraping browser
-let loginBrowser = null;   // visible login browser (temporary)
+let browser = null;   // headless persistent browser context
+let loginBrowser = null;   // visible persistent browser context (temporary)
 let loginPage = null;
 let page = null;
 let currentUrl = '';
@@ -84,10 +85,15 @@ function loadSessionOptions() {
 async function startLogin(res) {
     // Close any existing login browser
     if (loginBrowser) { await loginBrowser.close().catch(() => { }); loginBrowser = null; loginPage = null; }
+    if (browser) { await browser.close().catch(() => { }); browser = null; page = null; }
 
     log('LOGIN', 'Opening visible browser for manual login...');
-    loginBrowser = await playwright.chromium.launch({
+    loginBrowser = await playwright.chromium.launchPersistentContext(USER_DATA_DIR, {
         headless: false,
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        viewport: { width: 1280, height: 800 },
+        locale: 'en-IN',
+        timezoneId: 'Asia/Kolkata',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -96,18 +102,11 @@ async function startLogin(res) {
         ignoreDefaultArgs: ['--enable-automation'],
     });
 
-    const ctx = await loginBrowser.newContext({
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        viewport: { width: 1280, height: 800 },
-        locale: 'en-IN',
-        timezoneId: 'Asia/Kolkata',
-    });
-
-    await ctx.addInitScript(() => {
+    await loginBrowser.addInitScript(() => {
         Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
     });
 
-    loginPage = await ctx.newPage();
+    loginPage = loginBrowser.pages()[0] || await loginBrowser.newPage();
     await loginPage.goto(LOGIN_ORIGIN, { waitUntil: 'domcontentloaded', timeout: 20000 });
 
     log('LOGIN', 'Browser opened — log in, then visit http://localhost:3000/save-session');
@@ -154,12 +153,11 @@ async function saveSessionAndClose(res) {
             `);
         }
 
-        // Close login browser after short delay
-        setTimeout(async () => {
-            await loginBrowser.close().catch(() => { });
-            loginBrowser = null; loginPage = null;
-            log('LOGIN', 'Login browser closed');
-        }, 2000);
+        browser = loginBrowser;
+        page = loginPage;
+        loginBrowser = null;
+        loginPage = null;
+        log('LOGIN', 'Login browser promoted to active scrape browser');
 
     } catch (e) {
         log('SESSION-ERR', e.message);
@@ -258,6 +256,41 @@ async function scrapeOdds(pg) {
 }
 
 // ─────────────────────────────────────────────────────────
+// WS FRAME PARSERS — Sprint platform formats
+// ─────────────────────────────────────────────────────────
+
+// Ladder format: rc = [ { id, batb: [[price,size],...], batl: [[price,size],...] } ]
+// Runner names come from MarketDefinition — we cache them
+let _runnerNames = {};
+function parseLadder(rc) {
+    if (!rc || rc.length < 2) return null;
+    const runners = rc.slice(0, 2).map((r, i) => {
+        const name = _runnerNames[r.id] || _runnerNames[String(r.id)] || `Runner ${i + 1}`;
+        const back = (r.batb || []).slice(0, 3).map(([odds, size]) => ({ odds, size }));
+        const lay = (r.batl || []).slice(0, 3).map(([odds, size]) => ({ odds, size }));
+        if (!back.length && !lay.length) return null;
+        return { name, back, lay };
+    }).filter(Boolean);
+    return runners.length >= 2 ? runners : null;
+}
+
+// Runners array format: [ { runnerName, ex: { availableToBack, availableToLay } } ]
+function parseRunners(arr) {
+    if (!Array.isArray(arr) || arr.length < 2) return null;
+    const runners = arr.slice(0, 2).map(r => {
+        const name = r.runnerName || r.name || r.teamName || r.selectionName || 'Runner';
+        // Cache name→id for ladder parser
+        if (r.selectionId) _runnerNames[r.selectionId] = name;
+        const back = (r.ex?.availableToBack || r.back || r.availableToBack || []).slice(0, 3)
+            .map(x => ({ odds: x.price ?? x.odds, size: x.size }));
+        const lay = (r.ex?.availableToLay || r.lay || r.availableToLay || []).slice(0, 3)
+            .map(x => ({ odds: x.price ?? x.odds, size: x.size }));
+        return { name, back, lay };
+    });
+    return runners;
+}
+
+// ─────────────────────────────────────────────────────────
 // POLL LOOP
 // ─────────────────────────────────────────────────────────
 async function doPoll() {
@@ -276,11 +309,25 @@ async function doPoll() {
                     firstBoxHtml: boxes[0]?.outerHTML?.slice(0, 300) || 'none',
                     pageTitle: document.title,
                     url: location.href,
-                    isLoginPage: document.title.toLowerCase().includes('login') ||
-                        !!document.querySelector('[class*="login"], [class*="signin"], input[type="password"]'),
+                    bodyClass: document.body?.className || '',
+                    hasLoginFlag: localStorage.getItem('isLoggedin'),
+                    hasUserDetails: !!localStorage.getItem('userDetails'),
+                    // FIX: only treat as login page if a visible password field exists
+                    // AND there are no odds elements — avoids nuking session on nav links
+                    isLoginPage: !!document.querySelector('input[type="password"]:not([style*="display: none"])')
+                        && !document.querySelector('[class*="odds"], [class*="bl-box"]'),
                 };
             });
             log('POLL', `No odds — bl-boxes:${snap.blBoxCount} spans:${snap.oddsSpanCount} title:"${snap.pageTitle}" loginPage:${snap.isLoginPage}`);
+
+            // FIX: dump page HTML so you can open debug-page.html and see exactly what headless got
+            if (snap.blBoxCount === 0 && snap.oddsSpanCount === 0) {
+                try {
+                    const html = await page.content();
+                    fs.writeFileSync(path.join(__dirname, 'debug-page.html'), html);
+                    log('DEBUG', 'Dumped → debug-page.html (open in browser to see what headless got)');
+                } catch { }
+            }
 
             if (snap.isLoginPage) {
                 broadcast({ type: 'error', msg: '⚠️ Session expired — visit http://localhost:3000/login to re-authenticate' });
@@ -320,20 +367,45 @@ async function startBrowser(targetUrl) {
     }
 
     if (scrapeTimer) { clearInterval(scrapeTimer); scrapeTimer = null; }
-    if (currentUrl !== targetUrl && page) { await page.close().catch(() => { }); page = null; }
+    if (loginBrowser && !browser) {
+        browser = loginBrowser;
+        loginBrowser = null;
+        page = page || loginPage;
+        loginPage = null;
+        log('LOGIN', 'Reusing live login browser for scraping');
+    }
+    if (currentUrl !== targetUrl && page) {
+        try {
+            if (page.url() && page.url() !== 'about:blank') {
+                await page.goto(LOGIN_ORIGIN, { waitUntil: 'load', timeout: 30000 }).catch(() => { });
+            }
+        } catch { }
+        page = null;
+    }
     currentUrl = targetUrl;
 
     if (!browser) {
-        log('BROWSER', 'Launching headless Chromium...');
-        browser = await playwright.chromium.launch({
-            headless: true,
+        log('BROWSER', 'Launching visible Chromium...');
+        browser = await playwright.chromium.launchPersistentContext(USER_DATA_DIR, {
+            headless: false,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            viewport: { width: 1366, height: 768 },
+            locale: 'en-IN',
+            timezoneId: 'Asia/Kolkata',
+            extraHTTPHeaders: {
+                'Accept-Language': 'en-IN,en;q=0.9',
+                'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+            },
             args: [
                 '--disable-blink-features=AutomationControlled',
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
                 '--disable-dev-shm-usage',
                 '--disable-web-security',
-            ]
+            ],
+            ignoreDefaultArgs: ['--enable-automation'],
         });
         browser.on('disconnected', () => {
             log('BROWSER', 'Crashed — will relaunch on next call');
@@ -345,42 +417,211 @@ async function startBrowser(targetUrl) {
         log('BROWSER', `Opening: ${targetUrl}`);
         broadcast({ type: 'status', msg: 'Opening rebel777 with saved session...', state: 'loading' });
 
-        // ← KEY FIX: inject saved cookies + localStorage into the new context
-        const sessionOpts = loadSessionOptions();
-        const ctx = await browser.newContext({
-            ...sessionOpts,
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-            viewport: { width: 1366, height: 768 },
-            locale: 'en-IN',
-            timezoneId: 'Asia/Kolkata',
-            extraHTTPHeaders: {
-                'Accept-Language': 'en-IN,en;q=0.9',
-                'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-            }
+        if (hasSession()) {
+            try {
+                const storage = JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8'));
+                if (Array.isArray(storage.cookies) && storage.cookies.length) {
+                    await browser.addCookies(storage.cookies);
+                }
+            } catch { }
+        }
+
+        page = browser.pages()[0] || await browser.newPage();
+
+        // FIX: anti-detection — hide webdriver flag from the site
+        await page.addInitScript(() => {
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+            Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
+            window.chrome = { runtime: {} };
         });
 
-        page = await ctx.newPage();
-
-        // Trigger re-poll immediately on any WebSocket frame (rebel777 pushes live odds via WS)
+        // ── STRATEGY 1: Intercept rebel777's own WebSocket feed directly ──
+        // Sprint platform pushes odds as JSON frames — parse them here instead of
+        // scraping the DOM (which the fingerprint challenge blocks in headless).
         page.on('websocket', ws => {
-            log('WS-DETECT', ws.url().slice(0, 80));
-            ws.on('framereceived', () => setTimeout(doPoll, 300));
+            log('WS-INTERCEPT', `Opened: ${ws.url().slice(0, 100)}`);
+
+            ws.on('framereceived', event => {
+                try {
+                    const raw = event.payload;
+                    if (!raw || typeof raw !== 'string') return;
+
+                    // Sprint/Betfair WS frames: try to find runners/odds arrays
+                    const data = JSON.parse(raw);
+
+                    // Cache runner names from MarketDefinition frames
+                    if (data.MarketDefinition?.runners) {
+                        data.MarketDefinition.runners.forEach(r => {
+                            if (r.id && r.name) _runnerNames[r.id] = r.name;
+                        });
+                    }
+
+                    // Common Sprint platform shapes:
+                    // { t: 'ou', d: { mid: ..., runners: [...] } }
+                    // { MarketDefinition: { runners: [...] } }
+                    // { rc: [ { id, batb, batl } ] }   ← ladder format
+                    let runners = null;
+
+                    // Shape A: { rc: [...] } ladder — batb=back, batl=lay
+                    if (data.rc && Array.isArray(data.rc)) {
+                        runners = parseLadder(data.rc);
+                    }
+                    // Shape B: nested runners array
+                    if (!runners && data.d?.runners) runners = parseRunners(data.d.runners);
+                    if (!runners && data.runners) runners = parseRunners(data.runners);
+                    // Shape C: { data: { market: { runners: [...] } } }
+                    if (!runners && data.data?.market?.runners) runners = parseRunners(data.data.market.runners);
+                    // Shape D: array of market objects
+                    if (!runners && Array.isArray(data)) {
+                        for (const item of data) {
+                            if (item.runners) { runners = parseRunners(item.runners); break; }
+                        }
+                    }
+
+                    if (runners && runners.length >= 2) {
+                        const changed = JSON.stringify(runners) !== JSON.stringify(lastOdds);
+                        if (changed) {
+                            lastOdds = runners;
+                            broadcast({ type: 'odds', data: { runners, _source: 'rebel777-ws', _ts: Date.now() } });
+                            log('WS-ODDS', `✓ ${runners.map(r => r.name).join(' vs ')} → ${wsClients.size} client(s)`);
+                        }
+                    }
+                } catch { /* non-JSON frames, ignore */ }
+            });
+
+            ws.on('framereceived', () => setTimeout(doPoll, 250)); // DOM fallback still runs
         });
 
+        // FIX: all page interaction inside one try/catch, waitForSelector no longer orphaned outside
         try {
-            await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 25000 });
+            // Warm the authenticated SPA first. Rebel777 sometimes drops deep links
+            // back to "/" on a fresh context before auth state finishes hydrating.
+            await page.goto(LOGIN_ORIGIN, { waitUntil: 'load', timeout: 30000 });
+            await page.waitForLoadState('networkidle', { timeout: 15000 })
+                .catch(() => log('WAIT', 'Warm-up networkidle timeout — continuing anyway'));
+
+            const warmState = await page.evaluate(() => ({
+                url: location.href,
+                bodyClass: document.body?.className || '',
+                isLoggedin: localStorage.getItem('isLoggedin'),
+                hasUserDetails: !!localStorage.getItem('userDetails'),
+                hasToken: !!localStorage.getItem('token'),
+                hasPasswordInput: !!document.querySelector('input[type="password"]'),
+            }));
+            log('SESSION', `Warm-up → url:${warmState.url} body:"${warmState.bodyClass}" logged:${warmState.isLoggedin} user:${warmState.hasUserDetails} token:${warmState.hasToken}`);
+
+            // FIX: 'load' instead of 'domcontentloaded' — waits for SPA JS to execute
+            await page.evaluate(() => {
+                const clickIfVisible = (el) => {
+                    if (!el) return false;
+                    const style = window.getComputedStyle(el);
+                    const rect = el.getBoundingClientRect();
+                    const visible = style && style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+                    if (!visible) return false;
+                    el.click();
+                    return true;
+                };
+                const selectors = [
+                    '[aria-label="Close"]',
+                    '[aria-label="close"]',
+                    '.close',
+                    '.btn-close',
+                    '.modal .close',
+                    '.popup .close',
+                    '.banner .close',
+                    '.swal2-close',
+                    'button[class*="close"]',
+                    'div[class*="close"]',
+                    'span[class*="close"]',
+                ];
+                for (const selector of selectors) {
+                    const nodes = Array.from(document.querySelectorAll(selector));
+                    for (const node of nodes) {
+                        if (clickIfVisible(node)) return;
+                    }
+                }
+                const nodes = Array.from(document.querySelectorAll('button, div, span, a'));
+                const fallback = nodes.find(el => /^(x|close|skip)$/i.test((el.textContent || '').trim()));
+                if (fallback) clickIfVisible(fallback);
+            }).catch(() => { });
+            await page.waitForTimeout(1500).catch(() => { });
+            await page.goto(targetUrl, { waitUntil: 'load', timeout: 30000 });
+            await page.waitForLoadState('networkidle', { timeout: 15000 })
+                .catch(() => log('WAIT', 'Target networkidle timeout — continuing anyway'));
+
+            await page.evaluate(() => {
+                const clickIfVisible = (el) => {
+                    if (!el) return false;
+                    const style = window.getComputedStyle(el);
+                    const rect = el.getBoundingClientRect();
+                    const visible = style && style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+                    if (!visible) return false;
+                    el.click();
+                    return true;
+                };
+                const selectors = [
+                    '[aria-label="Close"]',
+                    '[aria-label="close"]',
+                    '.close',
+                    '.btn-close',
+                    '.modal .close',
+                    '.popup .close',
+                    '.banner .close',
+                    '.swal2-close',
+                    'button[class*="close"]',
+                    'div[class*="close"]',
+                    'span[class*="close"]',
+                ];
+                for (const selector of selectors) {
+                    const nodes = Array.from(document.querySelectorAll(selector));
+                    for (const node of nodes) {
+                        if (clickIfVisible(node)) return;
+                    }
+                }
+                const nodes = Array.from(document.querySelectorAll('button, div, span, a'));
+                const fallback = nodes.find(el => /^(x|close|skip)$/i.test((el.textContent || '').trim()));
+                if (fallback) clickIfVisible(fallback);
+            }).catch(() => { });
+            await page.waitForTimeout(1500).catch(() => { });
+
+            const landed = await page.evaluate(() => ({
+                url: location.href,
+                bodyClass: document.body?.className || '',
+                hasOdds: !!document.querySelector('span.odds, [class*="odds"], [class*="bl-box"], [class*="bet-btn"], [class*="back-price"], [class*="lay-price"]'),
+            }));
+
+            if (!landed.hasOdds && (landed.url === LOGIN_ORIGIN || landed.url === `${LOGIN_ORIGIN}/`)) {
+                log('NAV', `Deep link bounced to home (${landed.url}) — retrying once after SPA warm-up`);
+                await page.evaluate((url) => { location.href = url; }, targetUrl);
+                await page.waitForLoadState('load', { timeout: 30000 }).catch(() => { });
+            }
+
             log('BROWSER', `Loaded — waiting for odds elements (up to ${RENDER_WAIT_MS / 1000}s)...`);
             broadcast({ type: 'status', msg: 'Page loaded — waiting for odds to render...', state: 'loading' });
 
-            await page.waitForSelector('span.odds, [class="d-block odds"], [class*="bl-box"]', { timeout: RENDER_WAIT_MS })
-                .catch(() => log('WAIT', 'Selector timeout — scraping anyway'));
-
-            broadcast({ type: 'status', msg: 'Odds elements detected — live!', state: 'ready' });
+            // Wait for network to settle — SPA fetches session/markets after load.
+            // WS interception above catches odds frames as soon as the site opens its feed.
+            if (page) {
+                await page.waitForLoadState('networkidle', { timeout: 15000 })
+                    .catch(() => log('WAIT', 'networkidle timeout — continuing anyway'));
+                // DOM selector as a bonus — works when session is healthy and site renders
+                await page.waitForSelector(
+                    'span.odds, [class*="odds"], [class*="bl-box"], [class*="bet-btn"], [class*="back-price"], [class*="lay-price"]',
+                    { timeout: 8000 }
+                ).then(() => {
+                    broadcast({ type: 'status', msg: 'Odds elements detected — live!', state: 'ready' });
+                }).catch(() => {
+                    log('WAIT', 'DOM odds selector not found — relying on WS interception');
+                    broadcast({ type: 'status', msg: 'Connected — waiting for WS odds feed...', state: 'ready' });
+                });
+            }
         } catch (e) {
+            log('BROWSER-ERR', `Page load failed: ${e.message}`);
             broadcast({ type: 'error', msg: `Page load failed: ${e.message}` });
-            page = null; return;
+            // FIX: safely close page before nulling to avoid resource leak
+            if (page) { await page.close().catch(() => { }); }
+            page = null;
+            return;
         }
     }
 
@@ -580,7 +821,7 @@ const server = http.createServer((req, res) => {
     // ── /set-interval?ms=5000 ──
     if (parsed.pathname === '/set-interval') {
         const ms = parseInt(parsed.searchParams.get('ms'));
-        if (ms >= 1000 && ms <= 60000) {
+        if (ms >= 250 && ms <= 60000) {
             SCRAPE_INTERVAL = ms;
             if (scrapeTimer) { clearInterval(scrapeTimer); scrapeTimer = page ? setInterval(doPoll, ms) : null; }
             log('INTERVAL', `Poll rate → ${ms}ms`);

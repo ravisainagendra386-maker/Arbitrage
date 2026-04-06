@@ -1,0 +1,25 @@
+2026/04/06-20:56:52.000 6420 Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\IndexedDB\https_rebel777.co_0.indexeddb.leveldb/MANIFEST-000001
+2026/04/06-20:56:52.010 6420 Recovering log #263
+2026/04/06-20:56:52.011 6420 Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\IndexedDB\https_rebel777.co_0.indexeddb.leveldb/000263.log 
+2026/04/06-20:56:52.012 6420 Delete type=2 #262
+2026/04/06-20:56:52.086 4834 Level-0 table #268: started
+2026/04/06-20:56:52.108 4834 Level-0 table #268: 645 bytes OK
+2026/04/06-20:56:52.111 4834 Delete type=0 #263
+2026/04/06-20:56:52.112 8694 Manual compaction at level-0 from '\x00U\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00V\x00\x00\x00' @ 0 : 0; will stop at '\x00U\x00\x00\x05' @ 1636 : 1
+2026/04/06-20:56:52.112 8694 Compacting 1@0 + 1@1 files
+2026/04/06-20:56:52.152 8694 Generated table #269@0: 62 keys, 1416 bytes
+2026/04/06-20:56:52.152 8694 Compacted 1@0 + 1@1 files => 1416 bytes
+2026/04/06-20:56:52.153 8694 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/04/06-20:56:52.153 8694 Delete type=2 #268
+2026/04/06-20:56:52.154 8694 Manual compaction at level-0 from '\x00U\x00\x00\x05' @ 1636 : 1 .. '\x00V\x00\x00\x00' @ 0 : 0; will stop at (end)
+2026/04/06-20:56:52.155 8694 Level-0 table #271: started
+2026/04/06-20:56:52.167 8694 Level-0 table #271: 648 bytes OK
+2026/04/06-20:56:52.169 8694 Delete type=2 #265
+2026/04/06-20:56:52.169 8694 Delete type=0 #267
+2026/04/06-20:56:52.169 8694 Manual compaction at level-0 from '\x00V\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00W\x00\x00\x00' @ 0 : 0; will stop at '\x00V\x00\x00\x05' @ 1653 : 1
+2026/04/06-20:56:52.169 8694 Compacting 1@0 + 1@1 files
+2026/04/06-20:56:52.183 8694 Generated table #272@0: 62 keys, 1414 bytes
+2026/04/06-20:56:52.183 8694 Compacted 1@0 + 1@1 files => 1414 bytes
+2026/04/06-20:56:52.186 8694 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/04/06-20:56:52.186 8694 Delete type=2 #271
+2026/04/06-20:56:52.187 8694 Manual compaction at level-0 from '\x00V\x00\x00\x05' @ 1653 : 1 .. '\x00W\x00\x00\x00' @ 0 : 0; will stop at (end)

@@ -1,0 +1,1305 @@
+/*Backgrounds*/
+
+.bg-success {
+    background-color: var(--bg-success) !important;
+}
+
+.bg-danger {
+    background-color: var(--bg-danger) !important;
+}
+
+.bg-info {
+    background-color: var(--bg-info) !important;
+}
+
+.bg-warning {
+    background-color: var(--bg-warning) !important;
+    color: var(--text-black) !important;
+}
+
+.text-success {
+    color: var(--book-green) !important;
+}
+
+.text-danger {
+    color: var(--book-red) !important;
+}
+
+.text-info {
+    color: var(--bg-info) !important;
+}
+
+.text-warning {
+    color: var(--bg-warning) !important;
+}
+
+.text-playera {
+    color: var(--text-red);
+}
+
+.text-playerb {
+    color: var(--text-yellow);
+}
+
+.text-yellow {
+    color: var(--text-yellow);
+}
+
+.sport1color {
+    color: var(--football);
+}
+
+.sport2color {
+    color: var(--tennis);
+}
+
+.sport3color {
+    color: var(--boxing);
+}
+
+.sport4color {
+    color: var(--cricket);
+}
+
+.sport5color {
+    color: var(--golf);
+}
+
+.sport6color {
+    color: var(--boxing);
+}
+
+.sport7color {
+    color: var(--beach-volleyball);
+}
+
+.sport8color {
+    color: var(--table-tennis);
+}
+
+.sport9color {
+    color: var(--futsal);
+}
+
+.sport10color {
+    color: var(--horse-racing);
+}
+
+.sport11color {
+    color: var(--egames);
+}
+
+.sport12color {
+    color: var(--grey-hounds);
+}
+
+.sport13color {
+    color: var(--trotting);
+}
+
+.sport14color {
+    color: var(--speedway);
+}
+
+.sport15color {
+    color: var(--basketball);
+}
+
+.sport16color {
+    color: var(--moto-gp);
+}
+
+.sport17color {
+    color: var(--chess);
+}
+
+.sport18color {
+    color: var(--vollyball);
+}
+
+.sport19color {
+    color: var(--ice-hockey);
+}
+
+.sport20color {
+    color: var(--equine-sports);
+}
+
+.sport21color {
+    color: var(--australians-rules);
+}
+
+.sport22color {
+    color: var(--badminton);
+}
+
+.sport23color {
+    color: var(--formula-1);
+}
+
+.sport24color {
+    color: var(--nascar);
+}
+
+.sport25color {
+    color: var(--hockey);
+}
+
+.sport26color {
+    color: var(--supercars);
+}
+
+.sport27color {
+    color: var(--netball);
+}
+
+.sport28color {
+    color: var(--surfing);
+}
+
+.sport29color {
+    color: var(--cycling);
+}
+
+.sport30color {
+    color: var(--gaelick-sports);
+}
+
+.sport31color {
+    color: var(--biathlon);
+}
+
+.sport32color {
+    color: var(--motorbikes);
+}
+
+.sport33color {
+    color: var(--athletics);
+}
+
+.sport34color {
+    color: var(--squash);
+}
+
+.sport35color {
+    color: var(--basketball-3-3);
+}
+
+.sport36color {
+    color: var(--floorball);
+}
+
+.sport37color {
+    color: var(--sumo);
+}
+
+.sport38color {
+    color: var(--virtual-sports);
+}
+
+.sport39color {
+    color: var(--handball);
+}
+
+.sport40color {
+    color: var(--politics);
+}
+
+.sport41color {
+    color: var(--weather);
+}
+
+.sport42color {
+    color: var(--tv-games);
+}
+
+.sport43color {
+    color: var(--lottery);
+}
+
+.sport44color {
+    color: var(--bowls);
+}
+
+.sport45color {
+    color: var(--poker);
+}
+
+.sport46color {
+    color: var(--waterpolo);
+}
+
+.sport47color {
+    color: var(--alpine-skiing);
+}
+
+.sport48color {
+    color: var(--sailing);
+}
+
+.sport49color {
+    color: var(--hurling);
+}
+
+.sport50color {
+    color: var(--ski-jumping);
+}
+
+.sport51color {
+    color: var(--bandy);
+}
+
+.sport52color {
+    color: var(--motor-sports);
+}
+
+.sport53color {
+    color: var(--baseball);
+}
+
+.sport54color {
+    color: var(--rugby-union);
+}
+
+.sport55color {
+    color: var(--rugby-league);
+}
+
+.sport56color {
+    color: var(--curling);
+}
+
+.sport57color {
+    color: var(--darts);
+}
+
+.sport58color {
+    color: var(--americal-footbal);
+}
+
+.sport59color {
+    color: var(--snooker);
+}
+
+.sport60color {
+    color: var(--gaelick-sports);
+}
+
+.sport61color {
+    color: var(--lottery-specials);
+}
+
+.sport62color {
+    color: var(--football);
+}
+
+.sport63color {
+    color: var(--special-bets);
+}
+
+.sport64color {
+    color: var(--egames);
+}
+
+.sport65color {
+    color: var(--grey-hounds);
+}
+
+.sport999color {
+    color: var(--card-cricket);
+}
+
+.lotto {
+    background-color: var(--lotto);
+}
+
+.sport67color {
+    color: var(--boat-racing);
+}
+.sport68color {
+    color: var(--e-socker);
+}
+.sport69color {
+    color: var(--wrestling);
+}
+
+.sport1,
+.sport1:hover,
+.sport1:focus,
+.sport1:active {
+    background-color: var(--football) !important;
+}
+
+.sport2,
+.sport2:hover,
+.sport2:focus,
+.sport2:active {
+    background-color: var(--tennis) !important;
+}
+
+.sport3,
+.sport3:hover,
+.sport3:focus,
+.sport3:active {
+    background-color: var(--boxing) !important;
+}
+
+.sport4,
+.sport4:hover,
+.sport4:focus,
+.sport4:active {
+    background-color: var(--cricket) !important;
+}
+
+.sport5,
+.sport5:hover,
+.sport5:focus,
+.sport5:active {
+    background-color: var(--golf) !important;
+}
+
+.sport6,
+.sport6:hover,
+.sport6:focus,
+.sport6:active {
+    background-color: var(--boxing) !important;
+}
+
+.sport7,
+.sport7:hover,
+.sport7:focus,
+.sport7:active {
+    background-color: var(--beach-volleyball) !important;
+}
+
+.sport8,
+.sport8:hover,
+.sport8:focus,
+.sport8:active {
+    background-color: var(--table-tennis) !important;
+}
+
+.sport9,
+.sport9:hover,
+.sport9:focus,
+.sport9:active {
+    background-color: var(--futsal) !important;
+}
+
+.sport10,
+.sport10:hover,
+.sport10:focus,
+.sport10:active {
+    background-color: var(--horse-racing) !important;
+}
+
+.sport11,
+.sport11:hover,
+.sport11:focus,
+.sport11:active {
+    background-color: var(--egames) !important;
+}
+
+.sport12,
+.sport12:hover,
+.sport12:focus,
+.sport12:active {
+    background-color: var(--grey-hounds) !important;
+}
+
+.sport13,
+.sport13:hover,
+.sport13:focus,
+.sport13:active {
+    background-color: var(--trotting) !important;
+}
+
+.sport14,
+.sport14:hover,
+.sport14:focus,
+.sport14:active {
+    background-color: var(--speedway) !important;
+}
+
+.sport15,
+.sport15:hover,
+.sport15:focus,
+.sport15:active {
+    background-color: var(--basketball) !important;
+}
+
+.sport16,
+.sport16:hover,
+.sport16:focus,
+.sport16:active {
+    background-color: var(--moto-gp) !important;
+}
+
+.sport17,
+.sport17:hover,
+.sport17:focus,
+.sport17:active {
+    background-color: var(--chess) !important;
+}
+
+.sport18,
+.sport18:hover,
+.sport18:focus,
+.sport18:active {
+    background-color: var(--vollyball) !important;
+}
+
+.sport19,
+.sport19:hover,
+.sport19:focus,
+.sport19:active {
+    background-color: var(--ice-hockey) !important;
+}
+
+.sport20,
+.sport20:hover,
+.sport20:focus,
+.sport20:active {
+    background-color: var(--equine-sports) !important;
+}
+
+.sport21,
+.sport21:hover,
+.sport21:focus,
+.sport21:active {
+    background-color: var(--australians-rules) !important;
+}
+
+.sport22,
+.sport22:hover,
+.sport22:focus,
+.sport22:active {
+    background-color: var(--badminton) !important;
+}
+
+.sport23,
+.sport23:hover,
+.sport23:focus,
+.sport23:active {
+    background-color: var(--formula-1) !important;
+}
+
+.sport24,
+.sport24:hover,
+.sport24:focus,
+.sport24:active {
+    background-color: var(--nascar) !important;
+}
+
+.sport25,
+.sport25:hover,
+.sport25:focus,
+.sport25:active {
+    background-color: var(--hockey) !important;
+}
+
+.sport26,
+.sport26:hover,
+.sport26:focus,
+.sport26:active {
+    background-color: var(--supercars) !important;
+}
+
+.sport27,
+.sport27:hover,
+.sport27:focus,
+.sport27:active {
+    background-color: var(--netball) !important;
+}
+
+.sport28,
+.sport28:hover,
+.sport28:focus,
+.sport28:active {
+    background-color: var(--surfing) !important;
+}
+
+.sport29,
+.sport29:hover,
+.sport29:focus,
+.sport29:active {
+    background-color: var(--cycling) !important;
+}
+
+.sport30,
+.sport30:hover,
+.sport30:focus,
+.sport30:active {
+    background-color: var(--gaelick-sports) !important;
+}
+
+.sport31,
+.sport31:hover,
+.sport31:focus,
+.sport31:active {
+    background-color: var(--biathlon) !important;
+}
+
+.sport32,
+.sport32:hover,
+.sport32:focus,
+.sport32:active {
+    background-color: var(--motorbikes) !important;
+}
+
+.sport33,
+.sport33:hover,
+.sport33:focus,
+.sport33:active {
+    background-color: var(--athletics) !important;
+}
+
+.sport34,
+.sport34:hover,
+.sport34:focus,
+.sport34:active {
+    background-color: var(--squash) !important;
+}
+
+.sport35,
+.sport35:hover,
+.sport35:focus,
+.sport35:active {
+    background-color: var(--basketball-3-3) !important;
+}
+
+.sport36,
+.sport36:hover,
+.sport36:focus,
+.sport36:active {
+    background-color: var(--floorball) !important;
+}
+
+.sport37,
+.sport37:hover,
+.sport37:focus,
+.sport37:active {
+    background-color: var(--sumo) !important;
+}
+
+.sport38,
+.sport38:hover,
+.sport38:focus,
+.sport38:active {
+    background-color: var(--virtual-sports) !important;
+}
+
+.sport39,
+.sport39:hover,
+.sport39:focus,
+.sport39:active {
+    background-color: var(--handball) !important;
+}
+
+.sport40,
+.sport40:hover,
+.sport40:focus,
+.sport40:active {
+    background-color: var(--politics) !important;
+}
+
+.sport41,
+.sport41:hover,
+.sport41:focus,
+.sport41:active {
+    background-color: var(--weather) !important;
+}
+
+.sport42,
+.sport42:hover,
+.sport42:focus,
+.sport42:active {
+    background-color: var(--tv-games) !important;
+}
+
+.sport43,
+.sport43:hover,
+.sport43:focus,
+.sport43:active {
+    background-color: var(--lottery) !important;
+}
+
+.sport44,
+.sport44:hover,
+.sport44:focus,
+.sport44:active {
+    background-color: var(--bowls) !important;
+}
+
+.sport45,
+.sport45:hover,
+.sport45:focus,
+.sport45:active {
+    background-color: var(--poker) !important;
+}
+
+.sport46,
+.sport46:hover,
+.sport46:focus,
+.sport46:active {
+    background-color: var(--waterpolo) !important;
+}
+
+.sport47,
+.sport47:hover,
+.sport47:focus,
+.sport47:active {
+    background-color: var(--alpine-skiing) !important;
+}
+
+.sport48,
+.sport48:hover,
+.sport48:focus,
+.sport48:active {
+    background-color: var(--sailing) !important;
+}
+
+.sport49,
+.sport49:hover,
+.sport49:focus,
+.sport49:active {
+    background-color: var(--hurling) !important;
+}
+
+.sport50,
+.sport50:hover,
+.sport50:focus,
+.sport50:active {
+    background-color: var(--ski-jumping) !important;
+}
+
+.sport51,
+.sport51:hover,
+.sport51:focus,
+.sport51:active {
+    background-color: var(--bandy) !important;
+}
+
+.sport52,
+.sport52:hover,
+.sport52:focus,
+.sport52:active {
+    background-color: var(--motor-sports) !important;
+}
+
+.sport53,
+.sport53:hover,
+.sport53:focus,
+.sport53:active {
+    background-color: var(--baseball) !important;
+}
+
+.sport54,
+.sport54:hover,
+.sport54:focus,
+.sport54:active {
+    background-color: var(--rugby-union) !important;
+}
+
+.sport55,
+.sport55:hover,
+.sport55:focus,
+.sport55:active {
+    background-color: var(--rugby-league) !important;
+}
+
+.sport56,
+.sport56:hover,
+.sport56:focus,
+.sport56:active {
+    background-color: var(--curling) !important;
+}
+
+.sport57,
+.sport57:hover,
+.sport57:focus,
+.sport57:active {
+    background-color: var(--darts) !important;
+}
+
+.sport58,
+.sport58:hover,
+.sport58:focus,
+.sport58:active {
+    background-color: var(--americal-footbal) !important;
+}
+
+.sport59,
+.sport59:hover,
+.sport59:focus,
+.sport59:active {
+    background-color: var(--snooker) !important;
+}
+
+.sport60,
+.sport60:hover,
+.sport60:focus,
+.sport60:active {
+    background-color: var(--gaelick-sports) !important;
+}
+
+.sport61,
+.sport61:hover,
+.sport61:focus,
+.sport61:active {
+    background-color: var(--lottery-specials) !important;
+}
+
+.sport62,
+.sport62:hover,
+.sport62:focus,
+.sport62:active {
+    background-color: var(--football) !important;
+}
+
+.sport63,
+.sport63:hover,
+.sport63:focus,
+.sport63:active {
+    background-color: var(--special-bets) !important;
+}
+
+.sport64,
+.sport64:hover,
+.sport64:focus,
+.sport64:active {
+    background-color: var(--egames) !important;
+}
+
+.sport65,
+.sport65:hover,
+.sport65:focus,
+.sport65:active {
+    background-color: var(--grey-hounds) !important;
+}
+
+.sport66,
+.sport66:hover,
+.sport66:focus,
+.sport66:active {
+    background-color: var(--kabaddi) !important;
+}
+
+.sport67,
+.sport67:hover,
+.sport67:focus,
+.sport67:active {
+    background-color: var(--boat-racing) !important;
+}
+.sport68,
+.sport68:hover,
+.sport68:focus,
+.sport68:active {
+    background-color: var(--e-socker) !important;
+}
+
+.sport69,
+.sport69:hover,
+.sport69:focus,
+.sport69:active {
+    background-color: var(--wrestling) !important;
+}
+.sport999,
+.sport999:hover,
+.sport999:focus,
+.sport999:active {
+    background-color: var(--card-cricket) !important;
+}
+
+.lotto {
+    background-color: var(--lotto) !important;
+}
+
+.book-green {
+    color: var(--book-green) !important;
+    font-weight: normal !important;
+}
+
+.book-red {
+    color: var(--book-red) !important;
+    font-weight: normal !important;
+}
+
+/*Form design*/
+
+.form-group {
+    margin-right: 16px;
+}
+
+.form-control {
+    background-color: #444;
+    height: 36px;
+    border-radius: 0;
+    border: 1px solid #555;
+    color: #ddd;
+}
+
+.form-control::placeholder {
+    color: inherit;
+    opacity: 1;
+}
+
+.form-control:focus,
+.form-control:hover {
+    box-shadow: 0 0 4px var(--text-body);
+    background-color: var(--bg-body);
+    border: 1px solid var(--text-body);
+    color: var(--text-body);
+    box-shadow: none;
+}
+
+[type="date"] {
+    background: url("../img/calendar.png") 90% 50% no-repeat;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    font-size: var(--font-caption);
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+select {
+    background: url("../img/arrow-down.svg") center right 10px no-repeat;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
+label {
+    font-size: var(--font-small);
+    color: var(--text-body);
+    margin-bottom: 8px;
+}
+
+/*Button*/
+
+.btn {
+    box-shadow: none !important;
+    height: auto;
+    color: var(--text-white);
+    border-radius: 0;
+}
+
+/* .btn:focus,
+.btn:hover,
+.btn:active {
+    box-shadow: none !important;
+    opacity: 0.8;
+    color: var(--text-white);
+} */
+
+.btn-primary {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary:not(:disabled):not(.disabled):active {
+    box-shadow: none;
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+    /* opacity: 0.8; */
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+    cursor: not-allowed;
+}
+
+.btn-reset {
+    background-color: var(--btn-reset);
+    border-color: var(--btn-reset);
+}
+
+.btn-reset:hover,
+.btn-reset:focus,
+.btn-reset:active {
+    box-shadow: none;
+    background-color: var(--btn-reset);
+    border-color: var(--btn-reset);
+    color: var(--text-white);
+}
+
+.btn-bet {
+    height: 34px;
+    background-color: var(--btn-primary);
+    border-color: transparent;
+    color: var(--text-white);
+}
+
+.btn-bet:hover,
+.btn-bet:focus,
+.btn-bet:active {
+    background-color: var(--btn-primary);
+    border-color: transparent;
+    color: var(--text-white);
+    /* opacity: 0.8; */
+}
+
+/*Table*/
+
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-height: thin;
+    scrollbar-color: #666 #222;
+    margin-bottom: 4px;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #666;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background-color: #222;
+}
+
+.table {
+    border: 1px solid #3c444b;
+    background-color: var(--bg-table);
+    color: var(--text-table);
+    table-layout: fixed;
+}
+
+.table thead th {
+    border: 0;
+    vertical-align: middle;
+}
+
+.table thead {
+    background-color: var(--bg-table-header-new);
+    color: var(--text-table-header-new);
+}
+
+.table td,
+.table th {
+    border: 0;
+    border-bottom: 1px solid #3c444b;
+    padding: 4px;
+}
+
+.table-hover tbody tr:hover {
+    color: var(--text-table);
+}
+
+/*Modal*/
+
+.modal {
+    top: 35px;
+}
+
+.animate-on .modal {
+    top: 69px;
+}
+
+.modal-dialog {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.modal-content {
+    background-color: var(--bg-table);
+    color: var(--text-table);
+    border-radius: 0;
+    border: 0;
+    max-height: calc(100vh - 50px);
+}
+
+.modal-placebet .modal-content {
+    /* background-color: #000000de; */
+}
+
+.modal-header {
+    border: 0;
+    border-radius: 0;
+    background-color: var(--bg-table-header-new);
+    color: var(--text-table-header-new);
+    padding: 8px;
+}
+
+.modal-title {
+    color: var(--text-fancy);
+    font-size: var(--font-18);
+}
+
+.modal-header .close {
+    color: var(--text-table-header-new);
+    opacity: 1;
+    text-shadow: none;
+}
+
+.modal-body {
+    padding: 8px;
+    max-height: calc(100vh - 60px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #666 #222;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #666;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: #222;
+}
+
+.modal-footer {
+    justify-content: space-between;
+    border: 0;
+    background-color: rgba(var(--btn-secondary));
+    color: var(--text-btn-secondary);
+    padding: 8px;
+    border-radius: 0;
+}
+
+/*Alert*/
+
+.b-toast .toast {
+    max-width: unset;
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    z-index: 1070;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    transition: background-color 0.15s;
+}
+
+.b-toast.b-toast-success .toast {
+    background-color: var(--btn-primary);
+}
+
+.b-toast.b-toast-danger .toast {
+    background-color: var(--bg-danger);
+}
+
+.b-toast.b-toast-info .toast {
+    background-color: var(--bg-info);
+}
+
+.b-toast.b-toast-warning .toast {
+    background-color: var(--bg-warning);
+}
+
+.toast-header {
+    display: none;
+}
+
+.toast-body {
+    position: relative;
+    color: var(--text-white);
+    padding-left: 40px;
+}
+
+.b-toast.b-toast-warning .toast-body {
+    color: var(--text-black);
+}
+
+.toast .toast-body {
+    position: relative;
+}
+
+.b-toast.b-toast-success .toast .toast-body:before {
+    position: absolute;
+    content: "\f058";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    left: 10px;
+}
+
+.b-toast.b-toast-danger .toast .toast-body:before {
+    position: absolute;
+    content: "\f057";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    left: 10px;
+}
+
+.b-toast.b-toast-info .toast .toast-body:before {
+    position: absolute;
+    content: "\f05a";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    left: 10px;
+}
+
+.b-toast.b-toast-warning .toast .toast-body:before {
+    position: absolute;
+    content: "\f06a";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    left: 10px;
+}
+
+.b-toast.b-toast-success .toast {
+    border-color: var(--btn-primary);
+}
+
+.b-toast.b-toast-danger .toast {
+    border-color: var(--bg-danger);
+}
+
+.b-toast.b-toast-info .toast {
+    border-color: var(--bg-info);
+}
+
+.b-toast.b-toast-warning .toast {
+    border-color: var(--bg-warning);
+}
+
+.b-toaster-top-full {
+    position: fixed !important;
+    left: 50% !important;
+    width: 300px !important;
+    transform: translateX(-50%) !important;
+    top: 10px !important;
+}
+
+.loader-section-parent {
+    position: relative;
+    height: 100%;
+}
+
+.loader-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #131313b8;
+    z-index: 1000;
+}
+
+.loader-section-icon {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border-color: #fff transparent;
+    border-style: solid;
+    border-width: 2px;
+    animation: spinner 0.8s ease infinite;
+    z-index: 1000;
+}
+
+@keyframes rotateborder {
+    100% {
+        transform: rotate(1turn);
+        -webkit-transform: rotate(1turn);
+    }
+}
+
+.custom-control-inline {
+    line-height: 24px;
+}
+
+.custom-control-label {
+    color: var(--text-body);
+    line-height: unset;
+}
+
+.custom-control-label::before {
+    background-color: #222;
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    border-color: #222;
+    background-color: #222;
+    background-image: fill;
+}
+
+.custom-radio .custom-control-input:checked ~ .custom-control-label::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23999'/%3e%3c/svg%3e");
+}
+
+/*Pagination*/
+
+.pagination {
+    justify-content: center;
+}
+
+.page-link {
+    background-color: transparent;
+    border: 0;
+    color: var(--text-highlight);
+}
+
+.page-link:hover,
+.page-link:focus,
+.page-link:active {
+    background-color: transparent;
+    color: var(--text-highlight);
+    box-shadow: none;
+}
+
+.page-item.active .page-link {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+    border-radius: 50%;
+}
+
+.page-item.disabled .page-link {
+    color: var(--text-table);
+    background-color: transparent;
+    border-color: transparent;
+}
+
+/*carousal Design*/
+
+.carousel-control-next,
+.carousel-control-prev {
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/*Card*/
+
+.card {
+    border: 0;
+    border-radius: 0;
+}
+
+.card-header {
+    background-color: var(--bg-table-header-new);
+    color: var(--text-table-header-new);
+    border: 0;
+    border-radius: 0 !important;
+    padding: 6px;
+}
+
+.card-body {
+    background-color: var(--bg-table);
+    padding: 6px;
+    color: var(--text-table);
+}

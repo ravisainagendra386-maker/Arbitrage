@@ -1213,15 +1213,14 @@
         }
 
         .arb-box-mid {
-            width: 110px;
-            min-width: 90px;
+            width: 150px;
+            min-width: 130px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 8px 6px;
             background: var(--s2);
-            overflow: hidden;
         }
 
         .arb-box-right {
@@ -1265,14 +1264,11 @@
         }
 
         .arb-pct {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 900;
             font-family: sans-serif;
             line-height: 1;
             max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             text-align: center;
         }
 
@@ -1358,7 +1354,7 @@
             <div>
                 <div class="sthl">⚙ SETTINGS</div>
                 <div class="stsub">Match:<b id="sbm">MI vs KKR</b> · Capital:<b id="sbc">₹1,00,000</b> · INR:<b
-                        id="sbi">₹84</b> · Refresh:<b id="sbr">5s</b> · MinGap:<b id="sbg">2.0%</b></div>
+                        id="sbi">₹84</b> · Fallback Poll:<b id="sbr">5s</b> · MinGap:<b id="sbg">2.0%</b> · Alert Hold:<b id="sah">6s</b></div>
             </div>
             <span id="sarr" style="font-size:10px;color:var(--txt2)">▲</span>
         </div>
@@ -1377,7 +1373,7 @@
                 <div class="f w"><label>Rebel777 Match URL <span style="color:var(--g);font-size:9px">●
                             LIVE</span></label><input id="sRebel777Url" placeholder="https://rebel777.co/sport/game/..."
                         oninput="onRebel777UrlChange()" /></div>
-                <div class="f"><label>Auto-Refresh</label>
+                <div class="f"><label>Fallback Poll</label>
                     <select id="sRef" onchange="onRC()">
                         <option value="2">2s</option>
                         <option value="3">3s</option>
@@ -1411,6 +1407,8 @@
                 <div class="slbl">ARB ALERTS</div>
                 <div class="f"><label>Min Gap Threshold</label><input type="number" id="sMinGap" value="2.0" step="0.5"
                         oninput="onMG()" /></div>
+                <div class="f"><label>Alert Hold (s)</label><input type="number" id="sAlertHold" value="6" min="1" step="1"
+                        oninput="onAH()" /></div>
                 <div class="f w"><label>Telegram Bot Token</label><input id="sTgToken"
                         placeholder="123456:ABC-DEF..." /></div>
                 <div class="f"><label>Telegram Chat ID</label><input id="sTgChat" placeholder="-1001234567890" /></div>
@@ -1609,16 +1607,16 @@
                             </th>
                         </tr>
                         <tr>
-                            <th class="rth">BHAV WIN (₹)</th>
-                            <th class="rth">BHAV STAKE (₹)</th>
-                            <th class="rth">POLY STAKE ($)</th>
+                            <th class="rth">BHAV RETURN IF LAY WINS (₹)</th>
+                            <th class="rth">BHAV LIABILITY (₹)</th>
+                            <th class="rth">POLY BUY ($ / ¢)</th>
                             <th class="rth">POLY SHARES</th>
-                            <th class="rth">DEPLOYED (₹)</th>
-                            <th class="rth">LEFTOVER (₹)</th>
+                            <th class="rth">TOTAL DEPLOYED (₹)</th>
+                            <th class="rth">UNUSED CAPITAL (₹)</th>
                             <th class="rth" id="thWin">IF MUM WINS</th>
                             <th class="rth" id="thLose">IF MUM LOSES</th>
-                            <th class="rth" id="thMinP">MIN PROFIT</th>
-                            <th class="rth">ROI %</th>
+                            <th class="rth" id="thMinP">GUARANTEED PROFIT</th>
+                            <th class="rth">ROI ON DEPLOYED %</th>
                         </tr>
                     </thead>
                     <tbody id="calcTb">
@@ -1674,11 +1672,18 @@
         let chartData = { labels: [], poly: [], bhav: [], gap: [] };
         let myChart = null;
         let lastGap = 0;
+        let arbHoldTimer = null;
+        let arbHoldStartedAt = 0;
+        let arbHoldKey = '';
+        let arbHoldMs = 6000;
+        let arbHoldCandidate = null;
+        let arbAlertSentKey = '';
         const $ = id => document.getElementById(id);
         const fmt = n => Math.round(n).toLocaleString('en-IN');
         const fu = n => parseFloat(n).toFixed(2);
         const inrR = () => parseFloat($('sInr').value) || 84;
         const minGap = () => parseFloat($('sMinGap').value) || 2.0;
+        const alertHoldSeconds = () => Math.max(1, parseInt($('sAlertHold')?.value || '6', 10) || 6);
         const t1 = () => $('sT1').value || 'Mumbai Indians';
         const t2 = () => $('sT2').value || 'Kolkata Knight Riders';
         const t1s = () => t1().split(' ')[0].toUpperCase();
@@ -1735,6 +1740,7 @@
         function onStep() { recalc(); }
         function onInr() { const v = $('sInr').value; $('inrD').textContent = '₹' + v; $('sbi').textContent = '₹' + v; recalc(); }
         function onMG() { $('sbg').textContent = $('sMinGap').value + '%'; recalc(); }
+        function onAH() { arbHoldMs = alertHoldSeconds() * 1000; if ($('sah')) $('sah').textContent = alertHoldSeconds() + 's'; }
         function onRebelStake() {
             const v = parseFloat($('sRebelStake').value) || 20000;
             if ($('abRebelStake')) $('abRebelStake').textContent = '₹' + v.toLocaleString('en-IN');
@@ -1746,33 +1752,53 @@
         function updateArbBox() {
             const rebelStake = parseFloat($('sRebelStake')?.value) || 20000;
             const inr = inrR();
-            const b = bhavLay;  // rebel best lay (always team that gives best gap)
+            const rebelLays = [window._r0Lay || null, window._r1Lay || null];
 
-            // Check both poly teams vs rebel lay — show whichever has best arb
-            let bestP = null, bestTeam = null, bestTabIdx = null;
+            // Check same-team pairs only: poly[0] vs rebel[0], poly[1] vs rebel[1]
+            let bestTabIdx = null;
+            let bestRoi = null;
             _polyPrices.forEach((p, i) => {
-                if (!p || p <= 1) return;
-                const gap = ((p - b) / b) * 100;
-                if (bestP === null || gap > ((_polyPrices[bestTabIdx] - b) / b * 100)) {
-                    bestP = p; bestTabIdx = i;
+                const b = rebelLays[i];
+                if (!p || !b || p <= 1 || b <= 1) return;
+                const layStake = rebelStake;
+                const layLiability = layStake * (b - 1);
+                const poly_inr = (layStake * b) / p;
+                const deployed = layLiability + poly_inr;
+                const profIfYes = poly_inr * (p - 1) - layLiability;
+                const profIfNo = layStake - poly_inr;
+                const minProf = Math.min(profIfYes, profIfNo);
+                const roi = deployed > 0 ? (minProf / deployed) * 100 : null;
+                if (roi === null) return;
+                if (bestRoi === null || roi > bestRoi) {
+                    bestRoi = roi;
+                    bestTabIdx = i;
                 }
             });
 
-            // Fall back to active tab price if no stored prices yet
-            if (bestP === null) bestP = polyPrice;
+            // Fall back to active tab only if that same-team lay exists
+            if (bestTabIdx === null && _polyPrices[_polyActiveTab] > 1 && rebelLays[_polyActiveTab] > 1) {
+                bestTabIdx = _polyActiveTab;
+            }
 
-            const p = bestP;
-            const arbPct = (p > 1 && b > 1) ? ((p - b) / b) * 100 : null;
+            const p = bestTabIdx !== null ? _polyPrices[bestTabIdx] : null;
+            const b = bestTabIdx !== null ? rebelLays[bestTabIdx] : null;
+            const layStake = rebelStake;
+            const layLiability = (p > 1 && b > 1) ? layStake * (b - 1) : 0;
+            const poly_inr = (p > 1 && b > 1) ? (layStake * b) / p : 0;
+            const deployed = layLiability + poly_inr;
+            const profIfYes = (p > 1 && b > 1) ? (poly_inr * (p - 1) - layLiability) : 0;
+            const profIfNo = (p > 1 && b > 1) ? (layStake - poly_inr) : 0;
+            const minProf = Math.min(profIfYes, profIfNo);
+            const arbPct = deployed > 0 ? (minProf / deployed) * 100 : null;
 
             // Team name — from stored names or settings
-            const teamName = _polyTeamNames[bestTabIdx ?? _polyActiveTab] || (bestTabIdx === 0 ? t1s() : t2s());
-            const rebelTeam = window._rebelTeam1 || teamName;
+            const teamName = _polyTeamNames[bestTabIdx ?? _polyActiveTab] || ((bestTabIdx ?? _polyActiveTab) === 0 ? t1s() : t2s());
+            const rebelTeam = teamName;
 
             // Shares needed
-            const poly_inr = rebelStake * b / p;
             const poly_usd = poly_inr / inr;
             const shares = Math.round(poly_usd * p);
-            const cents = Math.round((1 / p) * 100);
+            const cents = (p > 1) ? Math.round((1 / p) * 100) : 0;
 
             // Highlight tab if best arb is on inactive tab
             if (bestTabIdx !== null && bestTabIdx !== _polyActiveTab) {
@@ -1780,6 +1806,12 @@
                     t.style.borderColor = i === bestTabIdx ? 'var(--g)' : '';
                     t.style.color = i === bestTabIdx ? 'var(--g)' : '';
                 });
+                if (!_polyAutoSwitching) {
+                    _polyAutoSwitching = true;
+                    Promise.resolve(switchPolyTab(bestTabIdx))
+                        .catch(() => { })
+                        .finally(() => { _polyAutoSwitching = false; });
+                }
             } else {
                 document.querySelectorAll('.poly-tab').forEach(t => { t.style.borderColor = ''; t.style.color = ''; });
             }
@@ -1831,10 +1863,27 @@
             const gap = p - b;
             const gapPct = b > 0 ? (gap / b) * 100 : 0;
             const tgt = actArb === 1 ? t1s() : t2s();
+            const holdKey = `${actArb}:${tgt}`;
             if (gapPct >= minGap()) {
-                if (lastGap < minGap()) triggerAlerts(p, b, gapPct, tgt);
+                arbHoldCandidate = { p, b, gapPct, tgt, holdKey };
+                if (arbAlertSentKey !== holdKey && (!arbHoldTimer || arbHoldKey !== holdKey)) {
+                    if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
+                    arbHoldKey = holdKey;
+                    arbHoldStartedAt = Date.now();
+                    arbHoldTimer = setTimeout(() => {
+                        arbHoldTimer = null;
+                        if (lastGap >= minGap() && arbHoldKey === holdKey && arbHoldCandidate?.holdKey === holdKey) {
+                            arbAlertSentKey = holdKey;
+                            triggerAlerts(arbHoldCandidate.p, arbHoldCandidate.b, arbHoldCandidate.gapPct, arbHoldCandidate.tgt);
+                        }
+                    }, arbHoldMs);
+                }
             } else {
-
+                if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
+                arbHoldStartedAt = 0;
+                arbHoldKey = '';
+                arbHoldCandidate = null;
+                arbAlertSentKey = '';
             }
             lastGap = gapPct;
         }
@@ -1903,7 +1952,9 @@
                 if ((p2 - b2) > (p1 - b1)) { currArb = 2; p = p2; b = b2; }
             } else if (p2 && b2) { currArb = 2; p = p2; b = b2; }
 
-            const mName = t1s(), kName = t2s();
+            const mName = _polyTeamNames[0] || t1s(), kName = _polyTeamNames[1] || t2s();
+            if ($('btnM1')) $('btnM1').textContent = `${mName.toUpperCase()} WINS`;
+            if ($('btnM2')) $('btnM2').textContent = `${kName.toUpperCase()} WINS`;
             if (currArb === 1) {
                 $('thWin').textContent = `IF ${mName} WINS`;
                 $('thLose').textContent = `IF ${kName} WINS`;
@@ -1911,7 +1962,7 @@
                 $('thWin').textContent = `IF ${kName} WINS`;
                 $('thLose').textContent = `IF ${mName} WINS`;
             }
-            if ($('thMinP')) $('thMinP').textContent = calcMode === 'both' ? 'MIN PROFIT' : 'TARGET PROFIT';
+            if ($('thMinP')) $('thMinP').textContent = calcMode === 'both' ? 'GUARANTEED PROFIT' : 'TARGET PROFIT';
 
             if (!p || !b || !cap || !step || p <= 1) { $('calcTb').innerHTML = '<tr><td colspan="10"><div class="nodata">Capital too low or invalid odds</div></td></tr>'; return; }
 
@@ -1921,26 +1972,28 @@
             updateArbBox();
 
             const rows = [];
-            for (let w = step; w <= cap * 3; w += step) {
-                let poly_inr, bs, profW, profL;
+            const polyCents = p > 1 ? Math.round((1 / p) * 100) : 0;
+            for (let bsTarget = step; bsTarget <= cap; bsTarget += step) {
+                let w, poly_inr, bs, profW, profL;
+                bs = bsTarget;
 
                 let targetMax = 'both';
                 if (calcMode === 'm1') targetMax = (currArb === 1) ? 'W' : 'L';
                 if (calcMode === 'm2') targetMax = (currArb === 1) ? 'L' : 'W';
 
                 if (targetMax === 'W') {
+                    w = bs / (b - 1);
                     poly_inr = w;
-                    bs = w * (b - 1);
                     profW = w * (p - 1) - bs;
                     profL = 0;
                 } else if (targetMax === 'L') {
-                    poly_inr = w * (b - 1) / (p - 1);
-                    bs = w * (b - 1);
+                    w = bs / (b - 1);
+                    poly_inr = bs / (p - 1);
                     profW = 0;
                     profL = w - poly_inr;
                 } else {
+                    w = bs / (b - 1);
                     poly_inr = (w * b) / p;
-                    bs = w * (b - 1);
                     profW = poly_inr * (p - 1) - bs;
                     profL = w - poly_inr;
                 }
@@ -1954,7 +2007,7 @@
                 const roi = dep > 0 ? (tgtProf / dep) * 100 : 0;
                 const shares = Math.round(poly_usd * p);
 
-                rows.push({ w, bs, pu: poly_usd, ps: poly_inr, dep, left, profW, profL, min: minProf, tgtProf, roi, sh: shares });
+                rows.push({ w, bs, pu: poly_usd, ps: poly_inr, dep, left, profW, profL, min: minProf, tgtProf, roi, sh: shares, cents: polyCents });
             }
 
             renderCalc(rows, p, b, cap, inr);
@@ -1977,7 +2030,7 @@
                 h += `<tr${isMx ? ' class="mx"' : ''}>
       <td>₹${fmt(r.w)}${isMx ? ' ⭐' : ''}</td>
       <td class="hl">₹${fmt(r.bs)}</td>
-      <td class="hl">$${fu(r.pu)}</td>
+      <td class="hl">$${fu(r.pu)} <span style="color:var(--txt2);font-size:10px">(${r.cents}¢)</span></td>
       <td style="color:var(--txt2)">${r.sh.toLocaleString()}</td>
       <td>₹${fmt(r.dep)}</td>
       <td style="color:var(--txt2)">₹${fmt(r.left)}</td>
@@ -1999,7 +2052,7 @@
                 $('waPoly').style.width = pctPoly + '%';
                 $('waFree').style.width = pctFree + '%';
                 $('waBhavT').innerHTML = `Bhav: ₹${fmt(mx.bs)} (${pctBhav.toFixed(1)}%)`;
-                $('waPolyT').innerHTML = `Poly: ₹${fmt(mx.ps)} = $${fu(mx.pu)} (${pctPoly.toFixed(1)}%)`;
+                $('waPolyT').innerHTML = `Poly: ₹${fmt(mx.ps)} = $${fu(mx.pu)} (${mx.cents}¢, ${pctPoly.toFixed(1)}%)`;
                 $('waFreeT').innerHTML = `Free: ₹${fmt(mx.left)} (${pctFree.toFixed(1)}%)`;
                 $('waRoi').innerHTML = mx.roi > 0 ? `Guaranteed ROI: +${mx.roi.toFixed(2)}%` : `Loss ROI: ${mx.roi.toFixed(2)}%`;
                 $('waRoi').style.color = mx.roi > 0 ? 'var(--y)' : 'var(--r)';
@@ -2096,8 +2149,8 @@
                         }
                     } catch { }
                 };
-                polyWs.onerror = () => setSt('pSt', 'WS ERR', 'bdg-w');
-                polyWs.onclose = () => { setSt('pSt', 'DISCONNECTED', 'bdg-r'); };
+                polyWs.onerror = () => { setSt('pSt', 'WS ERR', 'bdg-w'); polyPollLoop(); };
+                polyWs.onclose = () => { setSt('pSt', 'DISCONNECTED', 'bdg-r'); polyPollLoop(); };
             } catch (e) { setSt('pSt', 'ERR', 'bdg-r'); }
         }
 
@@ -2105,6 +2158,7 @@
         let polyWs = null;
         let _wsHeartbeatTimer = null;
         let _wsReconnectTimer = null;
+        let _polyAutoSwitching = false;
 
         function connectPolyWs() {
             if (!_polyTokenId) return;
@@ -2149,10 +2203,11 @@
                 } catch { }
             };
 
-            polyWs.onerror = () => setSt('pSt', 'WS ERR', 'bdg-w');
+            polyWs.onerror = () => { setSt('pSt', 'WS ERR', 'bdg-w'); polyPollLoop(); };
 
             polyWs.onclose = () => {
                 if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
+                polyPollLoop();
                 setSt('pSt', 'RECONNECTING...', 'bdg-w');
                 // Auto-reconnect after 2s — never fall back to HTTP poll (floods Worker)
                 _wsReconnectTimer = setTimeout(connectPolyWs, 2000);
@@ -2177,7 +2232,9 @@
             if (!url) { demoP(); return; }
             setSt('pSt', 'LOADING...', 'bdg-w'); incNC();
 
-            const slug = url.includes('polymarket.com') ? url.split('/').filter(Boolean).pop().split('?')[0] : url.trim();
+            const slug = (url.includes('polymarket.com') ? url.split('/').filter(Boolean).pop().split('?')[0] : url.trim())
+                .replace(/^\/+/, '')
+                .trim();
 
             try {
                 // Step 1: Resolve slug → token ID
@@ -2330,11 +2387,12 @@
             if (bestAskC) {
                 const bestOdds = toOdds(bestAskC);
                 $('mumO').textContent = bestOdds.toFixed(2);
-                // Store per-team price for cross-team arb detection
+                // Store per-team price for same-team arb detection
                 _polyPrices[_polyActiveTab] = bestOdds;
                 if (_lastBestAskC === null || Math.abs(bestAskC - _lastBestAskC) >= 0.01) {
                     _lastBestAskC = bestAskC;
-                    $('cP1').value = bestOdds.toFixed(3);
+                    if (_polyActiveTab === 0) $('cP1').value = bestOdds.toFixed(3);
+                    else $('cP2').value = bestOdds.toFixed(3);
                     polyPrice = bestOdds;
                     recalc(); updateArbBox();
                 }
@@ -2378,7 +2436,10 @@
             rebelWs.onopen = () => {
                 rebelWsActive = true;
                 setSt('bSt', 'LOADING...', 'bdg-w');
-                $('bBook').innerHTML = `<div class="nodata" style="color:var(--y)">⏳ Opening rebel777 page (first load ~6s)...</div>`;
+                // Only show spinner if we haven't received odds yet — preserve live display on reconnect
+                if (!window._hasOdds) {
+                    $('bBook').innerHTML = `<div class="nodata" style="color:var(--y)">⏳ Opening rebel777 page (first load ~6s)...</div>`;
+                }
                 console.log('[WS] Connected to proxy');
             };
 
@@ -2386,12 +2447,28 @@
                 try {
                     const msg = JSON.parse(e.data);
                     if (msg.type === 'odds') {
+                        window._hasOdds = true;
                         renderB(msg.data);
                         setSt('bSt', 'REBEL LIVE ✓', 'bdg-ok');
                         incNC();
                     } else if (msg.type === 'status') {
                         setSt('bSt', msg.state === 'ready' ? 'REBEL LIVE ✓' : 'LOADING...', msg.state === 'ready' ? 'bdg-ok' : 'bdg-w');
-                        if (msg.state === 'ready') $('bBook').innerHTML = `<div class="nodata" style="color:var(--g)">✓ Connected — waiting for first odds...</div>`;
+                        // Only update display if no odds have arrived yet — don't wipe a live book
+                        if (!window._hasOdds) {
+                            if (msg.state === 'ready') {
+                                $('bBook').innerHTML = `<div class="nodata" style="color:var(--g)">✓ Connected — waiting for first odds...</div>`;
+                            } else {
+                                $('bBook').innerHTML = `<div class="nodata" style="color:var(--y)">⏳ Opening rebel777 page (first load ~6s)...</div>`;
+                            }
+                        }
+                    } else if (msg.type === 'debug') {
+                        console.warn('[rebel debug]', msg.data);
+                        if (!window._hasOdds) {
+                            $('bBook').innerHTML = `<div class="nodata" style="color:var(--y)">
+                                ⚠️ Connected but no odds found. bl-boxes: ${msg.data.blBoxCount}, odds spans: ${msg.data.oddsSpanCount}<br>
+                                <span style="font-size:10px;color:var(--txt2)">URL: ${msg.data.url}</span>
+                            </div>`;
+                        }
                     } else if (msg.type === 'error') {
                         setSt('bSt', 'ERR', 'bdg-r');
                         $('bBook').innerHTML = `<div class="nodata" style="color:var(--r)">⚠️ ${msg.msg}</div>`;
@@ -2484,11 +2561,12 @@
             let h = '';
             runners.forEach((runner, ri) => {
                 const isT1 = ri === 0, cls = isT1 ? 'm' : 'k';
+                const displayName = _polyTeamNames[ri] && _polyTeamNames[ri] !== '—' ? _polyTeamNames[ri] : (runner.name || `Runner ${ri + 1}`);
                 const bk = (runner.back || runner.availableToBack || []).slice(0, 3);
                 const lk = (runner.lay || runner.availableToLay || []).slice(0, 3);
                 const bestLay = lk[0] ? parseFloat(lk[0].odds || lk[0].price) : null;
                 const bestBack = bk[0] ? parseFloat(bk[0].odds || bk[0].price) : null;
-                // Store per-runner best odds for arb selection
+                // Store per-runner best lay for same-team arb mapping
                 if (isT1) {
                     if (bestBack) $('mumO').textContent = bestBack.toFixed(3);
                     window._r0Lay = bestLay;
@@ -2504,38 +2582,20 @@
                     const c = lk[i];
                     cells += c ? `<div class="bc lk${i === 0 ? ' blk' : ''}"><div class="bo">${parseFloat(c.odds || c.price).toFixed(2)}</div><div class="bl">${(parseInt(c.size) || 0) >= 50000 ? '50K+' : (parseInt(c.size) || 0).toLocaleString()}</div></div>` : `<div class="bc lk"><div class="bo" style="color:var(--bd)">—</div></div>`;
                 }
-                h += `<div class="brow"><div class="brh"><span class="btn ${cls}">${runner.name}</span><span style="font-size:9px;color:var(--txt2)">LAY★: <span style="color:var(--lk)">${bestLay ? bestLay.toFixed(2) : '—'}</span></span></div><div class="bcells">${cells}</div></div>`;
+                h += `<div class="brow"><div class="brh"><span class="btn ${cls}">${displayName}</span><span style="font-size:9px;color:var(--txt2)">LAY★: <span style="color:var(--lk)">${bestLay ? bestLay.toFixed(2) : '—'}</span></span></div><div class="bcells">${cells}</div></div>`;
             });
             $('bBook').innerHTML = h;
-            // Store team1 name for arb box
-            if (runners.length > 0) window._rebelTeam1 = runners[0].name.split(' ')[0].toUpperCase();
-
-            // Pick the runner whose lay gives the best arb gap vs polyPrice
-            // Lower lay odds = better lay for the layer
             const lay0 = window._r0Lay, lay1 = window._r1Lay;
-            let bestLay = null, bestTeamName = null;
-            if (lay0 && lay1) {
-                const gap0 = polyPrice - lay0, gap1 = polyPrice - lay1;
-                if (gap0 >= gap1) { bestLay = lay0; bestTeamName = runners[0]?.name?.split(' ')[0]?.toUpperCase(); }
-                else { bestLay = lay1; bestTeamName = runners[1]?.name?.split(' ')[0]?.toUpperCase(); }
-            } else if (lay1) {
-                bestLay = lay1; bestTeamName = runners[1]?.name?.split(' ')[0]?.toUpperCase();
-            } else if (lay0) {
-                bestLay = lay0; bestTeamName = runners[0]?.name?.split(' ')[0]?.toUpperCase();
-            }
-            if (bestLay) {
-                bhavLay = bestLay;
-                $('kolO').textContent = bestLay.toFixed(3);
-                $('cB1').value = bestLay.toFixed(3);
-                if (bestTeamName) window._rebelTeam1 = bestTeamName;
-            }
+            if (lay0) $('cB1').value = lay0.toFixed(3);
+            if (lay1) $('cB2').value = lay1.toFixed(3);
+            bhavLay = lay0 || lay1 || null;
             recalc();
             updateArbBox();
         }
 
         function setSt(id, t, c) { $(id).textContent = t; $(id).className = 'bdg ' + c; }
 
-        // ── AUTO REFRESH ──
+        // ── FALLBACK POLL ──
         function startAR() {
             if (rtmr) clearInterval(rtmr);
             const s = parseInt($('sRef').value);
@@ -2547,9 +2607,12 @@
             const ms = s * 1000;
             // Sync proxy poll rate with UI refresh setting
             fetch('http://localhost:3000/set-interval?ms=' + ms).catch(() => { });
-            // Polymarket still needs its own UI-side timer (direct API call)
+            // Polymarket should not reconnect its WS on every refresh tick.
             rtmr = setInterval(() => {
-                if ($('sPolyUrl').value.trim()) fetchPoly();
+                if ($('sPolyUrl').value.trim()) {
+                    if (_polyTokenId) polyPollLoop();
+                    else fetchPoly();
+                }
                 // rebel777 is handled entirely by proxy poll loop — no fetchRebel777() here
             }, ms);
         }
@@ -2563,10 +2626,11 @@
         window.onload = () => {
             initChart();
             onT(); // set initial team labels
+            onAH();
+            onRC();
             recalc();
             demoP();
             demoB();
-            startAR();
         };
     </script>
 </body>
