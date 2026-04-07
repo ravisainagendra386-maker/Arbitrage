@@ -1474,8 +1474,8 @@
                         <span class="bdg bdg-p" id="pSt">NOT LOADED</span>
                     </div>
                     <div style="display:flex;gap:6px" id="polyTeamTabs">
-                        <button class="poly-tab on" id="polyTab0" onclick="switchPolyTab(0)">—</button>
-                        <button class="poly-tab" id="polyTab1" onclick="switchPolyTab(1)">—</button>
+                        <button class="poly-tab on" id="polyTab0" onclick="switchPolyTab(0, true)">—</button>
+                        <button class="poly-tab" id="polyTab1" onclick="switchPolyTab(1, true)">—</button>
                     </div>
                 </div>
                 <div class="pmeta">LAST:<span id="pLast">—</span> SPREAD:<span id="pSprd">—</span> VOL:<span
@@ -1800,13 +1800,15 @@
             const shares = Math.round(poly_usd * p);
             const cents = (p > 1) ? Math.round((1 / p) * 100) : 0;
 
-            // Highlight tab if best arb is on inactive tab
-            if (bestTabIdx !== null && bestTabIdx !== _polyActiveTab) {
+            const hasPositiveArb = bestRoi !== null && bestRoi > 0;
+
+            // Highlight/switch only when there is a real positive arbitrage.
+            if (hasPositiveArb && bestTabIdx !== null && bestTabIdx !== _polyActiveTab) {
                 document.querySelectorAll('.poly-tab').forEach((t, i) => {
                     t.style.borderColor = i === bestTabIdx ? 'var(--g)' : '';
                     t.style.color = i === bestTabIdx ? 'var(--g)' : '';
                 });
-                if (!_polyAutoSwitching) {
+                if (!_polyAutoSwitching && Date.now() >= _polyManualOverrideUntil) {
                     _polyAutoSwitching = true;
                     Promise.resolve(switchPolyTab(bestTabIdx))
                         .catch(() => { })
@@ -2102,7 +2104,8 @@
         function incNC() { ncalls++; $('ncall').textContent = ncalls; $('ncall2').textContent = ncalls; }
 
         // ── POLY TAB SWITCH ──
-        async function switchPolyTab(idx) {
+        async function switchPolyTab(idx, isManual = false) {
+            if (isManual) _polyManualOverrideUntil = Date.now() + 8000;
             _polyActiveTab = idx;
             _polyTokenId = _polyTokenIds[idx];
             _polyBook = { asks: {}, bids: {} };  // reset book on tab switch
@@ -2159,6 +2162,7 @@
         let _wsHeartbeatTimer = null;
         let _wsReconnectTimer = null;
         let _polyAutoSwitching = false;
+        let _polyManualOverrideUntil = 0;
 
         function connectPolyWs() {
             if (!_polyTokenId) return;
