@@ -1,16 +1,6 @@
 {
   "cookies": [
     {
-      "name": "g_token",
-      "value": "s%3AKmkKiRrg0BtZOLFzlImfoqt-ajDbMmh1.TBpF6i8VuyYzkZcM8269ODB6zP1o6PAX4GVrfPvWvf0",
-      "domain": "rebel777.co",
-      "path": "/",
-      "expires": 1775622992.435151,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "Lax"
-    },
-    {
       "name": "NID",
       "value": "530=RITfciVxpFGODlkE0po1Agw9H0zMrQ2IiDIZM18VzxKiji0m5r3v_CzOXxnon4C3UZkQwFPx430bMt0t8mJBuzir0Hb-RBbg1GJxDnHZ-WlGWC11UqGCZ6ZwD72ggIOiMPm8AoMpnIOy1OS0YUPUONYcXq3EHgN8uPXKLcBjqXDvjButjC32qAe--ZHKsnQXeD7SC6TOYbd5RKLZxg",
       "domain": ".google.com",
@@ -21,18 +11,28 @@
       "sameSite": "None"
     },
     {
+      "name": "g_token",
+      "value": "s%3AKmkKiRrg0BtZOLFzlImfoqt-ajDbMmh1.TBpF6i8VuyYzkZcM8269ODB6zP1o6PAX4GVrfPvWvf0",
+      "domain": "rebel777.co",
+      "path": "/",
+      "expires": 1775624803.619219,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
       "name": "__cf_bm",
-      "value": "7jUspXDkXEyuM9mgPwZ.xok_Sv8not3fHzabLzKxF1c-1775537012-1.0.1.1-ko72L76TyAgfCP94AS99Ar_rv0je6JVV30WtBTK6j8wry9Cac8IoPgPkazSpsx3mScPt8WHoJ7ANJhAc7zXRzmI0spWXZNhd56Bx3xRfprY",
+      "value": "RCe1ka.gSexcNgb0WLZhzTZdBUClqbKiAClIvRQnlyI-1775539118-1.0.1.1-Roh1szzE_hLo..EmKH1ccnxSfqsLqRXtxB0a10s7z1zIJLD2KqoHjM2w_yo4sudJ4d6kSGZZXx9Vqb_EPpkmBXrE1hlyG.OmoBztGcuH3qI",
       "domain": ".rebel777.co",
       "path": "/",
-      "expires": 1775538811.123093,
+      "expires": 1775540916.94436,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "_cfuvid",
-      "value": "FcR30g.DHkcJMqXI73irZ0rGeEPSD5Pw2MvhmpEnAXU-1775537179389-0.0.1.1-604800000",
+      "value": "yVY20smPegrKTXMj0ODmRjzj_E7PuUV8kU_24VoBDRA-1775539118709-0.0.1.1-604800000",
       "domain": ".rebel777.co",
       "path": "/",
       "expires": -1,
@@ -41,26 +41,26 @@
       "sameSite": "None"
     },
     {
+      "name": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4cmF2aTc4OCIsInNlc3Npb25JZCI6IjU1NTQzNTkwLWZkZDUtNDQxMS05NTA3LWViNDZjM2Y0ODUxNCIsImlhdCI6MTc3NTUzOTYwNywiZXhwIjoxNzc1NTQxNzA3fQ.aQxKtJog6XQrsPtfYU_WRAMuW5jBztNGDMt_amMJTm4",
+      "domain": "rebel777.co",
+      "path": "/",
+      "expires": 1775541705.475154,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
       "name": "cf_clearance",
-      "value": "BDpFpen8h2MVfe1c5PjF0r1bGz.5M4OHqUPkknO_vmg-1775537183-1.2.1.1-P91JwceuGHBqrCtmhv27N8lE.MQ9RPr7C8qBh94GTD47zl4gjJuneSKKwOpdSF9ZLGw_7P7d1WYdmHXxTsRcI3zHe91twueO0B.rWQqj7HKqW8eqJVCQiOI22ztnjuMbmzLF.hu7JlFAc3LoqWXHdY3GHABGKOaYYa1j61zpwBvhzMzSFS9PlDnXpReLAxIb0TflXHf2jQcu4JI8CLiIkR5YmKg0EemnNislSFfSszEngGnmAjRJ4CVFgb7ld46Mm5LY.o_brjiGTJLCeNSWM2bOD_Ocb0S9_uh03Woa9D6NVfb0UjRzRGbfR.f_TMW4WoDz2lPedBVUTPAT33xZlA",
+      "value": "hG7Ao.Wg9BsPXFOsrrXWfmP7TXCLJ9Y3pMEYbZF0htE-1775539790-1.2.1.1-92VHmKo6CVtSgZ3ZcCJIvbl4m6vn66vU2KV6ds.EhK1sQLn_SDjxtv0nCxzm5O0f7vdTyYkO4sUlEWXsseSzlKrWOgdxhdxghmCHtTcK48u8MF.7GMni4yKVSN9dftMyqZCWi2Zd7G.uDdiG9ehAsv4oniuzVPqX_LdLl.cmNmuzHNztRNxnSyyteEeOVKfOK6u7dQ2x3NzaobOQXC4FON2D_KtCrDIIucPyM8EAqYyvWmh6lAKwdeQxsb4pFbU7I4086zQ11J9haj_wc5xbgaPCMz_wtUmrXaI78xBrtTTkz0S32OvFQqojuhr95qmiu2Uu4yoCq8S1RvGgIWZW1g",
       "domain": ".rebel777.co",
       "path": "/",
-      "expires": 1807073185.073339,
+      "expires": 1807075788.900083,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None",
       "partitionKey": "https://rebel777.co",
       "_crHasCrossSiteAncestor": false
-    },
-    {
-      "name": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4cmF2aTc4OCIsInNlc3Npb25JZCI6IjUzY2E2ZWQ5LTQ0NjQtNGY5MC05MGMwLTUwZmMzNGYwYTkxNiIsImlhdCI6MTc3NTUzNzE5NCwiZXhwIjoxNzc1NTM5Mjk0fQ.JQBlUhoXCV1cWEkJP165UbLALH0FBwCZcdhpbhgXyas",
-      "domain": "rebel777.co",
-      "path": "/",
-      "expires": 1775539292.581952,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "Strict"
     }
   ],
   "origins": [
@@ -69,11 +69,11 @@
       "localStorage": [
         {
           "name": "__client_fingerprint__",
-          "value": "{\"fp\":\"8270a3d44dd06e5c34d30943db23aa60994f390976b5b20051a3bcbd9f35f28a\",\"ts\":1775537179776}"
+          "value": "{\"fp\":\"8270a3d44dd06e5c34d30943db23aa60994f390976b5b20051a3bcbd9f35f28a\",\"ts\":1775539786922}"
         },
         {
           "name": "token",
-          "value": "9468b228-8257-4a25-a201-12800b0548e8"
+          "value": "2383f02c-d1cc-42d8-8ff2-7a4be00c76e7"
         },
         {
           "name": "isLoggedin",
@@ -81,7 +81,7 @@
         },
         {
           "name": "userDetails",
-          "value": "{\"isDemoUser\":false,\"token\":\"9468b228-8257-4a25-a201-12800b0548e8\",\"curr\":\"pts\",\"uname\":\"8ravi788\",\"ptype\":1,\"login\":true,\"rdisplay\":false,\"ipop\":false,\"auth\":0,\"currency\":\"INR\",\"agmno\":\"\",\"agmno1\":\"\"}"
+          "value": "{\"isDemoUser\":false,\"token\":\"2383f02c-d1cc-42d8-8ff2-7a4be00c76e7\",\"curr\":\"pts\",\"uname\":\"8ravi788\",\"ptype\":1,\"login\":true,\"rdisplay\":false,\"ipop\":false,\"auth\":0,\"currency\":\"INR\",\"agmno\":\"\",\"agmno1\":\"\"}"
         }
       ]
     },

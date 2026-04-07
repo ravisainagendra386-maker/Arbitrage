@@ -2108,6 +2108,7 @@
             if (isManual) _polyManualOverrideUntil = Date.now() + 8000;
             _polyActiveTab = idx;
             _polyTokenId = _polyTokenIds[idx];
+            const requestedTokenId = _polyTokenId;
             _polyBook = { asks: {}, bids: {} };  // reset book on tab switch
             _lastBestAskC = null;
             _pBookRows = [];  // reset DOM diff cache so full rebuild happens cleanly
@@ -2116,19 +2117,28 @@
             if (!_polyTokenId) return;
             // Fetch new orderbook
             setSt('pSt', 'LOADING...', 'bdg-w');
+            $('pBook').innerHTML = `<tr><td colspan="4"><div class="nodata">Loading ${_polyTeamNames[idx] || 'market'} book...</div></td></tr>`;
+            $('pLast').textContent = '—';
+            $('pSprd').textContent = '—';
+            $('pVol').textContent = '—';
             // Close old WS
             if (polyWs) { polyWs.close(); polyWs = null; }
+            if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
+            if (_wsReconnectTimer) { clearTimeout(_wsReconnectTimer); _wsReconnectTimer = null; }
             try {
-                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
-                if (d.bids || d.asks) renderP(d);
+                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${requestedTokenId}`);
+                if (_polyTokenId !== requestedTokenId) return;
+                if (d.bids || d.asks) renderP(d, requestedTokenId);
                 // Reconnect WS for new token
                 polyWs = new WebSocket('wss://ws-subscriptions-clob.polymarket.com/ws/market');
                 polyWs.onopen = () => {
-                    polyWs.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: _polyTokenId }));
+                    if (_polyTokenId !== requestedTokenId) return;
+                    polyWs.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: requestedTokenId }));
                     setSt('pSt', 'LIVE ✓', 'bdg-ok');
                 };
                 polyWs.onmessage = (msg) => {
                     try {
+                        if (_polyTokenId !== requestedTokenId) return;
                         const data = JSON.parse(msg.data);
                         // WS sends partial updates — merge into full book
                         if (data.asks) data.asks.forEach(a => {
@@ -2148,7 +2158,7 @@
                                 last_trade_price: data.last_trade_price || data.last,
                                 volume: data.volume
                             };
-                            renderP(merged);
+                            renderP(merged, requestedTokenId);
                         }
                     } catch { }
                 };
@@ -2202,7 +2212,7 @@
                             bids: Object.entries(_polyBook.bids).map(([p, sz]) => ({ price: p, size: sz })),
                             last_trade_price: data.last_trade_price || data.last,
                             volume: data.volume,
-                        });
+                        }, _polyTokenId);
                     }
                 } catch { }
             };
@@ -2220,6 +2230,7 @@
         let _polyTokenId = null;
         let _polyBook = { asks: {}, bids: {} };  // keyed by cents price, merged incrementally
         let _lastBestAskC = null;
+        let _polyLastByToken = {};
         let _polyTokenIds = [null, null];   // [team1, team2]
         let _polyActiveTab = 0;             // 0 = team1, 1 = team2
         let _polyTeamNames = ['—', '—'];
@@ -2266,7 +2277,7 @@
                 _lastBestAskC = null;
                 setSt('pSt', 'LOADING BOOK...', 'bdg-w');
                 const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
-                if (d.bids || d.asks) renderP(d);
+                if (d.bids || d.asks) renderP(d, _polyTokenId);
 
                 // Step 3: Close old WebSocket
                 if (polyWs) { polyWs.close(); polyWs = null; }
@@ -2290,7 +2301,7 @@
             if (!_polyTokenId) return;
             try {
                 const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
-                if (d.bids || d.asks) { renderP(d); setSt('pSt', 'SNAPSHOT ✓', 'bdg-w'); }
+                if (d.bids || d.asks) { renderP(d, _polyTokenId); setSt('pSt', 'SNAPSHOT ✓', 'bdg-w'); }
             } catch { }
             // No setTimeout here — WS reconnect handles continuity
         }
@@ -2300,7 +2311,7 @@
                 asks: [{ price: '2.00', size: '2643.99' }, { price: '1.92', size: '124.61' }, { price: '1.85', size: '200' }, { price: '1.79', size: '264' }],
                 bids: [{ price: '2.08', size: '904.49' }, { price: '2.13', size: '87' }, { price: '2.17', size: '10' }, { price: '2.22', size: '30' }],
                 last: '1.96', spread: '2¢', volume: '$208K'
-            });
+            }, 'demo');
             setSt('pSt', 'DEMO', 'bdg-w'); $('cP1').value = '2.00'; recalc();
         }
 
@@ -2309,7 +2320,7 @@
         // only patches cells that actually changed — zero full redraws.
         let _pBookRows = [];  // last rendered row signatures
 
-        function renderP(d) {
+        function renderP(d, tokenId = _polyTokenId) {
             const rawAsks = (d.asks || []).map(a => ({ c: parseFloat(a.price), sz: parseFloat(a.size) }));
             const rawBids = (d.bids || []).map(b => ({ c: parseFloat(b.price), sz: parseFloat(b.size) }));
 
@@ -2317,7 +2328,9 @@
             const bids = [...rawBids].sort((a, b) => b.c - a.c).slice(0, 5);
             const toOdds = c => c > 0 ? 1 / c : 0;
 
-            const lastC = parseFloat(d.last_trade_price || d.last || 0);
+            const incomingLast = parseFloat(d.last_trade_price || d.last || 0);
+            if (tokenId && incomingLast > 0) _polyLastByToken[tokenId] = incomingLast;
+            const lastC = tokenId ? (_polyLastByToken[tokenId] || 0) : incomingLast;
             const lastOdds = lastC > 0 ? toOdds(lastC).toFixed(2) : '—';
             const lastCents = lastC > 0 ? Math.round(lastC * 100) + '¢' : '—';
             const bestAskC = asks[0]?.c, bestBidC = bids[0]?.c;
