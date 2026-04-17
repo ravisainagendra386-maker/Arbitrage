@@ -1,0 +1,7 @@
+2026/04/13-20:07:12.829 2f10 Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\IndexedDB\https_kalshi.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/04/13-20:07:12.830 2f10 Recovering log #3
+2026/04/13-20:07:12.831 2f10 Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\IndexedDB\https_kalshi.com_0.indexeddb.leveldb/000003.log 
+2026/04/13-20:07:24.388 6acc Level-0 table #5: started
+2026/04/13-20:07:24.393 6acc Level-0 table #5: 9037 bytes OK
+2026/04/13-20:07:24.396 6acc Delete type=0 #3
+2026/04/13-20:07:24.398 6acc Manual compaction at level-0 from '\x00\x04\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x05\x00\x00\x00' @ 0 : 0; will stop at (end)

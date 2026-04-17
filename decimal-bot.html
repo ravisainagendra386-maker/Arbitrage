@@ -1263,6 +1263,46 @@
             margin-top: 2px;
         }
 
+        .arb-box-meta {
+            margin-top: 4px;
+            font-size: 10px;
+            color: var(--txt2);
+            text-align: center;
+            line-height: 1.35;
+        }
+
+        .arb-alt-list {
+            margin-top: 10px;
+            display: grid;
+            gap: 6px;
+        }
+
+        .arb-alt-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border: 1px solid var(--bd2);
+            border-radius: 6px;
+            background: rgba(26, 37, 64, .22);
+            font-size: 10px;
+            color: var(--txt2);
+        }
+
+        .arb-alt-item b {
+            color: var(--txt);
+            font-size: 11px;
+        }
+
+        .arb-alt-pos {
+            color: var(--g);
+        }
+
+        .arb-alt-neg {
+            color: var(--r);
+        }
+
         .arb-pct {
             font-size: 20px;
             font-weight: 900;
@@ -1354,7 +1394,8 @@
             <div>
                 <div class="sthl">⚙ SETTINGS</div>
                 <div class="stsub">Match:<b id="sbm">MI vs KKR</b> · Capital:<b id="sbc">₹1,00,000</b> · INR:<b
-                        id="sbi">₹84</b> · Fallback Poll:<b id="sbr">5s</b> · MinGap:<b id="sbg">2.0%</b> · Alert Hold:<b id="sah">6s</b></div>
+                        id="sbi">₹84</b> · Fallback Poll:<b id="sbr">5s</b> · MinGap:<b id="sbg">2.0%</b> · Alert
+                    Hold:<b id="sah">6s</b></div>
             </div>
             <span id="sarr" style="font-size:10px;color:var(--txt2)">▲</span>
         </div>
@@ -1397,8 +1438,8 @@
                 <div class="slbl">CAPITAL & RATES</div>
                 <div class="f"><label>Capital (₹)</label><input type="number" id="sCap" value="100000" step="5000"
                         oninput="onCap()" /></div>
-                <div class="f"><label>Fixed Rebel Stake (₹)</label><input type="number" id="sRebelStake" value="20000"
-                        step="1000" oninput="onRebelStake()" /></div>
+                <div class="f"><label>Fixed Rebel Stake (₹)</label><input type="number" id="sRebelStake"
+                        value="20000" step="1000" oninput="onRebelStake()" /></div>
                 <div class="f"><label>Bhav Win Step (₹)</label><input type="number" id="sStep" value="5000" step="1000"
                         oninput="onStep()" /></div>
                 <div class="f"><label>USD → INR (₹)</label><input type="number" id="sInr" value="84" step="0.5"
@@ -1407,8 +1448,8 @@
                 <div class="slbl">ARB ALERTS</div>
                 <div class="f"><label>Min Gap Threshold</label><input type="number" id="sMinGap" value="2.0" step="0.5"
                         oninput="onMG()" /></div>
-                <div class="f"><label>Alert Hold (s)</label><input type="number" id="sAlertHold" value="6" min="1" step="1"
-                        oninput="onAH()" /></div>
+                <div class="f"><label>Alert Hold (s)</label><input type="number" id="sAlertHold" value="6" min="1"
+                        step="1" oninput="onAH()" /></div>
                 <div class="f w"><label>Telegram Bot Token</label><input id="sTgToken"
                         placeholder="123456:ABC-DEF..." /></div>
                 <div class="f"><label>Telegram Chat ID</label><input id="sTgChat" placeholder="-1001234567890" /></div>
@@ -1438,7 +1479,8 @@
             <div class="arb-box-label">POLYMARKET</div>
             <div class="arb-box-team" id="abPolyTeam">—</div>
             <div class="arb-box-big" id="abPolyShares">—</div>
-            <div class="arb-box-sub">shares needed</div>
+            <div class="arb-box-sub" id="abPolySharesLbl">net shares after fee</div>
+            <div class="arb-box-meta" id="abPolyGross">gross — · fee —</div>
             <div class="arb-box-cents" id="abPolyCents">—</div>
             <div class="arb-box-sub">best odds (¢)</div>
         </div>
@@ -1452,7 +1494,13 @@
             <div class="arb-box-big" id="abRebelOdds">—</div>
             <div class="arb-box-sub">best lay odds</div>
             <div style="font-size:11px;color:var(--txt2);margin-top:4px">Stake: <span
-                    style="color:var(--y);font-size:13px;font-weight:700" id="abRebelStake">₹20,000</span></div>
+                    style="color:#0f0;font-size:13px;font-weight:700" id="abRebelLayStake">₹20,000</span></div>
+            <div style="font-size:11px;color:var(--txt2);margin-top:2px">Liability: <span
+                    style="color:var(--y);font-size:13px;font-weight:700" id="abRebelStake">—</span></div>
+            <div class="arb-alt-list">
+                <div class="arb-alt-item" id="abLayAlt1">L1 —</div>
+                <div class="arb-alt-item" id="abLayAlt2">L2 —</div>
+            </div>
         </div>
     </div>
 
@@ -1610,7 +1658,7 @@
                             <th class="rth">BHAV RETURN IF LAY WINS (₹)</th>
                             <th class="rth">BHAV LIABILITY (₹)</th>
                             <th class="rth">POLY BUY ($ / ¢)</th>
-                            <th class="rth">POLY SHARES</th>
+                            <th class="rth">POLY SHARES (GROSS → NET)</th>
                             <th class="rth">TOTAL DEPLOYED (₹)</th>
                             <th class="rth">UNUSED CAPITAL (₹)</th>
                             <th class="rth" id="thWin">IF MUM WINS</th>
@@ -1689,6 +1737,125 @@
         const t1s = () => t1().split(' ')[0].toUpperCase();
         const t2s = () => t2().split(' ')[0].toUpperCase();
 
+        function getPolyFeeRate() {
+            return 0.03;
+        }
+
+        function getPolyBuyFeeFromOdds(p, grossUsd) {
+            if (!p || p <= 1 || !grossUsd || grossUsd <= 0) return { cents: 0, feeRate: getPolyFeeRate(), feeUsd: 0, feeShares: 0 };
+            const priceUsd = 1 / p;
+            const feeRate = getPolyFeeRate();
+            const feeUsd = grossUsd * feeRate * Math.max(0, 1 - priceUsd);
+            const feeShares = priceUsd > 0 ? feeUsd / priceUsd : 0;
+            return {
+                cents: Math.round(priceUsd * 100),
+                feeRate,
+                feeUsd,
+                feeShares
+            };
+        }
+
+        function calcArbRows(p, b, cap, inr, mode = 'both') {
+            const rows = [];
+            const fixedLayStake = parseFloat($('sRebelStake').value) || 20000;
+            if (!p || !b || !cap || !fixedLayStake || p <= 1 || b <= 1) return rows;
+            const priceUsd = 1 / p;
+            const feeModel = getPolyBuyFeeFromOdds(p, 1);
+            const polyCents = feeModel.cents;
+            const feeRate = feeModel.feeRate;
+            const netMultiplier = 1 - feeRate * Math.max(0, 1 - priceUsd);
+            const effectivePolyOdds = p * netMultiplier;
+            if (effectivePolyOdds <= 1) return rows;
+            const w = fixedLayStake;
+            const bs = w * (b - 1);
+            let poly_inr, profW, profL;
+
+            if (mode === 'W') {
+                poly_inr = w;
+            } else if (mode === 'L') {
+                poly_inr = bs / (effectivePolyOdds - 1);
+            } else {
+                poly_inr = (w * b) / effectivePolyOdds;
+            }
+
+            const poly_usd = poly_inr / inr;
+            const grossShares = poly_usd * p;
+            const feeBreakup = getPolyBuyFeeFromOdds(p, poly_usd);
+            const feeUsd = feeBreakup.feeUsd;
+            const feeShares = feeBreakup.feeShares;
+            const netShares = Math.max(0, grossShares - feeShares);
+            const winPayoutInr = netShares * inr;
+            profW = winPayoutInr - poly_inr - bs;
+            profL = w - poly_inr;
+            const dep = bs + poly_inr;
+            if (dep > cap) return rows;
+            const left = cap - dep;
+            const minProf = Math.min(profW, profL);
+            const tgtProf = mode === 'both' ? minProf : Math.max(profW, profL);
+            const roi = dep > 0 ? (tgtProf / dep) * 100 : 0;
+
+            rows.push({
+                w,
+                bs,
+                pu: poly_usd,
+                ps: poly_inr,
+                dep,
+                left,
+                profW,
+                profL,
+                min: minProf,
+                tgtProf,
+                roi,
+                sh: Math.round(netShares),
+                grossSh: grossShares,
+                netSh: netShares,
+                feeUsd,
+                feeSh: feeShares,
+                feeRate,
+                cents: polyCents
+            });
+            return rows;
+        }
+
+        function fmtAltLay(level, p, cap, inr) {
+            if (!level || !p || p <= 1) return '—';
+            const row = calcArbRows(p, level, cap, inr, 'both')[0];
+            if (!row) return `${level.toFixed(2)} · over cap`;
+            const roiCls = row.roi > 0 ? 'arb-alt-pos' : 'arb-alt-neg';
+            const roiTxt = `${row.roi > 0 ? '+' : ''}${row.roi.toFixed(1)}%`;
+            const profTxt = `${row.min > 0 ? '+' : ''}₹${fmt(Math.abs(row.min))}`;
+            return `<span><b>${level.toFixed(2)}</b> · ${fu(row.netSh)} net · ${profTxt}</span><span class="${roiCls}">${roiTxt}</span>`;
+        }
+
+        function pickBestArbPair() {
+            const rebelLays = [window._r0Lay || null, window._r1Lay || null];
+            const cap = parseFloat($('sCap').value) || 100000;
+            const inr = inrR();
+            let best = null;
+
+            _polyPrices.forEach((p, i) => {
+                const b = rebelLays[i];
+                if (!p || !b || p <= 1 || b <= 1) return;
+                const rows = calcArbRows(p, b, cap, inr, 'both');
+                if (!rows.length) return;
+                const positiveRows = rows.filter(r => r.tgtProf > 0);
+                const bestRow = positiveRows.length ? positiveRows[positiveRows.length - 1] : rows[rows.length - 1];
+                if (!best || bestRow.roi > best.row.roi) {
+                    best = { idx: i, p, b, row: bestRow, rows };
+                }
+            });
+
+            if (!best) {
+                const p = _polyPrices[_polyActiveTab];
+                const b = rebelLays[_polyActiveTab];
+                if (p > 1 && b > 1) {
+                    const rows = calcArbRows(p, b, cap, inr, 'both');
+                    if (rows.length) best = { idx: _polyActiveTab, p, b, row: rows[rows.length - 1], rows };
+                }
+            }
+            return best;
+        }
+
         // ── CLOCK ──
         setInterval(() => { const t = new Date().toLocaleTimeString('en-IN'); $('ts').textContent = t; $('tsD').textContent = t; }, 1000);
 
@@ -1726,6 +1893,10 @@
             if (p1 && b1) u('cpS1', 'cbS1', p1, b1);
             if (p2 && b2) u('cpS2', 'cbS2', p2, b2);
         }
+        function updateTopPolyBadges() {
+            if ($('mumO')) $('mumO').textContent = _polyPrices[0] ? _polyPrices[0].toFixed(3) : '—';
+            if ($('kolO')) $('kolO').textContent = _polyPrices[1] ? _polyPrices[1].toFixed(3) : '—';
+        }
         function onT() {
             const mName = t1s(), kName = t2s();
             if ($('cpL1')) {
@@ -1734,6 +1905,7 @@
                 $('btnM1').textContent = mName + ' WINS';
                 $('btnM2').textContent = kName + ' WINS';
             }
+            updateTopPolyBadges();
             recalc();
         }
         function onCap() { const v = $('sCap').value; $('sbc').textContent = '₹' + fmt(parseFloat(v)); recalc(); }
@@ -1743,64 +1915,28 @@
         function onAH() { arbHoldMs = alertHoldSeconds() * 1000; if ($('sah')) $('sah').textContent = alertHoldSeconds() + 's'; }
         function onRebelStake() {
             const v = parseFloat($('sRebelStake').value) || 20000;
-            if ($('abRebelStake')) $('abRebelStake').textContent = '₹' + v.toLocaleString('en-IN');
-            updateArbBox();
+            if ($('abRebelLayStake')) $('abRebelLayStake').textContent = '₹' + v.toLocaleString('en-IN');
+            recalc();
         }
 
         // ── LIVE ARB BOX ──
         // Called whenever poly or rebel odds update
         function updateArbBox() {
-            const rebelStake = parseFloat($('sRebelStake')?.value) || 20000;
+            const best = pickBestArbPair();
+            const bestTabIdx = best?.idx ?? _polyActiveTab;
+            const p = best?.p ?? null;
+            const b = best?.b ?? null;
+            const row = best?.row ?? null;
+            const arbPct = row ? row.roi : null;
+            const cap = parseFloat($('sCap').value) || 100000;
             const inr = inrR();
-            const rebelLays = [window._r0Lay || null, window._r1Lay || null];
-
-            // Check same-team pairs only: poly[0] vs rebel[0], poly[1] vs rebel[1]
-            let bestTabIdx = null;
-            let bestRoi = null;
-            _polyPrices.forEach((p, i) => {
-                const b = rebelLays[i];
-                if (!p || !b || p <= 1 || b <= 1) return;
-                const layStake = rebelStake;
-                const layLiability = layStake * (b - 1);
-                const poly_inr = (layStake * b) / p;
-                const deployed = layLiability + poly_inr;
-                const profIfYes = poly_inr * (p - 1) - layLiability;
-                const profIfNo = layStake - poly_inr;
-                const minProf = Math.min(profIfYes, profIfNo);
-                const roi = deployed > 0 ? (minProf / deployed) * 100 : null;
-                if (roi === null) return;
-                if (bestRoi === null || roi > bestRoi) {
-                    bestRoi = roi;
-                    bestTabIdx = i;
-                }
-            });
-
-            // Fall back to active tab only if that same-team lay exists
-            if (bestTabIdx === null && _polyPrices[_polyActiveTab] > 1 && rebelLays[_polyActiveTab] > 1) {
-                bestTabIdx = _polyActiveTab;
-            }
-
-            const p = bestTabIdx !== null ? _polyPrices[bestTabIdx] : null;
-            const b = bestTabIdx !== null ? rebelLays[bestTabIdx] : null;
-            const layStake = rebelStake;
-            const layLiability = (p > 1 && b > 1) ? layStake * (b - 1) : 0;
-            const poly_inr = (p > 1 && b > 1) ? (layStake * b) / p : 0;
-            const deployed = layLiability + poly_inr;
-            const profIfYes = (p > 1 && b > 1) ? (poly_inr * (p - 1) - layLiability) : 0;
-            const profIfNo = (p > 1 && b > 1) ? (layStake - poly_inr) : 0;
-            const minProf = Math.min(profIfYes, profIfNo);
-            const arbPct = deployed > 0 ? (minProf / deployed) * 100 : null;
+            const layLevels = bestTabIdx === 0 ? (window._r0LayLevels || []) : (window._r1LayLevels || []);
 
             // Team name — from stored names or settings
-            const teamName = _polyTeamNames[bestTabIdx ?? _polyActiveTab] || ((bestTabIdx ?? _polyActiveTab) === 0 ? t1s() : t2s());
+            const teamName = _polyTeamNames[bestTabIdx] || (bestTabIdx === 0 ? t1s() : t2s());
             const rebelTeam = teamName;
 
-            // Shares needed
-            const poly_usd = poly_inr / inr;
-            const shares = Math.round(poly_usd * p);
-            const cents = (p > 1) ? Math.round((1 / p) * 100) : 0;
-
-            const hasPositiveArb = bestRoi !== null && bestRoi > 0;
+            const hasPositiveArb = row && row.roi > 0;
 
             // Highlight/switch only when there is a real positive arbitrage.
             if (hasPositiveArb && bestTabIdx !== null && bestTabIdx !== _polyActiveTab) {
@@ -1820,10 +1956,15 @@
 
             if ($('abPolyTeam')) $('abPolyTeam').textContent = teamName + ' YES';
             if ($('abRebelTeam')) $('abRebelTeam').textContent = rebelTeam + ' LAY';
-            if ($('abPolyShares')) $('abPolyShares').textContent = (p > 1) ? shares.toLocaleString() : '—';
-            if ($('abPolyCents')) $('abPolyCents').textContent = (p > 1) ? cents + '¢' : '—';
+            if ($('abPolyShares')) $('abPolyShares').textContent = row ? fu(row.grossSh) : '—';
+            if ($('abPolySharesLbl')) $('abPolySharesLbl').textContent = 'buy shares (gross)';
+            if ($('abPolyGross')) $('abPolyGross').textContent = row ? `net ${fu(row.netSh)} · fee ${fu(row.feeSh)} sh` : 'net — · fee —';
+            if ($('abPolyCents')) $('abPolyCents').textContent = row ? row.cents + '¢' : '—';
             if ($('abRebelOdds')) $('abRebelOdds').textContent = (b > 1) ? b.toFixed(2) : '—';
-            if ($('abRebelStake')) $('abRebelStake').textContent = '₹' + rebelStake.toLocaleString('en-IN');
+            if ($('abRebelLayStake')) $('abRebelLayStake').textContent = row ? '₹' + row.w.toLocaleString('en-IN') : '—';
+            if ($('abRebelStake')) $('abRebelStake').textContent = row ? '₹' + Math.round(row.bs).toLocaleString('en-IN') : '—';
+            if ($('abLayAlt1')) $('abLayAlt1').innerHTML = `L1 ${fmtAltLay(layLevels[0], p, cap, inr)}`;
+            if ($('abLayAlt2')) $('abLayAlt2').innerHTML = `L2 ${fmtAltLay(layLevels[1], p, cap, inr)}`;
 
             const pctEl = $('abPct'), lblEl = $('abPctLbl');
             if (pctEl && arbPct !== null) {
@@ -1860,14 +2001,22 @@
         }
 
         // ── ARB LOGIC + NOTIFICATIONS ──
-        function checkArb(p, b, actArb) {
-            if (!p || !b) return;
-            const gap = p - b;
-            const gapPct = b > 0 ? (gap / b) * 100 : 0;
-            const tgt = actArb === 1 ? t1s() : t2s();
-            const holdKey = `${actArb}:${tgt}`;
-            if (gapPct >= minGap()) {
-                arbHoldCandidate = { p, b, gapPct, tgt, holdKey };
+        function checkArb() {
+            const best = pickBestArbPair();
+            if (!best || !best.row) {
+                if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
+                arbHoldStartedAt = 0;
+                arbHoldKey = '';
+                arbHoldCandidate = null;
+                arbAlertSentKey = '';
+                lastGap = 0;
+                return;
+            }
+            const tgt = _polyTeamNames[best.idx] || (best.idx === 0 ? t1s() : t2s());
+            const roiPct = best.row.roi;
+            const holdKey = `${best.idx}:${tgt}`;
+            if (roiPct >= minGap()) {
+                arbHoldCandidate = { ...best, tgt, holdKey, roiPct };
                 if (arbAlertSentKey !== holdKey && (!arbHoldTimer || arbHoldKey !== holdKey)) {
                     if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
                     arbHoldKey = holdKey;
@@ -1876,7 +2025,7 @@
                         arbHoldTimer = null;
                         if (lastGap >= minGap() && arbHoldKey === holdKey && arbHoldCandidate?.holdKey === holdKey) {
                             arbAlertSentKey = holdKey;
-                            triggerAlerts(arbHoldCandidate.p, arbHoldCandidate.b, arbHoldCandidate.gapPct, arbHoldCandidate.tgt);
+                            triggerAlerts(arbHoldCandidate);
                         }
                     }, arbHoldMs);
                 }
@@ -1887,13 +2036,13 @@
                 arbHoldCandidate = null;
                 arbAlertSentKey = '';
             }
-            lastGap = gapPct;
+            lastGap = roiPct;
         }
 
-        function triggerAlerts(p, b, gapPct, tgt) {
+        function triggerAlerts(candidate) {
             if ($('sSnd').value === '1') playBeep();
             triggerFlash();
-            sendTelegram(p, b, gapPct, tgt);
+            sendTelegram(candidate);
         }
 
         function playBeep() {
@@ -1916,29 +2065,34 @@
             setTimeout(() => f.style.display = 'none', 900);
         }
 
-        async function sendTelegram(p, b, gapPct, tgt) {
+        async function sendTelegram(candidate) {
             const token = $('sTgToken').value.trim(), chat = $('sTgChat').value.trim();
-            if (!token || !chat) return;
-            const cap = parseFloat($('sCap').value) || 100000;
-            const step = parseFloat($('sStep').value) || 5000;
-            const inr = inrR();
-            let best = null;
-            for (let w = step; w <= cap * 3; w += step) {
-                const poly_inr = (w * b) / p;
-                const bs = w * (b - 1);
-                if (bs + poly_inr > cap) break;
-                best = { w, ps: poly_inr, pu: poly_inr / inr, bs };
+            if (!token || !chat) {
+                console.warn('[TG] Missing bot token or chat id');
+                return;
             }
-            if (!best) return;
-            const shares = Math.round(best.pu / (1 / p)).toLocaleString();
-            const prof = Math.max(0, best.ps * (p - 1) - best.bs);
-            const msg = `⚡ IPL ARB ALERT\n\nMatch: ${$('sMatch').value}\nProfit: +${gapPct.toFixed(2)}%\n\n📊 POLYMARKET\nBUY ${tgt} YES @ ${p.toFixed(3)}\nStake: $${fu(best.pu)} (₹${fmt(best.ps)})\nShares: ${shares}\n\n📈 BHAV\nLAY ${tgt} @ ${b.toFixed(3)}\nStake: ₹${fmt(best.bs)}\n\n✅ EQUAL PROFIT: +₹${fmt(prof)}\n⚙️ Capital: ₹${fmt(cap)} | INR: ${inr}`;
+            const inr = inrR();
+            const cap = parseFloat($('sCap').value) || 100000;
+            const p = candidate?.p, b = candidate?.b, tgt = candidate?.tgt, row = candidate?.row, roiPct = candidate?.roiPct;
+            if (!p || !b || !row) return;
+            const grossShares = fu(row.grossSh);
+            const netShares = fu(row.netSh);
+            const prof = Math.max(0, row.min);
+            const msg = `⚡ IPL ARB ALERT\n\nMatch: ${$('sMatch').value}\nProfit: ${roiPct >= 0 ? '+' : ''}${roiPct.toFixed(2)}%\n\n📊 POLYMARKET\nBUY ${tgt} YES @ ${p.toFixed(3)}\nStake: $${fu(row.pu)} (₹${fmt(row.ps)})\nGross Shares: ${grossShares}\nNet Hedge Shares: ${netShares}\nFee: $${fu(row.feeUsd)} (${fu(row.feeSh)} sh)\n\n📈 BHAV\nLAY ${tgt} @ ${b.toFixed(3)}\nStake: ₹${fmt(row.w)}\nLiability: ₹${fmt(Math.round(row.bs))}\n\n✅ EQUAL PROFIT: +₹${fmt(prof)}\n⚙️ Capital: ₹${fmt(cap)} | INR: ${inr}`;
             try {
-                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                const resp = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chat, text: msg, parse_mode: 'HTML' })
+                    body: JSON.stringify({ chat_id: chat, text: msg })
                 });
-            } catch (e) { }
+                if (!resp.ok) {
+                    const body = await resp.text().catch(() => '');
+                    console.error('[TG] Send failed', resp.status, body);
+                    return;
+                }
+                console.log('[TG] Alert sent');
+            } catch (e) {
+                console.error('[TG] Send error', e);
+            }
         }
 
         function recalc() {
@@ -1946,13 +2100,12 @@
             const p1 = parseFloat($('cP1').value || 0), b1 = parseFloat($('cB1').value || 0);
             const p2 = parseFloat($('cP2').value || 0), b2 = parseFloat($('cB2').value || 0);
             const cap = parseFloat($('sCap').value) || 100000;
-            const step = parseFloat($('sStep').value) || 5000;
             const inr = inrR();
 
-            let currArb = 1, p = p1, b = b1;
-            if (p2 && b2 && p1 && b1) {
-                if ((p2 - b2) > (p1 - b1)) { currArb = 2; p = p2; b = b2; }
-            } else if (p2 && b2) { currArb = 2; p = p2; b = b2; }
+            const best = pickBestArbPair();
+            let currArb = best?.idx === 1 ? 2 : 1;
+            let p = best?.p ?? p1;
+            let b = best?.b ?? b1;
 
             const mName = _polyTeamNames[0] || t1s(), kName = _polyTeamNames[1] || t2s();
             if ($('btnM1')) $('btnM1').textContent = `${mName.toUpperCase()} WINS`;
@@ -1966,51 +2119,17 @@
             }
             if ($('thMinP')) $('thMinP').textContent = calcMode === 'both' ? 'GUARANTEED PROFIT' : 'TARGET PROFIT';
 
-            if (!p || !b || !cap || !step || p <= 1) { $('calcTb').innerHTML = '<tr><td colspan="10"><div class="nodata">Capital too low or invalid odds</div></td></tr>'; return; }
+            if (!p || !b || !cap || p <= 1) { $('calcTb').innerHTML = '<tr><td colspan="10"><div class="nodata">Capital too low or invalid odds</div></td></tr>'; return; }
 
             polyPrice = p; bhavLay = b;
-            checkArb(p, b, currArb);
+            checkArb();
             updateChart(p, b);
             updateArbBox();
 
-            const rows = [];
-            const polyCents = p > 1 ? Math.round((1 / p) * 100) : 0;
-            for (let bsTarget = step; bsTarget <= cap; bsTarget += step) {
-                let w, poly_inr, bs, profW, profL;
-                bs = bsTarget;
-
-                let targetMax = 'both';
-                if (calcMode === 'm1') targetMax = (currArb === 1) ? 'W' : 'L';
-                if (calcMode === 'm2') targetMax = (currArb === 1) ? 'L' : 'W';
-
-                if (targetMax === 'W') {
-                    w = bs / (b - 1);
-                    poly_inr = w;
-                    profW = w * (p - 1) - bs;
-                    profL = 0;
-                } else if (targetMax === 'L') {
-                    w = bs / (b - 1);
-                    poly_inr = bs / (p - 1);
-                    profW = 0;
-                    profL = w - poly_inr;
-                } else {
-                    w = bs / (b - 1);
-                    poly_inr = (w * b) / p;
-                    profW = poly_inr * (p - 1) - bs;
-                    profL = w - poly_inr;
-                }
-
-                const poly_usd = poly_inr / inr;
-                const dep = bs + poly_inr;
-                if (dep > cap) break;
-                const left = cap - dep;
-                const minProf = Math.min(profW, profL);
-                const tgtProf = calcMode === 'both' ? minProf : Math.max(profW, profL);
-                const roi = dep > 0 ? (tgtProf / dep) * 100 : 0;
-                const shares = Math.round(poly_usd * p);
-
-                rows.push({ w, bs, pu: poly_usd, ps: poly_inr, dep, left, profW, profL, min: minProf, tgtProf, roi, sh: shares, cents: polyCents });
-            }
+            let targetMax = 'both';
+            if (calcMode === 'm1') targetMax = (currArb === 1) ? 'W' : 'L';
+            if (calcMode === 'm2') targetMax = (currArb === 1) ? 'L' : 'W';
+            const rows = calcArbRows(p, b, cap, inr, targetMax);
 
             renderCalc(rows, p, b, cap, inr);
         }
@@ -2032,8 +2151,8 @@
                 h += `<tr${isMx ? ' class="mx"' : ''}>
       <td>₹${fmt(r.w)}${isMx ? ' ⭐' : ''}</td>
       <td class="hl">₹${fmt(r.bs)}</td>
-      <td class="hl">$${fu(r.pu)} <span style="color:var(--txt2);font-size:10px">(${r.cents}¢)</span></td>
-      <td style="color:var(--txt2)">${r.sh.toLocaleString()}</td>
+      <td class="hl">$${fu(r.pu)} <span style="color:var(--txt2);font-size:10px">(${r.cents}¢ · fee $${fu(r.feeUsd)})</span></td>
+      <td style="color:var(--txt2)">${fu(r.grossSh)} gross <span style="color:var(--p)">→ ${fu(r.netSh)} net</span></td>
       <td>₹${fmt(r.dep)}</td>
       <td style="color:var(--txt2)">₹${fmt(r.left)}</td>
       <td>${pf(r.profW)}</td>
@@ -2103,134 +2222,149 @@
         // ── FETCH COUNTER ──
         function incNC() { ncalls++; $('ncall').textContent = ncalls; $('ncall2').textContent = ncalls; }
 
+        function tokenIndex(tokenId) {
+            return _polyTokenIds.findIndex(t => t === tokenId);
+        }
+
+        function getPolyBook(tokenId) {
+            if (!_polyBooks[tokenId]) _polyBooks[tokenId] = { asks: {}, bids: {} };
+            return _polyBooks[tokenId];
+        }
+
+        function setPolyBookSnapshot(tokenId, data) {
+            const book = getPolyBook(tokenId);
+            book.asks = {};
+            book.bids = {};
+            (data.asks || []).forEach(a => {
+                const p = parseFloat(a.price), sz = parseFloat(a.size);
+                if (p > 0 && sz > 0) book.asks[p] = sz;
+            });
+            (data.bids || []).forEach(b => {
+                const p = parseFloat(b.price), sz = parseFloat(b.size);
+                if (p > 0 && sz > 0) book.bids[p] = sz;
+            });
+            _polySnapshots[tokenId] = {
+                asks: Object.entries(book.asks).map(([p, sz]) => ({ price: p, size: sz })),
+                bids: Object.entries(book.bids).map(([p, sz]) => ({ price: p, size: sz })),
+                last_trade_price: data.last_trade_price || data.last || 0,
+                volume: data.volume
+            };
+            renderP(_polySnapshots[tokenId], tokenId);
+        }
+
+        function applyPolyDelta(tokenId, data) {
+            const book = getPolyBook(tokenId);
+            if (data.asks) data.asks.forEach(a => {
+                const p = parseFloat(a.price), sz = parseFloat(a.size);
+                if (sz === 0) delete book.asks[p];
+                else book.asks[p] = sz;
+            });
+            if (data.bids) data.bids.forEach(b => {
+                const p = parseFloat(b.price), sz = parseFloat(b.size);
+                if (sz === 0) delete book.bids[p];
+                else book.bids[p] = sz;
+            });
+            _polySnapshots[tokenId] = {
+                asks: Object.entries(book.asks).map(([p, sz]) => ({ price: p, size: sz })),
+                bids: Object.entries(book.bids).map(([p, sz]) => ({ price: p, size: sz })),
+                last_trade_price: data.last_trade_price || data.last || _polyLastByToken[tokenId] || 0,
+                volume: data.volume || _polyVolumeByToken[tokenId] || '—'
+            };
+            renderP(_polySnapshots[tokenId], tokenId);
+        }
+
         // ── POLY TAB SWITCH ──
         async function switchPolyTab(idx, isManual = false) {
             if (isManual) _polyManualOverrideUntil = Date.now() + 8000;
             _polyActiveTab = idx;
             _polyTokenId = _polyTokenIds[idx];
             const requestedTokenId = _polyTokenId;
-            _polyBook = { asks: {}, bids: {} };  // reset book on tab switch
-            _lastBestAskC = null;
             _pBookRows = [];  // reset DOM diff cache so full rebuild happens cleanly
             // Update tab UI
             document.querySelectorAll('.poly-tab').forEach((t, i) => t.classList.toggle('on', i === idx));
             if (!_polyTokenId) return;
-            // Fetch new orderbook
+            const cached = _polySnapshots[requestedTokenId];
+            if (cached && ((cached.asks && cached.asks.length) || (cached.bids && cached.bids.length))) {
+                renderP(cached, requestedTokenId);
+                setSt('pSt', _polyWsConnectedCount > 0 ? 'LIVE ✓' : 'SNAPSHOT ✓', _polyWsConnectedCount > 0 ? 'bdg-ok' : 'bdg-w');
+                return;
+            }
             setSt('pSt', 'LOADING...', 'bdg-w');
             $('pBook').innerHTML = `<tr><td colspan="4"><div class="nodata">Loading ${_polyTeamNames[idx] || 'market'} book...</div></td></tr>`;
             $('pLast').textContent = '—';
             $('pSprd').textContent = '—';
             $('pVol').textContent = '—';
-            // Close old WS
-            if (polyWs) { polyWs.close(); polyWs = null; }
-            if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
-            if (_wsReconnectTimer) { clearTimeout(_wsReconnectTimer); _wsReconnectTimer = null; }
             try {
                 const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${requestedTokenId}`);
                 if (_polyTokenId !== requestedTokenId) return;
-                if (d.bids || d.asks) renderP(d, requestedTokenId);
-                // Reconnect WS for new token
-                polyWs = new WebSocket('wss://ws-subscriptions-clob.polymarket.com/ws/market');
-                polyWs.onopen = () => {
-                    if (_polyTokenId !== requestedTokenId) return;
-                    polyWs.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: requestedTokenId }));
-                    setSt('pSt', 'LIVE ✓', 'bdg-ok');
-                };
-                polyWs.onmessage = (msg) => {
-                    try {
-                        if (_polyTokenId !== requestedTokenId) return;
-                        const data = JSON.parse(msg.data);
-                        // WS sends partial updates — merge into full book
-                        if (data.asks) data.asks.forEach(a => {
-                            const p = parseFloat(a.price), sz = parseFloat(a.size);
-                            if (sz === 0) delete _polyBook.asks[p];
-                            else _polyBook.asks[p] = sz;
-                        });
-                        if (data.bids) data.bids.forEach(b => {
-                            const p = parseFloat(b.price), sz = parseFloat(b.size);
-                            if (sz === 0) delete _polyBook.bids[p];
-                            else _polyBook.bids[p] = sz;
-                        });
-                        if (data.asks || data.bids) {
-                            const merged = {
-                                asks: Object.entries(_polyBook.asks).map(([p, sz]) => ({ price: p, size: sz })),
-                                bids: Object.entries(_polyBook.bids).map(([p, sz]) => ({ price: p, size: sz })),
-                                last_trade_price: data.last_trade_price || data.last,
-                                volume: data.volume
-                            };
-                            renderP(merged, requestedTokenId);
-                        }
-                    } catch { }
-                };
-                polyWs.onerror = () => { setSt('pSt', 'WS ERR', 'bdg-w'); polyPollLoop(); };
-                polyWs.onclose = () => { setSt('pSt', 'DISCONNECTED', 'bdg-r'); polyPollLoop(); };
+                if (d.bids || d.asks) {
+                    setPolyBookSnapshot(requestedTokenId, d);
+                    setSt('pSt', _polyWsConnectedCount > 0 ? 'LIVE ✓' : 'SNAPSHOT ✓', _polyWsConnectedCount > 0 ? 'bdg-ok' : 'bdg-w');
+                }
             } catch (e) { setSt('pSt', 'ERR', 'bdg-r'); }
         }
 
         // ── FETCH POLYMARKET ──
-        let polyWs = null;
-        let _wsHeartbeatTimer = null;
-        let _wsReconnectTimer = null;
+        let _polyWsByToken = {};
+        let _wsHeartbeatTimers = {};
+        let _wsReconnectTimers = {};
+        let _polyWsConnectedCount = 0;
         let _polyAutoSwitching = false;
         let _polyManualOverrideUntil = 0;
 
-        function connectPolyWs() {
-            if (!_polyTokenId) return;
-            if (polyWs && polyWs.readyState < 2) { polyWs.close(); }
-            if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
-            if (_wsReconnectTimer) { clearTimeout(_wsReconnectTimer); _wsReconnectTimer = null; }
+        function updatePolyWsStatus() {
+            const openCount = Object.values(_polyWsByToken).filter(ws => ws && ws.readyState === WebSocket.OPEN).length;
+            _polyWsConnectedCount = openCount;
+            if (openCount > 0) setSt('pSt', 'LIVE ✓', 'bdg-ok');
+            else if (_polyTokenId && _polySnapshots[_polyTokenId]) setSt('pSt', 'SNAPSHOT ✓', 'bdg-w');
+        }
 
-            polyWs = new WebSocket('wss://ws-subscriptions-clob.polymarket.com/ws/market');
+        function connectPolyWs(tokenId) {
+            if (!tokenId) return;
+            const existingWs = _polyWsByToken[tokenId];
+            if (existingWs && existingWs.readyState < 2) return;
+            if (_wsHeartbeatTimers[tokenId]) { clearInterval(_wsHeartbeatTimers[tokenId]); delete _wsHeartbeatTimers[tokenId]; }
+            if (_wsReconnectTimers[tokenId]) { clearTimeout(_wsReconnectTimers[tokenId]); delete _wsReconnectTimers[tokenId]; }
 
-            polyWs.onopen = () => {
-                polyWs.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: _polyTokenId }));
-                setSt('pSt', 'LIVE ✓', 'bdg-ok');
-                // Heartbeat every 10s — keeps connection alive, prevents timeout drops
-                _wsHeartbeatTimer = setInterval(() => {
-                    if (polyWs && polyWs.readyState === WebSocket.OPEN) {
-                        try { polyWs.send(JSON.stringify({ type: 'ping' })); } catch { }
+            const ws = new WebSocket('wss://ws-subscriptions-clob.polymarket.com/ws/market');
+            _polyWsByToken[tokenId] = ws;
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ type: 'subscribe', channel: 'market', assets_id: tokenId }));
+                updatePolyWsStatus();
+                _wsHeartbeatTimers[tokenId] = setInterval(() => {
+                    if (ws.readyState === WebSocket.OPEN) {
+                        try { ws.send(JSON.stringify({ type: 'ping' })); } catch { }
                     }
                 }, 10000);
             };
 
-            polyWs.onmessage = (msg) => {
+            ws.onmessage = (msg) => {
                 try {
                     const data = JSON.parse(msg.data);
                     if (data.type === 'pong' || data.type === 'ping') return; // ignore heartbeat
-                    // Merge partial updates into full book
-                    if (data.asks) data.asks.forEach(a => {
-                        const p = parseFloat(a.price), sz = parseFloat(a.size);
-                        if (sz === 0) delete _polyBook.asks[p]; else _polyBook.asks[p] = sz;
-                    });
-                    if (data.bids) data.bids.forEach(b => {
-                        const p = parseFloat(b.price), sz = parseFloat(b.size);
-                        if (sz === 0) delete _polyBook.bids[p]; else _polyBook.bids[p] = sz;
-                    });
-                    if (data.asks || data.bids) {
-                        renderP({
-                            asks: Object.entries(_polyBook.asks).map(([p, sz]) => ({ price: p, size: sz })),
-                            bids: Object.entries(_polyBook.bids).map(([p, sz]) => ({ price: p, size: sz })),
-                            last_trade_price: data.last_trade_price || data.last,
-                            volume: data.volume,
-                        }, _polyTokenId);
-                    }
+                    if (data.asks || data.bids) applyPolyDelta(tokenId, data);
                 } catch { }
             };
 
-            polyWs.onerror = () => { setSt('pSt', 'WS ERR', 'bdg-w'); polyPollLoop(); };
+            ws.onerror = () => {
+                polyPollLoop(tokenId);
+                updatePolyWsStatus();
+            };
 
-            polyWs.onclose = () => {
-                if (_wsHeartbeatTimer) { clearInterval(_wsHeartbeatTimer); _wsHeartbeatTimer = null; }
-                polyPollLoop();
-                setSt('pSt', 'RECONNECTING...', 'bdg-w');
-                // Auto-reconnect after 2s — never fall back to HTTP poll (floods Worker)
-                _wsReconnectTimer = setTimeout(connectPolyWs, 2000);
+            ws.onclose = () => {
+                if (_wsHeartbeatTimers[tokenId]) { clearInterval(_wsHeartbeatTimers[tokenId]); delete _wsHeartbeatTimers[tokenId]; }
+                polyPollLoop(tokenId);
+                updatePolyWsStatus();
+                _wsReconnectTimers[tokenId] = setTimeout(() => connectPolyWs(tokenId), 2000);
             };
         }
         let _polyTokenId = null;
-        let _polyBook = { asks: {}, bids: {} };  // keyed by cents price, merged incrementally
-        let _lastBestAskC = null;
+        let _polyBooks = {};
+        let _lastBestAskByToken = {};
         let _polyLastByToken = {};
+        let _polyVolumeByToken = {};
+        let _polySnapshots = {};
         let _polyTokenIds = [null, null];   // [team1, team2]
         let _polyActiveTab = 0;             // 0 = team1, 1 = team2
         let _polyTeamNames = ['—', '—'];
@@ -2272,19 +2406,27 @@
                 if ($('polyTab0')) $('polyTab0').textContent = _polyTeamNames[0];
                 if ($('polyTab1')) $('polyTab1').textContent = _polyTeamNames[1];
 
-                // Step 2: Initial orderbook snapshot
-                _polyBook = { asks: {}, bids: {} };  // reset on fresh load
-                _lastBestAskC = null;
+                // Step 2: Initial orderbook snapshots for both tokens
+                _polyBooks = {};
+                _polySnapshots = {};
+                _lastBestAskByToken = {};
                 setSt('pSt', 'LOADING BOOK...', 'bdg-w');
-                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
-                if (d.bids || d.asks) renderP(d, _polyTokenId);
+                await Promise.all(_polyTokenIds.filter(Boolean).map(async tokenId => {
+                    const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${tokenId}`);
+                    if (d.bids || d.asks) setPolyBookSnapshot(tokenId, d);
+                }));
 
-                // Step 3: Close old WebSocket
-                if (polyWs) { polyWs.close(); polyWs = null; }
+                // Step 3: Close old WebSockets
+                Object.values(_polyWsByToken).forEach(ws => { try { ws.close(); } catch { } });
+                _polyWsByToken = {};
+                Object.values(_wsHeartbeatTimers).forEach(timer => clearInterval(timer));
+                Object.values(_wsReconnectTimers).forEach(timer => clearTimeout(timer));
+                _wsHeartbeatTimers = {};
+                _wsReconnectTimers = {};
 
-                // Step 4: Live WebSocket with heartbeat + auto-reconnect
+                // Step 4: Live WebSocket with heartbeat + auto-reconnect for both tokens
                 setSt('pSt', 'CONNECTING WS...', 'bdg-w');
-                connectPolyWs();
+                _polyTokenIds.filter(Boolean).forEach(tokenId => connectPolyWs(tokenId));
 
             } catch (e) {
                 setSt('pSt', 'ERR', 'bdg-r');
@@ -2295,13 +2437,16 @@
             }
         }
 
-        async function polyPollLoop() {
+        async function polyPollLoop(tokenId = _polyTokenId) {
             // Single snapshot only — called once on WS drop, then WS reconnects
             // Never loop — that floods the Cloudflare Worker
-            if (!_polyTokenId) return;
+            if (!tokenId) return;
             try {
-                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${_polyTokenId}`);
-                if (d.bids || d.asks) { renderP(d, _polyTokenId); setSt('pSt', 'SNAPSHOT ✓', 'bdg-w'); }
+                const d = await polyFetch(`https://clob.polymarket.com/book?token_id=${tokenId}`);
+                if (d.bids || d.asks) {
+                    setPolyBookSnapshot(tokenId, d);
+                    if (tokenId === _polyTokenId) setSt('pSt', 'SNAPSHOT ✓', 'bdg-w');
+                }
             } catch { }
             // No setTimeout here — WS reconnect handles continuity
         }
@@ -2323,6 +2468,7 @@
         function renderP(d, tokenId = _polyTokenId) {
             const rawAsks = (d.asks || []).map(a => ({ c: parseFloat(a.price), sz: parseFloat(a.size) }));
             const rawBids = (d.bids || []).map(b => ({ c: parseFloat(b.price), sz: parseFloat(b.size) }));
+            const idx = tokenIndex(tokenId);
 
             const asks = [...rawAsks].sort((a, b) => a.c - b.c).slice(0, 5);
             const bids = [...rawBids].sort((a, b) => b.c - a.c).slice(0, 5);
@@ -2330,11 +2476,29 @@
 
             const incomingLast = parseFloat(d.last_trade_price || d.last || 0);
             if (tokenId && incomingLast > 0) _polyLastByToken[tokenId] = incomingLast;
+            if (tokenId && d.volume) _polyVolumeByToken[tokenId] = d.volume;
             const lastC = tokenId ? (_polyLastByToken[tokenId] || 0) : incomingLast;
             const lastOdds = lastC > 0 ? toOdds(lastC).toFixed(2) : '—';
             const lastCents = lastC > 0 ? Math.round(lastC * 100) + '¢' : '—';
             const bestAskC = asks[0]?.c, bestBidC = bids[0]?.c;
             const spread = bestAskC && bestBidC ? Math.round((bestAskC - bestBidC) * 100) + '¢' : '—';
+            const volume = tokenId ? (_polyVolumeByToken[tokenId] || d.volume || '—') : (d.volume || '—');
+
+            if (bestAskC && idx >= 0) {
+                const bestOdds = toOdds(bestAskC);
+                _polyPrices[idx] = bestOdds;
+                updateTopPolyBadges();
+                if (idx === 0) $('cP1').value = bestOdds.toFixed(3);
+                else if (idx === 1) $('cP2').value = bestOdds.toFixed(3);
+                polyPrice = bestOdds;
+                const prevBestAskC = _lastBestAskByToken[tokenId];
+                if (prevBestAskC === undefined || Math.abs(bestAskC - prevBestAskC) >= 0.01) {
+                    _lastBestAskByToken[tokenId] = bestAskC;
+                    recalc(); updateArbBox();
+                }
+            }
+
+            if (tokenId !== _polyTokenId && tokenId !== 'demo') return;
 
             // Build row descriptors: [type, odds, cents, shares, total]
             const newRows = [];
@@ -2348,7 +2512,7 @@
             }));
             newRows.push({
                 type: 'spr', cls: 'spr',
-                col1: `LAST: ${lastOdds} (${lastCents}) · SPREAD: ${spread} · VOL: ${d.volume || '—'}`,
+                col1: `LAST: ${lastOdds} (${lastCents}) · SPREAD: ${spread} · VOL: ${volume}`,
                 key: 'spr'
             });
             bids.forEach(b => newRows.push({
@@ -2398,22 +2562,7 @@
             // Meta row — simple text, no flicker risk
             $('pLast').textContent = lastOdds + ' (' + lastCents + ')';
             $('pSprd').textContent = spread;
-            $('pVol').textContent = d.volume || '—';
-
-            // Only recalc if best ask moved ≥1¢
-            if (bestAskC) {
-                const bestOdds = toOdds(bestAskC);
-                $('mumO').textContent = bestOdds.toFixed(2);
-                // Store per-team price for same-team arb detection
-                _polyPrices[_polyActiveTab] = bestOdds;
-                if (_lastBestAskC === null || Math.abs(bestAskC - _lastBestAskC) >= 0.01) {
-                    _lastBestAskC = bestAskC;
-                    if (_polyActiveTab === 0) $('cP1').value = bestOdds.toFixed(3);
-                    else $('cP2').value = bestOdds.toFixed(3);
-                    polyPrice = bestOdds;
-                    recalc(); updateArbBox();
-                }
-            }
+            $('pVol').textContent = volume;
         }
         function renderPM(m) {
             const y = parseFloat(m.outcomePrices?.[1] || 0.5);
@@ -2581,14 +2730,18 @@
                 const displayName = _polyTeamNames[ri] && _polyTeamNames[ri] !== '—' ? _polyTeamNames[ri] : (runner.name || `Runner ${ri + 1}`);
                 const bk = (runner.back || runner.availableToBack || []).slice(0, 3);
                 const lk = (runner.lay || runner.availableToLay || []).slice(0, 3);
+                const layLevels = lk
+                    .map(c => parseFloat(c.odds || c.price))
+                    .filter(v => Number.isFinite(v) && v > 1)
+                    .slice(0, 2);
                 const bestLay = lk[0] ? parseFloat(lk[0].odds || lk[0].price) : null;
-                const bestBack = bk[0] ? parseFloat(bk[0].odds || bk[0].price) : null;
                 // Store per-runner best lay for same-team arb mapping
                 if (isT1) {
-                    if (bestBack) $('mumO').textContent = bestBack.toFixed(3);
                     window._r0Lay = bestLay;
+                    window._r0LayLevels = layLevels;
                 } else {
                     window._r1Lay = bestLay;
+                    window._r1LayLevels = layLevels;
                 }
                 let cells = '';
                 for (let i = 0; i < 3; i++) {

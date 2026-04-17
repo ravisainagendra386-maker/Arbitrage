@@ -1,3 +1,6 @@
-2026/04/07-10:59:46.389 5450 Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Session Storage/MANIFEST-000001
-2026/04/07-10:59:46.390 5450 Recovering log #3
-2026/04/07-10:59:46.392 5450 Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Session Storage/000003.log 
+2026/04/16-19:52:27.080 a4dc Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Session Storage/MANIFEST-000001
+2026/04/16-19:52:27.081 a4dc Recovering log #18
+2026/04/16-19:52:27.083 a4dc Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Session Storage/000018.log 
+2026/04/16-20:56:37.409 a4dc Level-0 table #23: started
+2026/04/16-20:56:37.452 a4dc Level-0 table #23: 18053 bytes OK
+2026/04/16-20:56:37.462 a4dc Delete type=0 #18
