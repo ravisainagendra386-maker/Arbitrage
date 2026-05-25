@@ -1403,9 +1403,9 @@
             <div class="sg">
                 <div class="slbl">MATCH</div>
                 <div class="f"><label>Match Name</label><input id="sMatch" value="MI vs KKR" oninput="onMN()" /></div>
-                <div class="f"><label>Team 1 (MUM side)</label><input id="sT1" value="Mumbai Indians" oninput="onT()" />
+                <div class="f"><label id="sT1Lbl">Team 1 (MUM side)</label><input id="sT1" value="Mumbai Indians" oninput="onT()" />
                 </div>
-                <div class="f"><label>Team 2 (KOL side)</label><input id="sT2" value="Kolkata Knight Riders"
+                <div class="f"><label id="sT2Lbl">Team 2 (KOL side)</label><input id="sT2" value="Kolkata Knight Riders"
                         oninput="onT()" /></div>
                 <div class="sdiv"></div>
                 <div class="slbl">DATA SOURCES</div>
@@ -1467,8 +1467,8 @@
     <div class="mbar">
         <div class="pills">
             <div class="mt" id="mTitle">MI vs KKR</div>
-            <div class="pill pm">MUM <span id="mumO">—</span></div>
-            <div class="pill pk">KOL <span id="kolO">—</span></div>
+            <div class="pill pm"><span id="mumLbl">MUM</span> <span id="mumO">—</span></div>
+            <div class="pill pk"><span id="kolLbl">KOL</span> <span id="kolO">—</span></div>
         </div>
         <div class="mr">1 USD=<span id="inrD">₹84</span> · Updated:<span id="tsD">—</span></div>
     </div>
@@ -1580,13 +1580,13 @@
                         <div class="cp-col">
                             <label class="cp-lbl"><span id="cpL1">MUM</span> YES ASK</label>
                             <input type="number" id="cP1" class="cp-input" value="2.18" step="0.01"
-                                oninput="recalc()" />
+                                oninput="onCalcManualInput()" />
                             <div class="cp-sub" id="cpS1"></div>
                         </div>
                         <div class="cp-col">
                             <label class="cp-lbl"><span id="cpL2">KOL</span> YES ASK</label>
                             <input type="number" id="cP2" class="cp-input" value="1.82" step="0.01"
-                                oninput="recalc()" />
+                                oninput="onCalcManualInput()" />
                             <div class="cp-sub" id="cpS2"></div>
                         </div>
                     </div>
@@ -1597,13 +1597,13 @@
                         <div class="cp-col">
                             <label class="cp-lbl"><span id="cbL1">MUM</span> LAY</label>
                             <input type="number" id="cB1" class="cp-input" value="2.00" step="0.01"
-                                oninput="recalc()" />
+                                oninput="onCalcManualInput()" />
                             <div class="cp-sub" id="cbS1"></div>
                         </div>
                         <div class="cp-col">
                             <label class="cp-lbl"><span id="cbL2">KOL</span> LAY</label>
                             <input type="number" id="cB2" class="cp-input" value="2.00" step="0.01"
-                                oninput="recalc()" />
+                                oninput="onCalcManualInput()" />
                             <div class="cp-sub" id="cbS2"></div>
                         </div>
                     </div>
@@ -1720,6 +1720,8 @@
         let chartData = { labels: [], poly: [], bhav: [], gap: [] };
         let myChart = null;
         let lastGap = 0;
+        let manualCalcOverrideUntil = 0;
+        const MANUAL_CALC_HOLD_MS = 10000;
         let arbHoldTimer = null;
         let arbHoldStartedAt = 0;
         let arbHoldKey = '';
@@ -1736,6 +1738,37 @@
         const t2 = () => $('sT2').value || 'Kolkata Knight Riders';
         const t1s = () => t1().split(' ')[0].toUpperCase();
         const t2s = () => t2().split(' ')[0].toUpperCase();
+
+        function teamNameAt(idx) {
+            const fallback = idx === 0 ? t1() : t2();
+            const polyName = _polyTeamNames?.[idx];
+            return polyName && polyName !== '—' ? polyName : fallback;
+        }
+
+        function teamShortLabel(name) {
+            const clean = (name || '').trim();
+            if (!clean) return '—';
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (parts.length >= 2) return parts.slice(0, 3).map(p => p[0]).join('').toUpperCase();
+            return clean.slice(0, 3).toUpperCase();
+        }
+
+        function syncTeamLabels() {
+            const team1 = teamNameAt(0);
+            const team2 = teamNameAt(1);
+            const short1 = teamShortLabel(team1);
+            const short2 = teamShortLabel(team2);
+            if ($('mumLbl')) $('mumLbl').textContent = short1;
+            if ($('kolLbl')) $('kolLbl').textContent = short2;
+            if ($('sT1Lbl')) $('sT1Lbl').textContent = `Team 1 (${short1} side)`;
+            if ($('sT2Lbl')) $('sT2Lbl').textContent = `Team 2 (${short2} side)`;
+            if ($('cpL1')) $('cpL1').textContent = short1;
+            if ($('cpL2')) $('cpL2').textContent = short2;
+            if ($('cbL1')) $('cbL1').textContent = short1;
+            if ($('cbL2')) $('cbL2').textContent = short2;
+            if ($('btnM1')) $('btnM1').textContent = `${team1.toUpperCase()} WINS`;
+            if ($('btnM2')) $('btnM2').textContent = `${team2.toUpperCase()} WINS`;
+        }
 
         function getPolyFeeRate() {
             return 0.03;
@@ -1774,8 +1807,14 @@
                 poly_inr = w;
             } else if (mode === 'L') {
                 poly_inr = bs / (effectivePolyOdds - 1);
-            } else {
+            } else if (mode === 'both') {
                 poly_inr = (w * b) / effectivePolyOdds;
+            } else if (typeof mode === 'number') {
+                // For slider: interpolate between L (min) and W (max)
+                const min_poly = bs / (effectivePolyOdds - 1);
+                const max_poly = w;
+                // Mode is 0..1 where 1 represents W (Team wins = max profit) and 0 represents L
+                poly_inr = min_poly + mode * (max_poly - min_poly);
             }
 
             const poly_usd = poly_inr / inr;
@@ -1827,13 +1866,29 @@
             return `<span><b>${level.toFixed(2)}</b> · ${fu(row.netSh)} net · ${profTxt}</span><span class="${roiCls}">${roiTxt}</span>`;
         }
 
-        function pickBestArbPair() {
-            const rebelLays = [window._r0Lay || null, window._r1Lay || null];
+        function isManualCalcActive() {
+            return Date.now() < manualCalcOverrideUntil;
+        }
+
+        function getCalcPairsFromInputs() {
+            return {
+                polyPrices: [
+                    parseFloat($('cP1')?.value || 0) || null,
+                    parseFloat($('cP2')?.value || 0) || null
+                ],
+                rebelLays: [
+                    parseFloat($('cB1')?.value || 0) || null,
+                    parseFloat($('cB2')?.value || 0) || null
+                ]
+            };
+        }
+
+        function pickBestArbPairFromValues(polyPrices, rebelLays, fallbackIdx = _polyActiveTab) {
             const cap = parseFloat($('sCap').value) || 100000;
             const inr = inrR();
             let best = null;
 
-            _polyPrices.forEach((p, i) => {
+            polyPrices.forEach((p, i) => {
                 const b = rebelLays[i];
                 if (!p || !b || p <= 1 || b <= 1) return;
                 const rows = calcArbRows(p, b, cap, inr, 'both');
@@ -1846,14 +1901,19 @@
             });
 
             if (!best) {
-                const p = _polyPrices[_polyActiveTab];
-                const b = rebelLays[_polyActiveTab];
+                const p = polyPrices[fallbackIdx];
+                const b = rebelLays[fallbackIdx];
                 if (p > 1 && b > 1) {
                     const rows = calcArbRows(p, b, cap, inr, 'both');
-                    if (rows.length) best = { idx: _polyActiveTab, p, b, row: rows[rows.length - 1], rows };
+                    if (rows.length) best = { idx: fallbackIdx, p, b, row: rows[rows.length - 1], rows };
                 }
             }
             return best;
+        }
+
+        function pickBestArbPair() {
+            const rebelLays = [window._r0Lay || null, window._r1Lay || null];
+            return pickBestArbPairFromValues(_polyPrices, rebelLays, _polyActiveTab);
         }
 
         // ── CLOCK ──
@@ -1896,15 +1956,14 @@
         function updateTopPolyBadges() {
             if ($('mumO')) $('mumO').textContent = _polyPrices[0] ? _polyPrices[0].toFixed(3) : '—';
             if ($('kolO')) $('kolO').textContent = _polyPrices[1] ? _polyPrices[1].toFixed(3) : '—';
+            syncTeamLabels();
+        }
+        function onCalcManualInput() {
+            manualCalcOverrideUntil = Date.now() + MANUAL_CALC_HOLD_MS;
+            recalc();
         }
         function onT() {
-            const mName = t1s(), kName = t2s();
-            if ($('cpL1')) {
-                $('cpL1').textContent = mName; $('cpL2').textContent = kName;
-                $('cbL1').textContent = mName; $('cbL2').textContent = kName;
-                $('btnM1').textContent = mName + ' WINS';
-                $('btnM2').textContent = kName + ' WINS';
-            }
+            syncTeamLabels();
             updateTopPolyBadges();
             recalc();
         }
@@ -1922,6 +1981,7 @@
         // ── LIVE ARB BOX ──
         // Called whenever poly or rebel odds update
         function updateArbBox() {
+            const manualActive = isManualCalcActive();
             const best = pickBestArbPair();
             const bestTabIdx = best?.idx ?? _polyActiveTab;
             const p = best?.p ?? null;
@@ -2017,17 +2077,15 @@
             const holdKey = `${best.idx}:${tgt}`;
             if (roiPct >= minGap()) {
                 arbHoldCandidate = { ...best, tgt, holdKey, roiPct };
-                if (arbAlertSentKey !== holdKey && (!arbHoldTimer || arbHoldKey !== holdKey)) {
-                    if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
+                if (arbHoldKey !== holdKey) {
                     arbHoldKey = holdKey;
                     arbHoldStartedAt = Date.now();
-                    arbHoldTimer = setTimeout(() => {
-                        arbHoldTimer = null;
-                        if (lastGap >= minGap() && arbHoldKey === holdKey && arbHoldCandidate?.holdKey === holdKey) {
-                            arbAlertSentKey = holdKey;
-                            triggerAlerts(arbHoldCandidate);
-                        }
-                    }, arbHoldMs);
+                    arbAlertSentKey = '';
+                }
+                if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
+                if (arbAlertSentKey !== holdKey && arbHoldStartedAt && (Date.now() - arbHoldStartedAt) >= arbHoldMs) {
+                    arbAlertSentKey = holdKey;
+                    triggerAlerts(arbHoldCandidate);
                 }
             } else {
                 if (arbHoldTimer) { clearTimeout(arbHoldTimer); arbHoldTimer = null; }
@@ -2102,12 +2160,15 @@
             const cap = parseFloat($('sCap').value) || 100000;
             const inr = inrR();
 
-            const best = pickBestArbPair();
+            const manualActive = isManualCalcActive();
+            const best = manualActive
+                ? pickBestArbPairFromValues([p1, p2], [b1, b2], _polyActiveTab)
+                : pickBestArbPair();
             let currArb = best?.idx === 1 ? 2 : 1;
             let p = best?.p ?? p1;
             let b = best?.b ?? b1;
 
-            const mName = _polyTeamNames[0] || t1s(), kName = _polyTeamNames[1] || t2s();
+            const mName = teamNameAt(0), kName = teamNameAt(1);
             if ($('btnM1')) $('btnM1').textContent = `${mName.toUpperCase()} WINS`;
             if ($('btnM2')) $('btnM2').textContent = `${kName.toUpperCase()} WINS`;
             if (currArb === 1) {
@@ -2122,8 +2183,8 @@
             if (!p || !b || !cap || p <= 1) { $('calcTb').innerHTML = '<tr><td colspan="10"><div class="nodata">Capital too low or invalid odds</div></td></tr>'; return; }
 
             polyPrice = p; bhavLay = b;
-            checkArb();
-            updateChart(p, b);
+            if (!manualActive) checkArb();
+            if (!manualActive) updateChart(p, b);
             updateArbBox();
 
             let targetMax = 'both';
@@ -2286,6 +2347,8 @@
             const cached = _polySnapshots[requestedTokenId];
             if (cached && ((cached.asks && cached.asks.length) || (cached.bids && cached.bids.length))) {
                 renderP(cached, requestedTokenId);
+                checkArb();
+                updateArbBox();
                 setSt('pSt', _polyWsConnectedCount > 0 ? 'LIVE ✓' : 'SNAPSHOT ✓', _polyWsConnectedCount > 0 ? 'bdg-ok' : 'bdg-w');
                 return;
             }
@@ -2299,6 +2362,8 @@
                 if (_polyTokenId !== requestedTokenId) return;
                 if (d.bids || d.asks) {
                     setPolyBookSnapshot(requestedTokenId, d);
+                    checkArb();
+                    updateArbBox();
                     setSt('pSt', _polyWsConnectedCount > 0 ? 'LIVE ✓' : 'SNAPSHOT ✓', _polyWsConnectedCount > 0 ? 'bdg-ok' : 'bdg-w');
                 }
             } catch (e) { setSt('pSt', 'ERR', 'bdg-r'); }
@@ -2310,6 +2375,17 @@
         let _wsReconnectTimers = {};
         let _polyWsConnectedCount = 0;
         let _polyAutoSwitching = false;
+        let _sliderValue = 0.5;
+
+        function onArbSlider(val) {
+            _sliderValue = parseFloat(val) / 100;
+            document.getElementById('arbSliderVal').innerText = val + '%';
+            if (val == 50) {
+                setCalcMode('both');
+            } else {
+                setCalcMode('slider');
+            }
+        }
         let _polyManualOverrideUntil = 0;
 
         function updatePolyWsStatus() {
@@ -2392,7 +2468,22 @@
                 if (!events || !events[0]) throw new Error('No event found for slug: ' + slug);
 
                 const ev = events[0];
-                const market = ev.markets[0];
+                // International/PSL events bundle Toss-Winner, Completed-Match, Tie, Super Over alongside the Moneyline.
+                // The moneyline market's slug always equals the event slug (sub-markets get suffixes like -toss-winner).
+                const evSlug = (ev.slug || '').toLowerCase();
+                const isTradable = m => m && m.clobTokenIds && !m.closed && !m.archived;
+                const hasTeamOutcomes = m => {
+                    try {
+                        const outs = JSON.parse(m.outcomes || '[]').map(o => String(o).toLowerCase().trim());
+                        return outs.length >= 2 && !outs.every(o => o === 'yes' || o === 'no');
+                    } catch { return false; }
+                };
+                const candidates = (ev.markets || []).filter(m => isTradable(m) && hasTeamOutcomes(m));
+                const market =
+                    candidates.find(m => (m.slug || '').toLowerCase() === evSlug) ||
+                    candidates.sort((a, b) => (Number(b.volume) || 0) - (Number(a.volume) || 0))[0] ||
+                    ev.markets[0];
+                if (!market || !market.clobTokenIds) throw new Error('No tradable moneyline market in event: ' + slug);
                 const tokenIds = JSON.parse(market.clobTokenIds);
                 _polyTokenIds = [tokenIds[0], tokenIds[1] || tokenIds[0]];
                 _polyTokenId = _polyTokenIds[_polyActiveTab];
@@ -2402,6 +2493,7 @@
                     const outcomes = JSON.parse(market.outcomes || '[]');
                     _polyTeamNames = [outcomes[0] || t1s(), outcomes[1] || t2s()];
                 } catch { _polyTeamNames = [t1s(), t2s()]; }
+                syncTeamLabels();
                 // Update tab labels
                 if ($('polyTab0')) $('polyTab0').textContent = _polyTeamNames[0];
                 if ($('polyTab1')) $('polyTab1').textContent = _polyTeamNames[1];
@@ -2488,8 +2580,10 @@
                 const bestOdds = toOdds(bestAskC);
                 _polyPrices[idx] = bestOdds;
                 updateTopPolyBadges();
-                if (idx === 0) $('cP1').value = bestOdds.toFixed(3);
-                else if (idx === 1) $('cP2').value = bestOdds.toFixed(3);
+                if (!isManualCalcActive()) {
+                    if (idx === 0) $('cP1').value = bestOdds.toFixed(3);
+                    else if (idx === 1) $('cP2').value = bestOdds.toFixed(3);
+                }
                 polyPrice = bestOdds;
                 const prevBestAskC = _lastBestAskByToken[tokenId];
                 if (prevBestAskC === undefined || Math.abs(bestAskC - prevBestAskC) >= 0.01) {
@@ -2756,8 +2850,10 @@
             });
             $('bBook').innerHTML = h;
             const lay0 = window._r0Lay, lay1 = window._r1Lay;
-            if (lay0) $('cB1').value = lay0.toFixed(3);
-            if (lay1) $('cB2').value = lay1.toFixed(3);
+            if (!isManualCalcActive()) {
+                if (lay0) $('cB1').value = lay0.toFixed(3);
+                if (lay1) $('cB2').value = lay1.toFixed(3);
+            }
             bhavLay = lay0 || lay1 || null;
             recalc();
             updateArbBox();
@@ -2780,7 +2876,11 @@
             // Polymarket should not reconnect its WS on every refresh tick.
             rtmr = setInterval(() => {
                 if ($('sPolyUrl').value.trim()) {
-                    if (_polyTokenId) polyPollLoop();
+                    if (_polyTokenIds.filter(Boolean).length) {
+                        _polyTokenIds.filter(Boolean).forEach(tokenId => polyPollLoop(tokenId));
+                    } else if (_polyTokenId) {
+                        polyPollLoop();
+                    }
                     else fetchPoly();
                 }
                 // rebel777 is handled entirely by proxy poll loop — no fetchRebel777() here
@@ -2791,6 +2891,20 @@
             if ($('sPolyUrl').value.trim()) fetchPoly(); else demoP();
             if ($('sRebel777Url').value.trim()) fetchRebel777(); else demoB();
         }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) return;
+            if (_polyTokenIds.filter(Boolean).length) {
+                _polyTokenIds.filter(Boolean).forEach(tokenId => {
+                    polyPollLoop(tokenId);
+                    connectPolyWs(tokenId);
+                });
+            }
+            if ($('sRebel777Url')?.value.trim() && (!rebelWs || rebelWs.readyState >= 2)) {
+                connectRebelWs();
+            }
+            checkArb();
+        });
 
         // ── INIT ──
         window.onload = () => {

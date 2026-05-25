@@ -1,6 +1,6 @@
-2026/04/16-14:43:43.565 a8ec Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/MANIFEST-000001
-2026/04/16-14:43:43.574 a8ec Recovering log #18
-2026/04/16-14:43:43.575 a8ec Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/000018.log 
-2026/04/16-18:01:44.921 a8ec Level-0 table #23: started
-2026/04/16-18:01:44.962 a8ec Level-0 table #23: 9106 bytes OK
-2026/04/16-18:01:44.981 a8ec Delete type=0 #18
+2026/05/23-18:42:50.947 7a0c Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/05/23-18:42:50.955 7a0c Recovering log #149
+2026/05/23-18:42:50.957 7a0c Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/000149.log 
+2026/05/23-21:53:01.481 34dc Level-0 table #153: started
+2026/05/23-21:53:01.488 34dc Level-0 table #153: 9222 bytes OK
+2026/05/23-21:53:01.490 34dc Delete type=0 #149

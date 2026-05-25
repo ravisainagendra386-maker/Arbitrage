@@ -861,11 +861,15 @@ const server = http.createServer((req, res) => {
     // ── / → serve HTML ──
     if (parsed.pathname === '/' || parsed.pathname === '/index.html') {
         const htmlPath = path.join(__dirname, 'decimal-bot.html');
-        if (fs.existsSync(htmlPath)) { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(fs.readFileSync(htmlPath)); }
-        else { res.writeHead(404); res.end('decimal-bot.html not found in the same folder'); }
+        if (fs.existsSync(htmlPath)) {
+            res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-store, no-cache, must-revalidate', 'Pragma': 'no-cache' });
+            res.end(fs.readFileSync(htmlPath));
+        } else {
+            res.writeHead(404);
+            res.end('decimal-bot.html not found in the same folder');
+        }
         return;
     }
-
     res.writeHead(404); res.end('Not found');
 });
 

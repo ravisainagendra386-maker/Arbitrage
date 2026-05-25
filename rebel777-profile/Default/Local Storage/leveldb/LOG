@@ -1,3 +1,15 @@
-2026/04/16-19:52:26.842 a4dc Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/MANIFEST-000001
-2026/04/16-19:52:26.848 a4dc Recovering log #22
-2026/04/16-19:52:26.849 a4dc Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/000022.log 
+2026/05/24-17:57:47.065 2e48 Reusing MANIFEST C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/05/24-17:57:47.073 2e48 Recovering log #152
+2026/05/24-17:57:47.075 2e48 Reusing old log C:\Projects\Cricket Arbitrage\DecimalArbitrage\rebel777-profile\Default\Local Storage\leveldb/000152.log 
+2026/05/24-19:31:48.357 2e48 Level-0 table #156: started
+2026/05/24-19:31:48.372 2e48 Level-0 table #156: 8966 bytes OK
+2026/05/24-19:31:48.380 2e48 Delete type=0 #152
+2026/05/24-19:31:48.381 2e48 Compacting 4@0 + 1@1 files
+2026/05/24-19:31:48.399 2e48 Generated table #157@0: 51 keys, 41139 bytes
+2026/05/24-19:31:48.400 2e48 Compacted 4@0 + 1@1 files => 41139 bytes
+2026/05/24-19:31:48.403 2e48 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/05/24-19:31:48.405 2e48 Delete type=2 #144
+2026/05/24-19:31:48.406 2e48 Delete type=2 #147
+2026/05/24-19:31:48.406 2e48 Delete type=2 #150
+2026/05/24-19:31:48.406 2e48 Delete type=2 #153
+2026/05/24-19:31:48.406 2e48 Delete type=2 #156

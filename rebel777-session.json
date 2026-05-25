@@ -1,0 +1,614 @@
+{
+  "cookies": [
+    {
+      "name": "_GRECAPTCHA",
+      "value": "09AKhCRwjFr1PtbM8NuXlqRn8aQmNJKo6NHoJUtRMQbFFqraJxVWFDb4YvEp1qFsBiNk9fS_AWt--6NFCgkmvp-v8",
+      "domain": "www.google.com",
+      "path": "/recaptcha",
+      "expires": 1791210782.823507,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "AEC",
+      "value": "AaJma5vQcg999IIR4mxag8_JRbUssGBehK85X2lNbs62ALLYkZjAyIirtIs",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1791210773.515909,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_MKTG_a80cc4d021",
+      "value": "JTdCJTIycmVmZXJyZXIlMjIlM0ElMjJodHRwcyUzQSUyRiUyRnJlYmVsNzc3LmNvJTJGJTIyJTJDJTIycmVmZXJyaW5nX2RvbWFpbiUyMiUzQSUyMnJlYmVsNzc3LmNvJTIyJTdE",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627033,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_a80cc4d021",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjIwNGE0NGQ5MS0wNzIzLTQxYzItYmU3NC1kNzRhODg5ZGVmZTIlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzc2MDkxMDI1NzI1JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc3NjA5MTAzMzExOCUyQyUyMmxhc3RFdmVudElkJTIyJTNBNiUyQyUyMnBhZ2VDb3VudGVyJTIyJTNBMiUyQyUyMmNvb2tpZURvbWFpbiUyMiUzQSUyMi5rYWxzaGkuY29tJTIyJTdE",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627033,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "g_state",
+      "value": "{\"i_l\":0,\"i_ll\":1776091037272,\"i_b\":\"cXjsH++IwG8a55TVwwzIAz+BKOQEk7pH6VObERGE21s\",\"i_e\":{\"enable_itp_optimization\":0},\"i_et\":1776091037272}",
+      "domain": "kalshi.com",
+      "path": "/",
+      "expires": 1791643037,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gcl_au",
+      "value": "1.1.723653059.1776091042",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1783867042,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "barometric[cuid]",
+      "value": "cuid_69dcffa2-3472-4c11-87af-a66370e860d6",
+      "domain": ".trkn.us",
+      "path": "/",
+      "expires": 1807627042.857804,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_ttp",
+      "value": "3CJ5t1jYbTmq9SgyHmVgKTxlp7V",
+      "domain": ".tiktok.com",
+      "path": "/",
+      "expires": 1809787042.559092,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_rdt_uuid",
+      "value": "1776091042856.f995c40e-f54d-4374-b001-0949d4f3bcba",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1783867042,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "_axwrt",
+      "value": "89a2af6e-0364-4cda-a9e0-212336e4d96b",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627042,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_twpid",
+      "value": "tw.1776091042939.710322286327947633",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1809787042.947177,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "__ps_r",
+      "value": "https://rebel777.co/",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627043,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__ps_lu",
+      "value": "https://kalshi.com/markets/kxiplgame/indian-premier-league-cricket-game/kxiplgame-26apr13rrsrh",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627043,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__ps_did",
+      "value": "pscrb_481fec7e-d3f4-418a-aa34-7073ad63bcbd",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627043,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__ps_fva",
+      "value": "1776091043084",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627043,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "__spdt",
+      "value": "bc292bc3d6e34e9c9f1352092732b8f4",
+      "domain": "kalshi.com",
+      "path": "/",
+      "expires": 1807627043,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "guest_id_marketing",
+      "value": "v1%3A177609104360870175",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1810651043.248789,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "guest_id_ads",
+      "value": "v1%3A177609104360870175",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1810651043.249019,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "personalization_id",
+      "value": "\"v1_PBruXRvGks4hq6Z9yxSM0Q==\"",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1810651043.249273,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "guest_id",
+      "value": "v1%3A177609104360870175",
+      "domain": ".twitter.com",
+      "path": "/",
+      "expires": 1810651043.249344,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "muc_ads",
+      "value": "a9f363e3-a2c4-4b79-b185-84f543921626",
+      "domain": ".t.co",
+      "path": "/",
+      "expires": 1810651043.27336,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.525349921.1776091043",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1810651043.326551,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "axcrt",
+      "value": "AL.1.101395132.1776091043709.3",
+      "domain": ".applovin.com",
+      "path": "/",
+      "expires": 1807627046.183584,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "arc_id",
+      "value": "eyJfcmFpbHMiOnsibWVzc2FnZSI6IkltTmpZalEzTjJRNUxUTXpOVFV0TkRRMU55MDRNR1V6TFdZM1lUWmhZVEU0T1dSalppST0iLCJleHAiOiIyMDI2LTA2LTEyVDE0OjM3OjIzLjk1M1oiLCJwdXIiOiJjb29raWUuYXJjX2lkIn19--60f1587dcec62b1e51afb5bc06c443b70d9b837e",
+      "domain": ".mgln.ai",
+      "path": "/",
+      "expires": 1781275042.57544,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "rskxRunCookie",
+      "value": "0",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1810651043.752735,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "rCookie",
+      "value": "yflgfl3ewifvfj6ij013vmnxar05s",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1810651046.217853,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "lastRskxRun",
+      "value": "1776091043747",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1810651043.752457,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "li_sugr",
+      "value": "f9063b29-7a88-4e6d-8371-632d19d25e38",
+      "domain": ".linkedin.com",
+      "path": "/",
+      "expires": 1783867044.871569,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "bcookie",
+      "value": "\"v=2&3cb4cdb1-323e-4956-8013-622078db33e8\"",
+      "domain": ".linkedin.com",
+      "path": "/",
+      "expires": 1807627044.871765,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_fbp",
+      "value": "fb.1.1776091038158.77522318672975340.AQYAAQIB",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1783867044,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "bscookie",
+      "value": "\"v=1&202604131437243def5f3e-e56b-4eec-8531-aa522cf47a4eAQGLdqc2C2TfRRp-6m8H0ozBcoqo4d3-\"",
+      "domain": ".www.linkedin.com",
+      "path": "/",
+      "expires": 1807627044.509002,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "TapAd_TS",
+      "value": "1776091044942",
+      "domain": ".tapad.com",
+      "path": "/",
+      "expires": 1781275044.799485,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "TapAd_DID",
+      "value": "31b7b2eb-58ea-465c-a520-a11cd7f098c7",
+      "domain": ".tapad.com",
+      "path": "/",
+      "expires": 1781275044.7997,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_tt_enable_cookie",
+      "value": "1",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1809787044,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ttp",
+      "value": "01KP3MD6Q4CXDD98ZKH2B4JQH8_.tt.1",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1809787044,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "TapAd_3WAY_SYNCS",
+      "value": "",
+      "domain": ".tapad.com",
+      "path": "/",
+      "expires": 1781275044.799786,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_dd_s",
+      "value": "aid=1481ce94-2312-451a-bddd-b5560530afc2&rum=2&id=c348d027-533f-4a82-a684-3849b7890337&created=1776091041472&expire=1776091944834",
+      "domain": "kalshi.com",
+      "path": "/",
+      "expires": 1807627044,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "com.adsmeasurement.pubsuite.pubSuiteInstallId",
+      "value": "KB1776091044T8d4a31787e0543c78ef6c7fed7c59fc4",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1810651044.858745,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ttcsid",
+      "value": "1776091044604::CcRyyH-YOvibv0IKpfor.1.1776091045026.0::1.-12625.0::0.0.0.0::0.0.0",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1809787045,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ttcsid_CS8O933C77UC3ENMLB3G",
+      "value": "1776091044603::bEgYOq7VYp9nDWxK7wt_.1.1776091045027.0",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1809787045,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUnPY5tA93ZX7ziKviTZpc3AcWLDcBb-UdFTT70mF2XuzcSMBM2UrzX8lRJrGgk",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1810651045.385617,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "bito",
+      "value": "AAFHvE7Tuf8AAABf036Zcg",
+      "domain": ".bidr.io",
+      "path": "/",
+      "expires": 1810204645.477499,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "bitoIsSecure",
+      "value": "ok",
+      "domain": ".bidr.io",
+      "path": "/",
+      "expires": 1810204645.477735,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "AMP_MKTG_f06cc669b6",
+      "value": "JTdCJTIycmVmZXJyZXIlMjIlM0ElMjJodHRwcyUzQSUyRiUyRnJlYmVsNzc3LmNvJTJGJTIyJTJDJTIycmVmZXJyaW5nX2RvbWFpbiUyMiUzQSUyMnJlYmVsNzc3LmNvJTIyJTdE",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627045,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_f06cc669b6",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjIyODZkMjhlMi01MzZmLTRiZGQtODg4Yy0yNDdjZWY4MTI0YWQlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzc2MDkxMDQ1NDc5JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc3NjA5MTA0NTYzMyUyQyUyMmxhc3RFdmVudElkJTIyJTNBMiUyQyUyMnBhZ2VDb3VudGVyJTIyJTNBMSU3RA==",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627045,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ax_visitor",
+      "value": "%7B%22firstVisitTs%22%3A1776091042892%2C%22lastVisitTs%22%3Anull%2C%22currentVisitStartTs%22%3A1776091042892%2C%22ts%22%3A1776091052478%2C%22visitCount%22%3A1%7D",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1807627052,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_R10JTCKS4W",
+      "value": "GS2.1.s1776091043$o1$g1$t1776091053$j50$l0$h0",
+      "domain": ".kalshi.com",
+      "path": "/",
+      "expires": 1810651054.005476,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "authorization",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsYW5ndWFnZUNvZGUiOiJlbiIsImJldHRpbmdWaWV3IjoiRXVyb3BlYW4gVmlldyIsInNvcnRpbmdUeXBlSWQiOjAsImJldHRpbmdMYXlvdXQiOjEsImN1c3RvbWVyVHlwZSI6InJlYWwiLCJkaXNwbGF5VHlwZUlkIjoxLCJ0aW1lem9uZUlkIjoxMywib2Rkc1N0eWxlSWQiOiIiLCJhbGxvd0NoYW5nZU9kZCI6MCwiaW50VGFiRXhwYW5kZWQiOjEsImF1dG9UaW1lWm9uZSI6MSwibGFzdElucHV0U3Rha2UiOjAsImJhbGFuY2VQcmlvcml0eSI6MSwiY291bnRyeUNvZGUiOiJJTiIsImN1cnJlbmN5UmF0ZSI6MC4wMDc4OTY1MzQ1MDc1MDUzOSwiY3VycmVuY3lSYXRlZXVyIjowLjAwOTEwNjc4Mjc0MTAzOTI5LCJjdXN0b21lcklkIjoyMDA2OTM4MjksImV1T2Rkc0lkIjoiMSIsImtvcmVhbk9kZHNJZCI6IjEiLCJhc2lhbk9kZHNJZCI6IjEiLCJvcGVyYXRvclRva2VuIjoiQjY5NUIwQjEtNEY4RC00MDMxLUE0REItMDg2RUMyQjIyMkU1IiwiYmFsYW5jZSI6MCwidGVzdEN1c3RvbWVyIjowLCJjdXN0b21lckxvZ2luIjoiOHJhdmk3ODgiLCJjdXJyZW5jeUNvZGUiOiJJTlIiLCJzdGF0ZUNvZGUiOiIiLCJjdXN0b21lckxldmVsIjowLCJhZ2VudElEIjoxMjc4MDQ5MzIsImRvbWFpbklEIjoyNDM2LCJzaXRlSWQiOjIwMDI0LCJleHRDdXN0b21lcklkIjoiOTM2NzAxOCIsImV4dFNlc3Npb25JZCI6IkI2OTVCMEIxLTRGOEQtNDAzMS1BNERCLTA4NkVDMkIyMjJFNSIsInNlbGVjdGVkT3B0aW9uSWQiOjAsImxldmVsIjowLCJFUE9FbmFibGVkIjp0cnVlLCJpYXQiOjE3NzY5NDg4OTV9.SHPqoZ31sJcRy50H-eLFyj-OHc13to8QGnmOxYTCj2Y",
+      "domain": "prod20024-127804932.bti-sports.io",
+      "path": "/",
+      "expires": 1811508896.010812,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "session",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcklkIjoyMDA2OTM4MjksImV4cGlyZWREYXRlIjoxNzc3MDM1Mjk1ODc1LCJjdXN0b21lcklwIjoiMTgzLjgyLjEwNS4xODciLCJpYXQiOjE3NzY5NDg4OTV9.qHJy72uYQuvhVP9jRj2KOn-zyPwZevmvKsS3whZeBOA",
+      "domain": "prod20024-127804932.bti-sports.io",
+      "path": "/",
+      "expires": 1811508896.031056,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "events_updates",
+      "value": "323030363933383239",
+      "domain": "prod20024-127804932.bti-sports.io",
+      "path": "/",
+      "expires": 1811508896.031437,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "g_token",
+      "value": "s%3Akzhd6O0DHvCYUiOpA_ScPiOdC86r9D5S.5ZACaGT1cMgBvGZrfkjEhldUAVKui%2FIoIF4hGRh%2FnxQ",
+      "domain": "rebel777.co",
+      "path": "/",
+      "expires": 1779712102.756879,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cf_clearance",
+      "value": "jp6qlsvupmfFceoz2PGHq.21FhwZkh7R3sCm9dzLUdE-1779355450-1.2.1.1-yG6vqw8IGhOR_RqVylHifquC7IeloGQQJlz3zCrbwd6yjwHo4BKk7rAaWLDQJGhuf9ylaP6usvORoS3dauR7szOzWx.00_WUPRvaL5b8CYGNkGCVfx4j8rbhpQGz4l8YXC9t4cc4PSgWtjvia3nvJCWukrgNJCDMygtp3vQf8P2PsNZGkT3vhwq7O2AVugujSEXbuSspYNQ_uLj.ou8T8nEpZMd0y8mk9aQWqvxYOeAbDinlMfFkZLQSpkRBreSgcdJzPHnyHI3bLb8mVRbKDIwWHzvH2ux2VNoK2d5e9Tu.VVKxAsNfE_hK_ItgafTPQrUSb3txWouLSKucHaOuhA",
+      "domain": ".animationprovider.com",
+      "path": "/",
+      "expires": 1810891449.326726,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://rebel777.co",
+      "_crHasCrossSiteAncestor": true
+    },
+    {
+      "name": "cf_clearance",
+      "value": "02xkdDkUk0eusjPQZ4WcopWcUsd6CkPoq66tEbLutm0-1779625623-1.2.1.1-dBTvK47028RHkjS2pgeAk16416hpx7w.urYabfo_17RItabjLn0VhLX2EqJbt33O36_gzKxJgZZ7pTR1NWvxqmJ0i2ieq47HL_ODUVl4spxdxixumXW4.LKbVV2XcsOrrZwvS5ohaP_Syc9df1EUuzcNaYCeinOYtZFbfh5MBdPLeGySBJrGS0pTVUzh_U14vk6r_o5esBWKxvY4NPibOHDV5xXBW3BRZg2CAXeWcxmGyK6HsecPviLch17mPlz8o9Hou3pJtSSHrP5Z27vuaEqbc_cmT1t1lhZHt.mBRbcHInGnPW1_92Fii.8Lb2A62VNkgQo0bt1ITWAhEeaklg",
+      "domain": ".rebel777.co",
+      "path": "/",
+      "expires": 1811161624.496438,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://rebel777.co",
+      "_crHasCrossSiteAncestor": false
+    },
+    {
+      "name": "NID",
+      "value": "531=ikyan6KMqaMsItAfiw2vZVkU57cqCH27P0lc2FyS8pVeaH4XbtiUZSWdn120GYnwJYsIYYHz54eMlP_vhMeeRTBMxxNg8-PWJOd1xR_Ohj2Uc2U4lMqZ6i9Z5hTnhWANLVmSPyJYks-kuU_ZN4Xg8Jc8DmVdafKs9YZ2E6x5yJcR4X4Ag8XD1f7QbJmOvUrhODHy6cLLAKXJ5FNdSOBKAhMpfBAGs3v03rivjzdn5Ws6y7hX7yca",
+      "domain": ".google.com",
+      "path": "/",
+      "expires": 1795436867.794263,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_cfuvid",
+      "value": "79WOBYwo5Pjs_pVKufSrL52_ysj5daBzCLZgqWCLyEs-1779625670.2974422-1.0.1.1-Qjr_Oiwl_hhsds4JP0Brxu1XIY4Pye5isDSLRG2eLVA",
+      "domain": ".rebel777.co",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4cmF2aTc4OCIsInNlc3Npb25JZCI6ImRkYzc3ZGMzLTk0YzMtNDAyMC1iNDE4LTE4YzdkMzE5NTIyYyIsImlhdCI6MTc3OTYyNTcwMiwiZXhwIjoxNzc5NjI3ODAyfQ.h47P8qfprccZWdMvFRggK9vD_BM_veFgVzTGL7kXezA",
+      "domain": "rebel777.co",
+      "path": "/",
+      "expires": 1779627803.756603,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "AWSALBTGCORS",
+      "value": "dthi8xh94PElZYETmGlgS3XJRu0STjYujtrSuFn3+SudoQRYlia9c/i8eD1NSGgmUnSvg5zsMgKlz3plkNjBf/Y++Qlk9xs126C2wOpWA148eNKKbJp3dNhvZb24MNpEokLS/LYnGv+TwwANFKHsQHGw5pFm3JjfdsA2o0AKAyz3xBNtrRU=",
+      "domain": "dimclscore.external247services.com",
+      "path": "/",
+      "expires": 1780230509.263392,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://rebel777.co",
+      "localStorage": [
+        {
+          "name": "__client_fingerprint__",
+          "value": "{\"fp\":\"8270a3d44dd06e5c34d30943db23aa60994f390976b5b20051a3bcbd9f35f28a\",\"ts\":1779625696785}"
+        },
+        {
+          "name": "token",
+          "value": "08565fc1-0a04-4252-b18e-17a4bec630d6"
+        },
+        {
+          "name": "isLoggedin",
+          "value": "true"
+        },
+        {
+          "name": "userDetails",
+          "value": "{\"isDemoUser\":false,\"token\":\"08565fc1-0a04-4252-b18e-17a4bec630d6\",\"curr\":\"pts\",\"uname\":\"8ravi788\",\"ptype\":1,\"login\":true,\"rdisplay\":false,\"ipop\":false,\"auth\":0,\"currency\":\"INR\",\"agmno\":\"\",\"agmno1\":\"\"}"
+        }
+      ]
+    },
+    {
+      "origin": "https://www.google.com",
+      "localStorage": [
+        {
+          "name": "rc::a",
+          "value": "YjJ6eWtpbzlrMHBw"
+        },
+        {
+          "name": "rc::f",
+          "value": "0aAD1zX5E_49hAAt8NaM4uxje8yIycgk7diVAdWTKAP5eWhW8b-D2M8wgtqsPDTx4d65WBPjg"
+        }
+      ]
+    }
+  ]
+}
